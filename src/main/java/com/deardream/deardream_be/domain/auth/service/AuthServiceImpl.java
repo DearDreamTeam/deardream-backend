@@ -3,7 +3,8 @@ package com.deardream.deardream_be.domain.auth.service;
 import com.deardream.deardream_be.domain.auth.dto.KakaoDTO;
 import com.deardream.deardream_be.domain.auth.dto.KakaoLoginResponseDTO;
 import com.deardream.deardream_be.domain.auth.util.KakaoUtil;
-import com.deardream.deardream_be.domain.jwt.util.JwtUtil;
+//import com.deardream.deardream_be.domain.jwt.util.JwtUtil;
+import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,9 @@ public class AuthServiceImpl implements AuthService {
         String email = userInfo.getEmail();
         String name = userInfo.getName();
 
+        // 이메일 대신 id 기반으로 임시 조정 코드
+        // String kakaoId = String.valueOf(userInfo.getId());
+
         // 3. 기존 유저 확인 또는 신규 유저 등록
         return userRepository.findByEmail(email)
                 .orElseGet(() -> userRepository.save(
@@ -38,6 +42,17 @@ public class AuthServiceImpl implements AuthService {
                                 .provider("kakao")
                                 .build()
                 ));
+
+
+//        // 3-1. 로직은 3과 같지만 email 대신 kakaoId 이용
+//        return userRepository.findByProviderId(kakaoId)
+//                .orElseGet(() -> userRepository.save(
+//                        User.builder()
+//                                .providerId(kakaoId)
+//                                .name(name)
+//                                .provider("kakao")
+//                                .build()
+//                ));
     }
 
     @Override

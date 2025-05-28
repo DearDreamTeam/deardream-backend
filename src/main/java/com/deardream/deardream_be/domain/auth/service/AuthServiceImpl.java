@@ -26,9 +26,16 @@ public class AuthServiceImpl implements AuthService {
         KakaoDTO.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code);
 
         // 2. 카카오에서 사용자 정보 요청
-        KakaoDTO.KakaoProfile userInfo = kakaoUtil.getUserInfo(tokenResponse.getAccessToken());
-        String email = userInfo.getEmail();
-        String name = userInfo.getName();
+        KakaoDTO.KakaoProfile kakaoProfile = kakaoUtil.getUserInfo(tokenResponse.getAccess_token());
+        String email = kakaoProfile.getKakao_account().getEmail();
+//        String name = userInfo.getName();
+        String name = kakaoProfile.getProperties().getNickname();
+
+
+        // 2025.05.26
+        // 없다면 새 생성자 멤버 정보 만들어주기 .
+        // public Member loginByOAuth() 부분 수정하기
+
 
         // 이메일 대신 id 기반으로 임시 조정 코드
         // String kakaoId = String.valueOf(userInfo.getId());
@@ -43,20 +50,11 @@ public class AuthServiceImpl implements AuthService {
                                 .build()
                 ));
 
-
-//        // 3-1. 로직은 3과 같지만 email 대신 kakaoId 이용
-//        return userRepository.findByProviderId(kakaoId)
-//                .orElseGet(() -> userRepository.save(
-//                        User.builder()
-//                                .providerId(kakaoId)
-//                                .name(name)
-//                                .provider("kakao")
-//                                .build()
-//                ));
     }
 
     @Override
     public String generateAccessToken(User user) {
+
         return jwtUtil.createAccessToken(user.getEmail());
     }
 

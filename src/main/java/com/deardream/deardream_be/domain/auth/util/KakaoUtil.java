@@ -111,10 +111,10 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class KakaoUtil {
 
-    @Value("${kakao.client_id}")
+    @Value("${kakao.client-id}")
     private String client;
 
-    @Value("${kakao.redirect_uri}")
+    @Value("${kakao.redirect-uri}")
     private String redirect;
 
     public KakaoDTO.OAuthToken getAccessToken(String accessCode) {
@@ -142,9 +142,17 @@ public class KakaoUtil {
 
         try {
             oAuthToken = om.readValue(response.getBody(), KakaoDTO.OAuthToken.class);
-            log.info("accessToken: {}", oAuthToken.getAccessToken());
+            log.info("accessToken: {}", oAuthToken.getAccess_token());
+
+            // 디버그를 위한 잠시 추가
+            log.info("[DEBUG] Kakao access_token scope: {}", oAuthToken.getScope());
+
         } catch (Exception e) {
             log.error("Error parsing Kakao OAuth token response", e);
+
+            // 디버그를 위한 잠시 추가
+            log.info("[DEBUG] Kakao scope: {}", oAuthToken.getScope());
+
         }
 
         return oAuthToken;
@@ -171,6 +179,10 @@ public class KakaoUtil {
         try {
             kakaoProfile = om.readValue(response.getBody(), KakaoDTO.KakaoProfile.class);
             log.info("nickname: {}", kakaoProfile.getProperties().getNickname());
+
+            // 디버그 보기 위해 잠시 추가
+            log.info("KakaoProfile : {}", new ObjectMapper().writeValueAsString(kakaoProfile));
+
         } catch (Exception e) {
             log.error("Error parsing Kakao profile response", e);
         }

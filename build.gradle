@@ -43,6 +43,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+	// Swagger config
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
+
 
 
 }

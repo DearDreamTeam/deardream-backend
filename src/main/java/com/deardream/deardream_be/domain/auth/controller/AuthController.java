@@ -5,12 +5,11 @@ import com.deardream.deardream_be.domain.auth.service.AuthService;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
-import com.deardream.deardream_be.global.common.ApiResponse;
+import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.util.RedisUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.juli.logging.Log;
 import org.springframework.web.bind.annotation.*;
 import io.jsonwebtoken.Jwts;
 

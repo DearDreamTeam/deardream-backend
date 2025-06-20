@@ -1,11 +1,18 @@
 server:
   port : 8080
 
+
+logging:
+  level:
+    root: info
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
+
 spring:
   datasource:
     url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${DB_PASSWORD}
+    password: ${DB_USERNAME}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -23,11 +30,14 @@ spring:
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             redirect-uri: ${KAKAO_REDIRECT_URI}
+#            client-id: fc79bf1f14555e9f0502c79f257f79ea
+#            redirect-uri: http://localhos0t:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
-            scope:
-              - profile_nickname
-              - email
+            scope: profile_nickname
+#              profile_nickname account_email
             client-name: Kakao
+#            provider: kakao
+
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize

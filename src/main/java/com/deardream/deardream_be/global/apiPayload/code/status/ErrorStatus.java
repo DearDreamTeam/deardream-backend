@@ -26,6 +26,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "401", "비밀번호가 일치하지 않습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "401", "유효하지 않은 토큰입니다."),
     // 403 FORBIDDEN
+    _S3_DELETE_ERROR(HttpStatus.FORBIDDEN, "403", "S3에서 파일 삭제에 실패했습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "403", "접근이 금지된 사용자입니다."),
     COMMUNITY_ADMIN_FORBIDDEN(HttpStatus.FORBIDDEN, "403", "커뮤니티 관리자 권한이 없습니다."),
     FRIEND_BLOCKED(HttpStatus.FORBIDDEN, "403", "친구 요청이 거부되었습니다."),
@@ -39,6 +40,7 @@ public enum ErrorStatus implements BaseErrorCode {
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "할 일을 찾을 수 없습니다."),
     // 409 CONFLICT
     CONFLICT(HttpStatus.CONFLICT, "409", "요청한 리소스와 충돌이 발생했습니다."),
+
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "서버 내부 오류입니다."),
     PASSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "Oauth passing error."),

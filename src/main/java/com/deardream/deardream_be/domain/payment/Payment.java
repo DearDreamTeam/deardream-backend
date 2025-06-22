@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,5 +33,7 @@ public class Payment {
     private DeliveryType amountType;
 
     private Boolean isActive;
+
+    @CreatedDate
     private LocalDateTime paidAt;
 }

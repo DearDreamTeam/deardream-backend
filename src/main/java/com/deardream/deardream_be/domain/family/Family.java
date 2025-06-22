@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
 import java.time.LocalDateTime;
 
 
@@ -26,6 +28,8 @@ public class Family {
     private User leader;
 
     private String familyLink;
+
+    @CreatedDate
     private LocalDateTime createdAt;
 
 }

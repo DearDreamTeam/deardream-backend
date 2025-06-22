@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,5 +34,6 @@ public class MonthlyArchive {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 }

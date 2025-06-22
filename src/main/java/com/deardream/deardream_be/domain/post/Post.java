@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,6 +33,7 @@ public class Post {
     @Column(length = 1000)
     private String content;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
 

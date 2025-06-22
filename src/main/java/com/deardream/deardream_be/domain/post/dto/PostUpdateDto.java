@@ -13,10 +13,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequestDto {
-
+public class PostUpdateDto {
     @Size(max = 1000, message = "Content must be less than 1000 characters")
     private String content;
-    private Long authorId;
     private List<MultipartFile> multipartFiles;
 }

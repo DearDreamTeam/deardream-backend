@@ -36,5 +36,9 @@ public class Post {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
 
 }

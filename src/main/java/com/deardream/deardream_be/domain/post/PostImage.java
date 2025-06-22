@@ -23,18 +23,11 @@ public class PostImage {
     @Column(unique = true, nullable = false)
     private String fileName;
 
-    @Column(nullable = false)
-    private Long fileSize;
+    // URL 경로 처럼 사용되는 버킷 경로
+    private String s3Key;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private User author;
-
-    @ManyToOne
-    @JoinColumn(name = "family_id")
-    private Family family;
 }

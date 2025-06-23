@@ -66,6 +66,7 @@ public class PostService {
                         .post(post)
                         .s3Key(s3Config.getPostImagesFolder() + "/" + fileName)
                         .fileName(image.getOriginalFilename())
+                        .s3Url(s3Url)
                         .build();
                 postImageRepository.save(postImage);
             }

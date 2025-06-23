@@ -31,7 +31,7 @@ public class S3Config {
     @Value("${cloud.aws.s3.folder.pdf}")
     private String pdfFolder;
 
-    @Value("${cloud.aws.s3.folder.profile}")
+    @Value("${cloud.aws.s3.folder.profiles}")
     private String profileFolder;
 
     // AWS SDK에서 제공하는 S3 클라이언트 생성 후 다른 서비스에서 주입

@@ -26,6 +26,8 @@ public class PostImage {
     // URL 경로 처럼 사용되는 버킷 경로
     private String s3Key;
 
+    private String s3Url;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;

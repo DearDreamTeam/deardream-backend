@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -89,9 +90,14 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostUpdateDto request) {
+    public void updatePost(Long postId, PostUpdateDto request, List<MultipartFile> images) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
+
+        // 나중에 로그인 완료 시 userId는 토큰에서 추출하도록 변경 예정
+        if(!Objects.equals(post.getAuthor().getId(), request.getUserId())) {
+            throw new GeneralException(ErrorStatus._AUTHORITY_NOT_MATCH);
+        }
 
         // 게시글 내용 수정
         post.updateContent(request.getContent());
@@ -103,15 +109,15 @@ public class PostService {
         }
         postImageRepository.deleteAll(existingImages);
 
-        List<MultipartFile> newImages = request.getMultipartFiles();
+        // List<MultipartFile> newImages = images;
 
         // 3. 새 이미지가 있다면 업로드
-        if(newImages != null && !newImages.isEmpty()) {
-            if(newImages.size() > 2) {
+        if(images != null && !images.isEmpty()) {
+            if(images.size() > 2) {
                 throw new GeneralException(ErrorStatus._IMAGE_ONLY_TWO);
             }
 
-            for(MultipartFile image : newImages) {
+            for(MultipartFile image : images) {
                 String uuid = UUID.randomUUID().toString();
                 String fileName = uuid + "-" + image.getOriginalFilename();
                 String s3Key = s3Config.getPostImagesFolder() + "/" + fileName;

@@ -29,6 +29,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _IMAGE_ONLY_TWO(HttpStatus.BAD_REQUEST, "400", "이미지는 최대 2장까지 업로드 가능합니다."),
     _POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "400", "해당 게시글을 찾을 수 없습니다."),
 
+    _AUTHORITY_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "해당 게시글의 작성자와 일치하지 않습니다."),
+    _USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "해당 유저와 일치하지 않습니다."),
+
     _FORBIDDEN_PASSWORD(HttpStatus.FORBIDDEN, "403", "불가능한 패스워드입니다. 패스워드는 영어, 숫자 8~13글자만 가능합니다."),
 
     _TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 토큰을 찾을 수 없습니다."),

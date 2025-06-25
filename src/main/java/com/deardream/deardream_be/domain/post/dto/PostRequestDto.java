@@ -22,5 +22,5 @@ public class PostRequestDto {
 
     @Schema(description = "작성자 ID", example = "1")
     private Long authorId;
-    private List<MultipartFile> multipartFiles;
+    //private List<MultipartFile> multipartFiles;
 }

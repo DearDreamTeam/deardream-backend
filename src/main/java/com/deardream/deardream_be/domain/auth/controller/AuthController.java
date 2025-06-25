@@ -12,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import io.jsonwebtoken.Jwts;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,7 +27,7 @@ public class AuthController {
 
 
     @GetMapping("/login/kakao")         // 여기로 들어오는 code가 카카오가 준 인가코드
-    public void kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ApiResponse<KakaoLoginResponseDTO> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
 
         // 1. 카카오 로그인 처리 (accessCode → User)
         User user = authService.loginWithKakao(code);
@@ -43,31 +40,14 @@ public class AuthController {
         redisUtil.setDataExpire("refresh:" + user.getEmail(), refreshToken, REFRESH_EXP_TIME);
 
         // 3. 응답 DTO 구성
-//        KakaoLoginResponseDTO loginResponse = KakaoLoginResponseDTO.builder()
-//                .email(user.getEmail())
-//                .name(user.getName())
-//                .accessToken(accessToken)
-//                .refreshToken(refreshToken)
-//                .build();
-//
-//        return ApiResponse.onSuccess(loginResponse);
+        KakaoLoginResponseDTO loginResponse = KakaoLoginResponseDTO.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
 
-        // 4. 프론트엔드로 리다이렉트 (쿼리 파라미터로 토큰 전달)
-        String frontendCallback = "http://localhost:3000/auth/login";
-        String redirectUrl = UriComponentsBuilder
-                .fromUriString(frontendCallback)
-                .queryParam("accessToken",  accessToken)
-                .queryParam("refreshToken", refreshToken)
-                .build()
-                .toUriString();
-
-        try{
-            response.sendRedirect(redirectUrl);
-            log.info("[KakaoLogin] Redirect to → {}", redirectUrl);
-
-        } catch (IOException e) {
-            log.error("리다이렉트 실패", e);
-        }
+        return ApiResponse.onSuccess(loginResponse);
     }
 
 

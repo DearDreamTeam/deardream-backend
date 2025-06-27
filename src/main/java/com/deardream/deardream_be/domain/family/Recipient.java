@@ -3,6 +3,7 @@ package com.deardream.deardream_be.domain.family;
 import com.deardream.deardream_be.domain.institution.CalendarType;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.institution.Institution;
+import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "recipient")
-public class Recipient {
+public class Recipient extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,9 +48,6 @@ public class Recipient {
     private String address;
     private String addressDetail;
     private Integer postalCode;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
 
 }

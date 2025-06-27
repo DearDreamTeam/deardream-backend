@@ -2,6 +2,7 @@ package com.deardream.deardream_be.domain.post;
 
 import com.deardream.deardream_be.domain.family.Family;
 import com.deardream.deardream_be.domain.user.entity.User;
+import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "post")
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,8 +34,6 @@ public class Post {
     @Column(length = 1000)
     private String content;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public void updateContent(String content) {
         this.content = content;

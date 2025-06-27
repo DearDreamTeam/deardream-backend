@@ -1,6 +1,7 @@
 package com.deardream.deardream_be.domain.post.controller;
 
 import com.deardream.deardream_be.domain.post.dto.PostRequestDto;
+import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
@@ -41,22 +42,30 @@ public class PostController {
     }
 
 
-
-
-
+    // 나중에 로그인 완료 시 토큰에서 user 추출 필요
     @Transactional
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
     }
 
+    // test 필요
+    // 나중에 로그인 완료 시 토큰에서 추출할 예정 - 리펙토링 필요
     @PutMapping("/{postId}")
     public ApiResponse<String> updatePost(
             @PathVariable Long postId,
-            @RequestPart PostUpdateDto request
+            @RequestPart PostUpdateDto request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        postService.updatePost(postId, request);
+        postService.updatePost(postId, request, images);
         return ApiResponse.onSuccess("Post updated successfully");
     }
 
+    @GetMapping("/{familyId}")
+    public ApiResponse<List<PostResponseDto>> getPosts(
+            @PathVariable Long familyId
+    ) {
+        List<PostResponseDto> response =  postService.getPosts(familyId);
+        return ApiResponse.onSuccess(response);
+    }
 }

@@ -3,8 +3,6 @@ package com.deardream.deardream_be.domain.post.dto;
 import com.deardream.deardream_be.domain.user.Relation;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

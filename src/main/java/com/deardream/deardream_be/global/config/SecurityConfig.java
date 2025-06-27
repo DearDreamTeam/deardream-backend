@@ -1,5 +1,3 @@
-
-
 package com.deardream.deardream_be.global.config;
 
 import com.deardream.deardream_be.domain.jwt.JwtAuthenticationFilter;
@@ -30,11 +28,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/api/users/login/kakao", "/login/**", "/oauth2/**", "/api/users/reissue", "/api/users/logout").permitAll()
-//                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/", "/api/users/login/kakao", "/login/**", "/oauth2/**", "/api/users/reissue", "/api/users/logout", "/error").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        System.out.println("=== SecurityFilterChain 등록됨 ===");
 
 //                .oauth2Login((AbstractHttpConfigurer::disable)
 //                .oauth2Login(Customizer.withDefaults());;

@@ -1,7 +1,6 @@
 package com.deardream.deardream_be.domain.auth.service;
 
-import com.deardream.deardream_be.domain.auth.dto.KakaoDTO;
-import com.deardream.deardream_be.domain.auth.dto.KakaoLoginResponseDTO;
+import com.deardream.deardream_be.domain.auth.dto.KakaoDto;
 import com.deardream.deardream_be.domain.auth.util.KakaoUtil;
 //import com.deardream.deardream_be.domain.jwt.util.JwtUtil;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
@@ -13,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImplementation implements AuthService {
 
     private final KakaoUtil kakaoUtil;
     private final JwtUtil jwtUtil;
@@ -23,43 +22,35 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public User loginWithKakao(String code) {
         // 1. 카카오에서 access token 요청
-        KakaoDTO.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code);
+        KakaoDto.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code);
 
         // 2. 카카오에서 사용자 정보 요청
-        KakaoDTO.KakaoProfile kakaoProfile = kakaoUtil.getUserInfo(tokenResponse.getAccess_token());
+        KakaoDto.KakaoProfile kakaoProfile = kakaoUtil.getUserInfo(tokenResponse.getAccess_token());
+        Long kakaoId = kakaoProfile.getId();
         String email = kakaoProfile.getKakao_account().getEmail();
-//        String name = userInfo.getName();
-        String name = kakaoProfile.getProperties().getNickname();
+        String profileImage = kakaoProfile.getKakao_account().getProfile().getProfile_image_url();
+        String name = kakaoProfile.getKakao_account().getName() != null
+                ? kakaoProfile.getKakao_account().getName()
+                : kakaoProfile.getProperties().getNickname();
 
 
-        // 2025.05.26
-        // 없다면 새 생성자 멤버 정보 만들어주기 .
-        // public Member loginByOAuth() 부분 수정하기
-
-
-        // 이메일 대신 id 기반으로 임시 조정 코드
-        // String kakaoId = String.valueOf(userInfo.getId());
-
-        // 3. 기존 유저 확인 또는 신규 유저 등록
-        return userRepository.findByEmail(email)
+        // 3. 이메일을 통해 기존 유저 확인 또는 신규 유저 등록
+        return userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> userRepository.save(
                         User.builder()
-                                .email(email)
+                                .kakaoId(kakaoId)
                                 .name(name)
-                                .provider("kakao")
+                                .profileImage(profileImage)
+                                .email(email)
                                 .build()
                 ));
-
     }
 
     @Override
-    public String generateAccessToken(User user) {
-
-        return jwtUtil.createAccessToken(user.getEmail());
-    }
+    public String generateAccessToken(User user) { return jwtUtil.createAccessToken(user.getKakaoId());}
 
     @Override
     public String generateRefreshToken(User user) {
-        return jwtUtil.createRefreshToken(user.getEmail());
+        return jwtUtil.createRefreshToken(user.getKakaoId());
     }
 }

@@ -31,7 +31,7 @@ public class Recipient extends BaseEntity {
     private Family family;
 
     @ManyToOne
-    @JoinColumn(name = "istitution")
+    @JoinColumn(name = "institution")
     private Institution institution;
 
     private String name;

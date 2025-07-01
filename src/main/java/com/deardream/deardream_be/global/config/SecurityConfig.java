@@ -34,6 +34,7 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated()
                         .anyRequest().permitAll()
                 )
+
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 //                .oauth2Login((AbstractHttpConfigurer::disable)

@@ -59,8 +59,7 @@ public class PostService {
 
             for (MultipartFile image : imageFiles) {
                 Long familyId = author.getFamily().getId();
-                String uuid = UUID.randomUUID().toString();
-                String fileName = familyId + "-" + uuid + "-" + image.getOriginalFilename();
+                String fileName = familyId + image.getOriginalFilename();
 
                 String s3Url = postImageService.uploadFile(s3Config.getPostImagesFolder(), fileName, image);
 
@@ -119,8 +118,7 @@ public class PostService {
             }
 
             for(MultipartFile image : images) {
-                String uuid = UUID.randomUUID().toString();
-                String fileName = uuid + "-" + image.getOriginalFilename();
+                String fileName = post.getFamily().getId() + image.getOriginalFilename();
                 String s3Key = s3Config.getPostImagesFolder() + "/" + fileName;
 
                 postImageService.uploadFile(s3Config.getPostImagesFolder(),fileName,image);

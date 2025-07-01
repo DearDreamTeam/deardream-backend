@@ -25,7 +25,7 @@ public class Family extends BaseEntity {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "leaer_id")
+    @JoinColumn(name = "leader_id")
     private User leader;
 
     private String familyLink;

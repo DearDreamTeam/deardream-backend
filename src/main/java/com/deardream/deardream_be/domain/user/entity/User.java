@@ -27,6 +27,9 @@ public class User extends BaseEntity {
 
     private String provider; // ex: "kakao"
 
+    // 이거 추가되어야 합니다.
+    private String profileImageUrl;
+
     private Relation relation;
 //    private String providerId; // ex: 소셜로그인 사용자 고유 id(kakaoId)
 

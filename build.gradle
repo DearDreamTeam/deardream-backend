@@ -53,6 +53,12 @@ dependencies {
 	// 취약한 transitive dependency를 안전한 버전으로 오버라이드
 	implementation 'software.amazon.ion:ion-java:1.0.2'
 
+	// thymeleaf - for rendering HTML templates
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.5.3")
+	implementation 'ognl:ognl:3.2.21'
+
+	implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10")
+
 
 
 }

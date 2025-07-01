@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.deardream.deardream_be.domain.archive.service.PdfGeneratorUtil;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.config.S3Config;
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +29,12 @@ public class PostImageService {
 
     private final AmazonS3Client amazonS3Client;
     private final S3Config s3Config;
+    //private final PdfGeneratorUtil pdfGeneratorUtil;
 
     @Transactional
     public String uploadFile(String folder, String fileName, MultipartFile file) {
-        String key = folder + "/" + fileName;
+        String uniqueFileName = UUID.randomUUID() + "-" + fileName;
+        String key = folder + "/" + uniqueFileName;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
@@ -46,9 +50,11 @@ public class PostImageService {
         return amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
     }
 
+
     @Transactional
     public String uploadPDF(String folder, String fileName, byte[] pdfBytes) {
-        String key = folder + "/" + fileName;
+        String uniqueFileName = UUID.randomUUID() + "-" + fileName;
+        String key = folder + "/" + uniqueFileName;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("application/pdf");

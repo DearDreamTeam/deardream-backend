@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +35,9 @@ public class Post extends BaseEntity {
 
     @Column(length = 1000)
     private String content;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> images = new ArrayList<>();
 
 
     public void updateContent(String content) {

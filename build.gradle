@@ -60,6 +60,9 @@ dependencies {
 	implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10")
 
 
+	// 테스트 코드 실행 시 필요한 의존성
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 
 }
 

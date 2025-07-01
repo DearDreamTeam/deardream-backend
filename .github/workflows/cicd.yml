@@ -1,0 +1,89 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "master", "dev" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: setup prod.yml
+      run: |
+        cd ./src/main/resources
+        sed -i 's|${DB_URL}|'"${{ secrets.DB_URL }}"'|g' application-prod.yml
+        sed -i 's|${DB_USERNAME}|'"${{ secrets.DB_USERNAME }}"'|g' application-prod.yml
+        sed -i 's|${DB_PASSWORD}|'"${{ secrets.DB_PASSWORD }}"'|g' application-prod.yml
+        sed -i 's|${KAKAO_CLIENT_ID}|'"${{ secrets.KAKAO_CLIENT_ID }}"'|g' application-prod.yml
+        sed -i 's|${KAKAO_REDIRECT_URI}|'"${{ secrets.KAKAO_REDIRECT_URI }}"'|g' application-prod.yml
+        sed -i 's|${KAKAO_CLIENT_SECRET}|'"${{ secrets.KAKAO_CLIENT_SECRET }}"'|g' application-prod.yml
+        sed -i 's|${REDIS_HOST}|'"${{ secrets.REDIS_HOST }}"'|g' application-prod.yml
+        sed -i 's|${REDIS_PORT}|'"${{ secrets.REDIS_PORT }}"'|g' application-prod.yml
+        sed -i 's|${REDIS_TIMEOUT}|'"${{ secrets.REDIS_TIMEOUT }}"'|g' application-prod.yml
+        sed -i 's|${JWT_SECRET}|'"${{ secrets.JWT_SECRET }}"'|g' application-prod.yml
+        sed -i 's|${JWT_ACCESS_TOKEN_EXPIRATION}|'"${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}"'|g' application-prod.yml
+        sed -i 's|${JWT_REFRESH_TOKEN_EXPIRATION}|'"${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}"'|g' application-prod.yml
+        sed -i 's|${AWS_ACCESS_KEY}|'"${{ secrets.AWS_ACCESS_KEY }}"'|g' application-prod.yml
+        sed -i 's|${AWS_SECRET_KEY}|'"${{ secrets.AWS_SECRET_KEY }}"'|g' application-prod.yml
+        sed -i 's|${S3_BUCKET_NAME}|'"${{ secrets.S3_BUCKET_NAME }}"'|g' application-prod.yml
+        
+        
+    
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Grant permission to Gradle wrapper
+      run: chmod +x ./gradlew
+      
+    - name: Build with Gradle
+      run: ./gradlew bootJar -x test
+        
+    # Docker image build
+    - name: Build images docker
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/dear-dream .
+
+    # DockerHub login
+    - name: docker login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # dockerHub push
+    - name: docker push
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/dear-dream
+  
+    # Deploy to EC2
+    - name: deloy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_NAME }}
+        key: ${{ secrets.EC2_KEY }}
+        port: 22
+        script: |
+          sudo docker stop dear-dream || true
+          sudo docker rm dear-dream || true
+          sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/dear-dream || true
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dear-dream
+          sudo docker run -e SPRING_PROFILES_ACTIVE=prod \
+                      --name dear-dream \
+                      -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/dear-dream

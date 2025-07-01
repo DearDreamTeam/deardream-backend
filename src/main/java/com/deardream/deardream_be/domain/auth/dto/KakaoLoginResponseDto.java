@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class KakaoLoginResponseDTO {
+public class KakaoLoginResponseDto {
     private String email;
     private String name;
+    private String profileImage;
     private String accessToken;
     private String refreshToken;
 }

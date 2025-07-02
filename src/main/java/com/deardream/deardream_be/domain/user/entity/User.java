@@ -5,6 +5,7 @@ import com.deardream.deardream_be.domain.user.Relation;
 import com.deardream.deardream_be.domain.institution.CalendarType;
 import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
+import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -46,7 +47,6 @@ public class User extends BaseEntity {
     @Column(name = "birth")
     private LocalDate birth;
 
-    @NotNull
     @Column(name = "calendar_type")
     @Enumerated(EnumType.STRING)
     private CalendarType calendarType;
@@ -59,14 +59,8 @@ public class User extends BaseEntity {
     private String otherRelation;
 
     @Column(name = "role")
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
-
-//    @Column(name = "created_at", updatable = false)
-//    @CreatedDate
-//    @NotNull
-//    private LocalDateTime createdAt;
 
     @NotNull
     private String email;
@@ -76,15 +70,14 @@ public class User extends BaseEntity {
     private Family family;
 
     //UserRequestDto의 필드를 User 엔티티에 적용하여 사용자 정보를 업데이트함.
-    public void updateAdditionalInfo(UserRequestDto dto, Family family) {
+    // dto + 값 -> 엔티티 값 변경
+    public void updateAdditionalInfo(UserUpdateDto dto) {
         if (dto.getName() != null) this.name = dto.getName();
         if (dto.getProfileImage() != null) this.profileImage = dto.getProfileImage();
         if (dto.getCalendarType() != null) this.calendarType = dto.getCalendarType();
         if (dto.getBirth() != null) this.birth = dto.getBirth();
         if (dto.getRelation() != null) this.relation = dto.getRelation();
         if (dto.getOtherRelation() != null) this.otherRelation = dto.getOtherRelation();
-        if (dto.getRole() != null) this.role = dto.getRole();
-        if (family != null) this.family = family;
     }
 
 }

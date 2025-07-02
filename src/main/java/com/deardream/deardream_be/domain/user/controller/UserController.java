@@ -1,7 +1,9 @@
 package com.deardream.deardream_be.domain.user.controller;
 
+import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
+import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 import com.deardream.deardream_be.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,8 @@ public class UserController {
             @RequestBody @Valid UserRequestDto userRequestDto
     ) {
         log.info("[UserController] authentication: {}", authentication);
-        Long kakaoId = Long.valueOf(authentication.getPrincipal().toString());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long kakaoId = userDetails.getKakaoId();
         UserResponseDto userInfo = userService.register(kakaoId, userRequestDto);
         return ResponseEntity.ok(userInfo);
     }
@@ -50,7 +53,8 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getMyInfo(
             Authentication authentication
     ) {
-        Long kakaoId = Long.valueOf(authentication.getPrincipal().toString());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long kakaoId = userDetails.getKakaoId();
         UserResponseDto userInfo = userService.getMyInfo(kakaoId);
         return ResponseEntity.ok(userInfo);
     }
@@ -58,16 +62,17 @@ public class UserController {
     /**
      * 내 정보 수정
      *
-     * @param userRequestDto 수정할 정보
+     * @param userUpdateDto 수정할 정보
      * @return 수정된 사용자 정보
      */
     @PatchMapping("/me")
     public ResponseEntity<UserResponseDto> updateMyInfo(
             Authentication authentication,
-            @RequestBody @Valid UserRequestDto userRequestDto
+            @RequestBody @Valid UserUpdateDto userUpdateDto
     ) {
-        Long kakaoId = Long.valueOf(authentication.getPrincipal().toString());
-        UserResponseDto userInfo = userService.updateMyInfo(kakaoId, userRequestDto);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long kakaoId = userDetails.getKakaoId();
+        UserResponseDto userInfo = userService.updateMyInfo(kakaoId, userUpdateDto);
         return ResponseEntity.ok(userInfo);
     }
 
@@ -78,7 +83,8 @@ public class UserController {
     public ResponseEntity<?> deleteMyAccount(
             Authentication authentication
     ) {
-        Long kakaoId = Long.valueOf(authentication.getPrincipal().toString());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long kakaoId = userDetails.getKakaoId();
         userService.deleteMyAccount(kakaoId);
         return ResponseEntity.ok(
                 Map.of(

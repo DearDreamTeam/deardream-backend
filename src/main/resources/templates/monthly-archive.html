@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        body { font-family: 'Noto sans KR', sans-serif; margin: 40px; }
+        .post { margin-bottom: 60px; page-break-after: always; }
+        .profile { display: flex; align-items: center; margin-bottom: 10px; }
+        .profile img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
+        .username { font-weight: bold; font-size: 16px; }
+        .content { margin: 20px 0; font-size: 14px; }
+        .images img { max-width: 100%; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div th:each="post : ${archiveRequests}" class="post">
+    <div class="profile">
+        <img th:src="${post.profileImageUrl}" alt="profile"/>
+        <span class="username" th:text="${post.username} + ' (' + ${post.relationship} + ')'"></span>
+    </div>
+
+    <div class="content" th:text="${post.content}"></div>
+
+    <div class="images">
+        <div th:each="img : ${post.postImages}">
+            <img th:src="${img}" alt="post image"/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

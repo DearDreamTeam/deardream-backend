@@ -12,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 @Entity
 @Getter
@@ -29,7 +30,7 @@ public class MonthlyArchive extends BaseEntity {
     @JoinColumn(name = "family_id", nullable = false)
     private Family family;
 
-    private LocalDate monthYear;
+    private YearMonth monthYear;
     private String pdfUrl;
 
     @Enumerated(EnumType.STRING)

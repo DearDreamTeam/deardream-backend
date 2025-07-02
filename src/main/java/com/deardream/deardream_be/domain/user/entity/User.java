@@ -39,6 +39,9 @@ public class User extends BaseEntity {
     @Column(name = "profile_image")
     private String profileImage;
 
+    // 이거 추가되어야 합니다.
+    private String profileImageUrl;
+
     @NotNull
     @Column(name = "birth")
     private LocalDate birth;

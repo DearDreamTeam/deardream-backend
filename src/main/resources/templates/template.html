@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:inline="text">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .entry {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin: 40px auto;
+            width: 650px;
+            box-sizing: border-box;
+            page-break-inside: avoid;
+        }
+
+        .photo-table {
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 20px;
+        }
+
+        .photo-table td {
+            width: 50%;
+            padding: 0 10px;
+        }
+
+        .image-box {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background-color: #eee;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .name {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-align: left;
+        }
+
+        .text {
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: left;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="entry">
+    <table class="photo-table">
+        <tr>
+            <td>
+                <div class="image-box">
+                    <img src="https://img.freepik.com/free-vector/open-folder-with-documents_1262-4574.jpg?semt=ais_hybrid&amp;w=740" alt="image1" />
+                </div>
+            </td>
+            <td>
+                <div class="image-box">
+                    <img src="https://img.freepik.com/free-vector/yellow-folder-flat-style_78370-6671.jpg?semt=ais_hybrid&amp;w=740" alt="image2" />
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="name">아들 김인호</div>
+    <div class="text">
+        안녕하세요. 한번 pdf로 만들어봤는데 잘 나오나요? 확인하고 싶었어요. 잘 나오는지 궁금해요.
+    </div>
+</div>
+
+<div class="entry">
+    <table class="photo-table">
+        <tr>
+            <td>
+                <div class="image-box">
+                    <img src="https://img.freepik.com/free-vector/open-folder-with-documents_1262-4574.jpg?semt=ais_hybrid&amp;w=740" alt="image1" />
+                </div>
+            </td>
+            <td>
+                <div class="image-box">
+                    <img src="https://img.freepik.com/free-vector/yellow-folder-flat-style_78370-6671.jpg?semt=ais_hybrid&amp;w=740" alt="image2" />
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="name">아들 김인호</div>
+    <div class="text">
+        안녕하세요. 한번 pdf로 만들어봤는데 잘 나오나요? 확인하고 싶었어요. 잘 나오는지 궁금해요.
+    </div>
+</div>
+
+</body>
+</html>

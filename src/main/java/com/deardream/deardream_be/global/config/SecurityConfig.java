@@ -41,6 +41,7 @@ public class SecurityConfig {
                                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         System.out.println("=== SecurityFilterChain 등록됨 ===");
 

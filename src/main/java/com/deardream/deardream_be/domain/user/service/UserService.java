@@ -2,6 +2,7 @@ package com.deardream.deardream_be.domain.user.service;
 
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
+import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 
 // 서비스 인터페이스 정의
 // 아래 주석처럼 생긴 것은 JavaDoc 주석
@@ -25,14 +26,23 @@ public interface UserService {
     /**
      * 내 정보 수정
      * @param kakaoId
-     * @param modifiedRequestDto 수정할 정보
+     * @param userUpdateDto 수정할 정보
      * @return 수정된 회원 정보
      */
-    UserResponseDto updateMyInfo(Long kakaoId, UserRequestDto modifiedRequestDto);
+    UserResponseDto updateMyInfo(Long kakaoId, UserUpdateDto userUpdateDto);
 
     /**
      * 회원 탈퇴 (로그인된 회원 삭제)
      * @param kakaoId
      */
     void deleteMyAccount(Long kakaoId);
+
+
+    /**
+     * userId로 familyId 찾기
+     * @param userId
+     * @return
+     */
+    Long getFamilyIdByUserId(Long userId);
+
 }

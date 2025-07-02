@@ -4,6 +4,7 @@ import com.deardream.deardream_be.domain.auth.dto.KakaoDto;
 import com.deardream.deardream_be.domain.auth.util.KakaoUtil;
 //import com.deardream.deardream_be.domain.jwt.util.JwtUtil;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
+import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class AuthServiceImplementation implements AuthService {
 
     @Override
     @Transactional
-    public User loginWithKakao(String code) {
+    public User loginWithKakao(String code, Long familyId) {
         // 1. 카카오에서 access token 요청
         KakaoDto.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code);
 
@@ -33,24 +34,29 @@ public class AuthServiceImplementation implements AuthService {
                 ? kakaoProfile.getKakao_account().getName()
                 : kakaoProfile.getProperties().getNickname();
 
-
-        // 3. 이메일을 통해 기존 유저 확인 또는 신규 유저 등록
+        // 3. kakaoId를 통해 기존 유저 확인 또는 신규 유저 등록(신규 유저인 경우 role 분기)
+        // familyId 존재 -> role : USER , familyId 없음 -> role : LEADER
         return userRepository.findByKakaoId(kakaoId)
-                .orElseGet(() -> userRepository.save(
-                        User.builder()
-                                .kakaoId(kakaoId)
-                                .name(name)
-                                .profileImage(profileImage)
-                                .email(email)
-                                .build()
-                ));
+                .orElseGet(() ->
+                {
+                    Role role = (familyId != null) ? Role.USER : Role.LEADER;
+                    return userRepository.save(
+                            User.builder()
+                                    .kakaoId(kakaoId)
+                                    .name(name)
+                                    .profileImage(profileImage)
+                                    .email(email)
+                                    .role(role) // 분기된 role 저장
+                                    .build()
+                    );
+                });
     }
 
     @Override
-    public String generateAccessToken(User user) { return jwtUtil.createAccessToken(user.getKakaoId());}
+    public String generateAccessToken(User user) { return jwtUtil.createAccessToken(user.getKakaoId(), user.getRole(), user.getId());}
 
     @Override
     public String generateRefreshToken(User user) {
-        return jwtUtil.createRefreshToken(user.getKakaoId());
+        return jwtUtil.createRefreshToken(user.getKakaoId(), user.getRole(), user.getId());
     }
 }

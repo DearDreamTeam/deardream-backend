@@ -13,6 +13,7 @@ import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
+import com.deardream.deardream_be.global.common.UploadResult;
 import com.deardream.deardream_be.global.config.S3Config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,13 +62,13 @@ public class PostService {
                 Long familyId = author.getFamily().getId();
                 String fileName = familyId + image.getOriginalFilename();
 
-                String s3Url = postImageService.uploadFile(s3Config.getPostImagesFolder(), fileName, image);
+                UploadResult result = postImageService.uploadFile(s3Config.getPostImagesFolder(), fileName, image);
 
                 PostImage postImage = PostImage.builder()
                         .post(post)
-                        .s3Key(s3Config.getPostImagesFolder() + "/" + fileName)
+                        .s3Key(result.getKey())
                         .fileName(image.getOriginalFilename())
-                        .s3Url(s3Url)
+                        .s3Url(result.getUrl())
                         .build();
                 postImageRepository.save(postImage);
             }

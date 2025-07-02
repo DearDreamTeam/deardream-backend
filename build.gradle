@@ -59,6 +59,9 @@ dependencies {
 
 	implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10")
 
+	// https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
+	implementation("org.xhtmlrenderer:flying-saucer-pdf:9.13.0")
+
 
 	// 테스트 코드 실행 시 필요한 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

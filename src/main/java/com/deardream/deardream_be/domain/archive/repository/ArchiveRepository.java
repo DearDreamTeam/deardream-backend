@@ -8,5 +8,5 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 
 public interface ArchiveRepository extends JpaRepository<MonthlyArchive, Long> {
-    boolean existsByFamilyAndMonthYear(Family family, YearMonth monthYear);
+    //boolean existsByFamilyAndMonthYear(Family family, YearMonth monthYear);
 }

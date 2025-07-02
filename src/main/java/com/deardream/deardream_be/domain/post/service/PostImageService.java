@@ -6,9 +6,9 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.deardream.deardream_be.domain.archive.service.PdfGeneratorUtil;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
+import com.deardream.deardream_be.global.common.UploadResult;
 import com.deardream.deardream_be.global.config.S3Config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -32,7 +30,7 @@ public class PostImageService {
     //private final PdfGeneratorUtil pdfGeneratorUtil;
 
     @Transactional
-    public String uploadFile(String folder, String fileName, MultipartFile file) {
+    public UploadResult uploadFile(String folder, String fileName, MultipartFile file) {
         String uniqueFileName = UUID.randomUUID() + "-" + fileName;
         String key = folder + "/" + uniqueFileName;
 
@@ -47,12 +45,13 @@ public class PostImageService {
             throw new RuntimeException("File upload failed: " + e.getMessage(), e);
         }
 
-        return amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
+        String url = amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
+        return new UploadResult(key, url);
     }
 
 
     @Transactional
-    public String uploadPDF(String folder, String fileName, byte[] pdfBytes) {
+    public UploadResult uploadPDF(String folder, String fileName, byte[] pdfBytes) {
         String uniqueFileName = UUID.randomUUID() + "-" + fileName;
         String key = folder + "/" + uniqueFileName;
 
@@ -66,7 +65,8 @@ public class PostImageService {
             throw new RuntimeException("PDF upload failed: " + e.getMessage(), e);
         }
 
-        return amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
+        String url = amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
+        return new UploadResult(key, url);
     }
 
     @Transactional

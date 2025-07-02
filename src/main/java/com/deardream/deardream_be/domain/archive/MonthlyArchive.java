@@ -30,8 +30,9 @@ public class MonthlyArchive extends BaseEntity {
     @JoinColumn(name = "family_id", nullable = false)
     private Family family;
 
-    private YearMonth monthYear;
+    private String yearMonthType;
     private String pdfUrl;
+    private String s3Key;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;

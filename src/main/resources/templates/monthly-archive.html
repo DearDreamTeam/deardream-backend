@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <style>
-        body { font-family: 'Noto sans KR', sans-serif; margin: 40px; }
-        .post { margin-bottom: 60px; page-break-after: always; }
-        .profile { display: flex; align-items: center; margin-bottom: 10px; }
-        .profile img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
-        .username { font-weight: bold; font-size: 16px; }
-        .content { margin: 20px 0; font-size: 14px; }
-        .images img { max-width: 100%; margin-bottom: 10px; }
+        body { font-family: 'NotoSansKR', sans-serif; }
+        .post {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            page-break-inside: avoid;
+        }
+        .author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .content {
+            margin: 10px 0;
+        }
+        .images img {
+            max-width: 300px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
-<div th:each="post : ${archiveRequests}" class="post">
-    <div class="profile">
-        <img th:src="${post.profileImageUrl}" alt="profile"/>
-        <span class="username" th:text="${post.username} + ' (' + ${post.relationship} + ')'"></span>
-    </div>
+<h1 th:text="${year} + '년 ' + ${month} + '월 가족 아카이브'"></h1>
 
+<div th:each="post : ${posts}" class="post">
+    <div class="author" th:text="${post.authorName} + ' (' + ${post.relations} + ')'"></div>
     <div class="content" th:text="${post.content}"></div>
 
     <div class="images">
-        <div th:each="img : ${post.postImages}">
-            <img th:src="${img}" alt="post image"/>
-        </div>
+        <img th:if="${post.imageUrls.size() > 0}" th:src="${post.imageUrls[0]}"  alt="사진이 들어가야함"/>
+        <img th:if="${post.imageUrls.size() > 1}" th:src="${post.imageUrls[1]}"  alt="사진이 안 들어감"/>
     </div>
 </div>
 </body>

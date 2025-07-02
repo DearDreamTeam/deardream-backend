@@ -27,11 +27,11 @@ public class AuthController {
 
 
     @GetMapping("/login/kakao")         // 여기로 들어오는 code가 카카오가 준 인가코드
-    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, @RequestParam(value = "state", required = false) Long familyId, HttpServletResponse response) {
 
         // 1. 카카오 로그인 처리 (accessCode → User)
-        User user = authService.loginWithKakao(code);
-//        log.debug("카카오 로그인 처리");
+        User user = authService.loginWithKakao(code, familyId);
+
         // 2. JWT 토큰 발급
         String accessToken = authService.generateAccessToken(user);
         String refreshToken = authService.generateRefreshToken(user);

@@ -52,13 +52,23 @@ public class PostService {
 
         postRepository.save(post);
 
+
         // 이미지가 있다면 업로드 (최대 2장)
         if(imageFiles != null && !imageFiles.isEmpty()) {
             if(imageFiles.size() > 2) {
                 throw new GeneralException(ErrorStatus._IMAGE_ONLY_TWO);
             }
 
+
             for (MultipartFile image : imageFiles) {
+
+                // 이미지가 일정 사이즈 이상일 경우 업로드 불가
+                long maxSizeBytes = 1024 * 1024; // 1MB
+                if(image.getSize() > maxSizeBytes) {
+                    throw new GeneralException(ErrorStatus._IMAGE_SIZE_EXCEEDED);
+                }
+
+
                 Long familyId = author.getFamily().getId();
                 String fileName = familyId + image.getOriginalFilename();
 

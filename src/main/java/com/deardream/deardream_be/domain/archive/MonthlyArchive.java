@@ -31,7 +31,9 @@ public class MonthlyArchive extends BaseEntity {
     private Family family;
 
     private String yearMonthType;
+
     private String pdfUrl;
+
     private String s3Key;
 
     @Enumerated(EnumType.STRING)

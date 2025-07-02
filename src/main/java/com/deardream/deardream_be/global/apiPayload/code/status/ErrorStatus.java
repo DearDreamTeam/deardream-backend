@@ -49,6 +49,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 403 Forbidden
     _FORBIDDEN_PASSWORD(HttpStatus.FORBIDDEN, "403", "불가능한 패스워드입니다. 패스워드는 영어, 숫자 8~13글자만 가능합니다."),
     _ARCHIVE_ALREADY_EXISTS(HttpStatus.FORBIDDEN, "403", "이미 해당 월의 아카이브가 존재합니다."),
+    _IMAGE_SIZE_EXCEEDED(HttpStatus.FORBIDDEN, "403", "이미지 크기가 너무 큽니다. 최대 5MB까지 가능합니다."),
 
     // 404 Not Found
     _TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 토큰을 찾을 수 없습니다."),

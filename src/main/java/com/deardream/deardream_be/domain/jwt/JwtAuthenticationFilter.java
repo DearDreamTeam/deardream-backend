@@ -1,4 +1,5 @@
 package com.deardream.deardream_be.domain.jwt;
+import com.deardream.deardream_be.domain.user.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -7,11 +8,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -40,19 +45,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("Bearer token: " + token);
 
             try {
-                // 키 객체 사용 (바이트배열 안씀)
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(jwtUtil.getSigningKey())
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody();
+                // kakaoId 정보 추출
+                Long kakaoId = jwtUtil.getKakaoId(token);
+                // role 정보 추출
+                Role role = jwtUtil.getRole(token);
+                // userId 정보 추출
+                Long userId = jwtUtil.getUserId(token);
 
-                Long kakaoId = Long.valueOf(claims.getSubject());
+                log.info("Extracted kakaoId: {}, role: {}, userId: {}, ", kakaoId, role, userId);
 
-                // 사용자 인증 객체 생성 후 SecurityContext에 등록
+                // CustomUserDetails 생성
+                CustomUserDetails userDetails = new CustomUserDetails(userId, kakaoId, role);
+
+                // 역할 기반 권한 생성 - role (인증과 인가 문제) -> 추후 수정 (권한 생성)
+//                List<GrantedAuthority> authorities = new ArrayList<>();
+//                if (role != null) {
+//                    // Spring Security 권한 형식: "ROLE_역할명"
+//                    authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+//                }
+
+                // 인증 객체 설정 SecurityContext에 등록
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(kakaoId, null, Collections.emptyList());
-//                authentication.setAuthenticated(true);
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {

@@ -4,6 +4,7 @@ import com.deardream.deardream_be.domain.family.Family;
 import com.deardream.deardream_be.domain.institution.CalendarType;
 import com.deardream.deardream_be.domain.user.Relation;
 import com.deardream.deardream_be.domain.user.Role;
+import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotNull;
@@ -18,9 +19,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRequestDto {
+// UserRequestDto : 회원가입, 등록용 post
+public class UserRequestDto extends BaseEntity {
 
+    @NotNull
     private String name;
+
+    @NotNull
     private String profileImage;
 
     @NotNull
@@ -32,15 +37,8 @@ public class UserRequestDto {
     private Relation relation;
     private String otherRelation;
 
-    @NotNull
     private Role role;
 
-    @CreatedDate
-    @NotNull
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @NotNull
     @JoinColumn(name = "family_id")
     private Long familyId;
 

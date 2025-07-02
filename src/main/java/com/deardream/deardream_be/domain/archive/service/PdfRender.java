@@ -60,7 +60,8 @@ public class PdfRender {
 
         MonthlyArchive archive = MonthlyArchive.builder()
                 .family(family)
-                .yearMonthType(month + "-" + year)
+                .archiveYear(year)
+                .archiveMonth(month)
                 .pdfUrl(result.getUrl())
                 .s3Key(result.getKey())
                 .deliveryStatus(DeliveryStatus.PENDING)

@@ -1,6 +1,8 @@
 package com.deardream.deardream_be.domain.archive;
 
+import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.dto.PdfRequestDto;
+import com.deardream.deardream_be.domain.archive.service.ArchiveService;
 import com.deardream.deardream_be.domain.archive.service.PdfRender;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
@@ -17,6 +19,7 @@ public class ArchiveTestController {
 
     private final PdfRender pdfRender;
     private final PostService postService;
+    private final ArchiveService archiveService;
 
 
     @PostMapping("/api/v1/test/generate")
@@ -39,5 +42,16 @@ public class ArchiveTestController {
 
 
     }
+
+    // familyId에 따라 모든 pdf 파일 가져오기
+    @GetMapping("/api/v1/archives/{familyId}")
+    public ApiResponse<List<ArchiveResponseDto>> getArchivesByFamily (
+            @PathVariable Long familyId
+    ) {
+        List<ArchiveResponseDto> archives = archiveService.getAllArchives(familyId);
+        return ApiResponse.onSuccess(archives);
+    }
+
+    // 즐겨찾기 기능
 
 }

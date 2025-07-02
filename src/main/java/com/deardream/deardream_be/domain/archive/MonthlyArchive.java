@@ -30,7 +30,9 @@ public class MonthlyArchive extends BaseEntity {
     @JoinColumn(name = "family_id", nullable = false)
     private Family family;
 
-    private String yearMonthType;
+    private int archiveYear;
+
+    private int archiveMonth;
 
     private String pdfUrl;
 

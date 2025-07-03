@@ -25,8 +25,7 @@ public class UserResponseDto {
     private LocalDateTime createdAt;
     private Long familyId;
 
-    // Entity → DTO 변환 편의를 위한 팩토리 메서드
-    // 엔티티 -> dto (값 변경 없음)
+    // entity → dto 변환
     public static UserResponseDto of(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())

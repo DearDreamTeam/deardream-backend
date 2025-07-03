@@ -6,6 +6,7 @@ import com.deardream.deardream_be.domain.institution.CalendarType;
 import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
+import com.deardream.deardream_be.global.apiPayload.exception.OnProfileUpdateValidation;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -40,13 +41,11 @@ public class User extends BaseEntity {
     @Column(name = "profile_image")
     private String profileImage;
 
-    // 이거 추가되어야 합니다.
-    private String profileImageUrl;
-
-    @NotNull
+    @NotNull(groups = OnProfileUpdateValidation.class, message = "생년월일은 필수입니다.")
     @Column(name = "birth")
     private LocalDate birth;
 
+    @NotNull(groups = OnProfileUpdateValidation.class, message = "양력/음력 선택은 필수입니다.")
     @Column(name = "calendar_type")
     @Enumerated(EnumType.STRING)
     private CalendarType calendarType;
@@ -69,8 +68,7 @@ public class User extends BaseEntity {
     @JoinColumn(name = "family_id")
     private Family family;
 
-    //UserRequestDto의 필드를 User 엔티티에 적용하여 사용자 정보를 업데이트함.
-    // dto + 값 -> 엔티티 값 변경
+    // userRequestDto + 변경값 -> User 엔티티에 적용하여 사용자 정보 업데이트
     public void updateAdditionalInfo(UserUpdateDto dto) {
         if (dto.getName() != null) this.name = dto.getName();
         if (dto.getProfileImage() != null) this.profileImage = dto.getProfileImage();

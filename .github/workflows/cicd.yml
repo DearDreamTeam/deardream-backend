@@ -44,7 +44,8 @@ jobs:
         sed -i 's|${AWS_ACCESS_KEY}|'"${{ secrets.AWS_ACCESS_KEY }}"'|g' application-prod.yml
         sed -i 's|${AWS_SECRET_KEY}|'"${{ secrets.AWS_SECRET_KEY }}"'|g' application-prod.yml
         sed -i 's|${S3_BUCKET_NAME}|'"${{ secrets.S3_BUCKET_NAME }}"'|g' application-prod.yml
-        
+        sed -i 's|${KAKAOPAY_CID}|'"${{ secrets.KAKAOPAY_CID }}"'|g' application-prod.yml
+        sed -i 's|${KAKAOPAY_SECRET_KEY}|'"${{ secrets.KAKAOPAY_SECRET_KEY }}"'|g' application-prod.yml
         
     
     - name: Setup Gradle

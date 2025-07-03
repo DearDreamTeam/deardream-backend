@@ -1,13 +1,11 @@
 package com.deardream.deardream_be.domain.archive.service;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.deardream.deardream_be.domain.archive.DeliveryStatus;
-import com.deardream.deardream_be.domain.archive.MonthlyArchive;
+import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
+import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
 import com.deardream.deardream_be.domain.family.Family;
 import com.deardream.deardream_be.domain.family.FamilyRepository;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostImageService;
-import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.common.UploadResult;
 import com.deardream.deardream_be.global.config.S3Config;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;

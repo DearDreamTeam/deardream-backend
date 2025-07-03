@@ -1,6 +1,6 @@
 package com.deardream.deardream_be.domain.archive.dto;
 
-import com.deardream.deardream_be.domain.archive.DeliveryStatus;
+import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import lombok.Builder;
 import lombok.Getter;
 

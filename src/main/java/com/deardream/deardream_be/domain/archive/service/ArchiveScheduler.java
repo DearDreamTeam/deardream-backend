@@ -1,4 +1,4 @@
-package com.deardream.deardream_be.domain.archive;
+package com.deardream.deardream_be.domain.archive.service;
 
 import com.deardream.deardream_be.domain.archive.service.PdfRender;
 import com.deardream.deardream_be.domain.family.FamilyRepository;

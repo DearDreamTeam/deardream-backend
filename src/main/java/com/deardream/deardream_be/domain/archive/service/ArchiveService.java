@@ -1,7 +1,6 @@
 package com.deardream.deardream_be.domain.archive.service;
 
-import com.deardream.deardream_be.domain.archive.ArchiveTestController;
-import com.deardream.deardream_be.domain.archive.MonthlyArchive;
+import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.converter.ArchiveConverter;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
@@ -13,7 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

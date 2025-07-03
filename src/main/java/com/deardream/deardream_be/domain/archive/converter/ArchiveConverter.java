@@ -1,6 +1,6 @@
 package com.deardream.deardream_be.domain.archive.converter;
 
-import com.deardream.deardream_be.domain.archive.MonthlyArchive;
+import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import org.springframework.stereotype.Component;
 

@@ -65,3 +65,7 @@ cloud:
         profiles: profiles
     stack:
       auto: false
+
+kakaopay:
+  secretKey: ${KAKAOPAY_SECRET_KEY}
+  cid: ${KAKAOPAY_CID}

@@ -1,4 +1,4 @@
-package com.deardream.deardream_be.domain.archive;
+package com.deardream.deardream_be.domain.archive.controller;
 
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.dto.PdfRequestDto;

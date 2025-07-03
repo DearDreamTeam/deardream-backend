@@ -42,6 +42,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "해당 유저와 일치하지 않습니다."),
     _ARCHIVE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 아카이브를 찾을 수 없습니다."),
     _RECIPIENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "400", "소식지를 받을 사람이 존재하지 않습니다."),
+    _PAYMENT_REQUEST_FAIL(HttpStatus.BAD_REQUEST, "400", "결제 요청에 실패하였습니다. 관리자에게 문의 바랍니다."),
 
     // 401 Unauthorized
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),

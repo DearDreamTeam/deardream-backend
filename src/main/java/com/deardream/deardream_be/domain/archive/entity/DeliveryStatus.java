@@ -1,4 +1,4 @@
-package com.deardream.deardream_be.domain.archive;
+package com.deardream.deardream_be.domain.archive.entity;
 
 import lombok.Getter;
 

@@ -48,5 +48,5 @@ public class ArchiveService {
     // 어드민 기능 - 배송 상태 업데이트
 
     // 어드민 기능 - 가정 및 기관 별 정렬 리스트
-    public List<>
+
 }

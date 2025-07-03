@@ -7,6 +7,8 @@ import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
+import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
+import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,11 @@ public class UserServiceImplementation implements UserService {
         // 카카오 ID로 이미 존재하는 사용자 조회
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("등록되지 않은 카카오 사용자입니다. 카카오 로그인 후 다시 시도하세요.")
-                );
+                        new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // familyId로 Family 엔티티 조회
         Family family = familyRepository.findById(userRequestDto.getFamilyId())
-                .orElseThrow(()-> new EntityNotFoundException("등록되지 않은 가족입니다."));
+                .orElseThrow(()-> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
         // 엔티티에 요청 DTO 값 적용
 //        user.updateAdditionalInfo(user);
@@ -43,7 +44,7 @@ public class UserServiceImplementation implements UserService {
     public UserResponseDto getMyInfo(Long kakaoId) {
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("존재하지 않는 회원입니다. ID: " + kakaoId)
+                        new GeneralException(ErrorStatus._USER_NOT_FOUND)
                 );
         return UserResponseDto.of(user);
     }
@@ -52,12 +53,8 @@ public class UserServiceImplementation implements UserService {
     public UserResponseDto updateMyInfo(Long kakaoId, UserUpdateDto userUpdateDto) {
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("존재하지 않는 회원입니다. ID: " + kakaoId)
+                        new GeneralException(ErrorStatus._USER_NOT_FOUND)
                 );
-        // familyId로 Family 엔티티 조회
-//        Family family = familyRepository.findById(userRequestDto.getFamilyId())
-//                .orElseThrow(()-> new EntityNotFoundException("등록되지 않은 가족입니다."));
-
         user.updateAdditionalInfo(userUpdateDto);
         return UserResponseDto.of(user);
     }
@@ -65,13 +62,13 @@ public class UserServiceImplementation implements UserService {
     @Override
     public void deleteMyAccount(Long kakaoId) {
         User user = userRepository.findByKakaoId(kakaoId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다. ID: " + kakaoId));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
         userRepository.delete(user);
     }
 
     public Long getFamilyIdByUserId(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
         return user.getFamily().getId();
     }
 }

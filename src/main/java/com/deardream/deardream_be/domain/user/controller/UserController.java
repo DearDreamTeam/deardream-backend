@@ -5,6 +5,9 @@ import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 import com.deardream.deardream_be.domain.user.service.UserService;
+import com.deardream.deardream_be.global.apiPayload.ApiResponse;
+import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
+import com.deardream.deardream_be.global.apiPayload.exception.OnProfileUpdateValidation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +36,7 @@ public class UserController {
      * @return 등록된 사용자 정보
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> registerUser(
+    public ApiResponse<UserResponseDto> registerUser(
             Authentication authentication,
             @RequestBody @Valid UserRequestDto userRequestDto
     ) {
@@ -41,7 +44,7 @@ public class UserController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
         UserResponseDto userInfo = userService.register(kakaoId, userRequestDto);
-        return ResponseEntity.ok(userInfo);
+        return ApiResponse.onSuccess(userInfo);
     }
 
     /**
@@ -50,13 +53,13 @@ public class UserController {
      * @return 사용자 정보
      */
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDto> getMyInfo(
+    public ApiResponse<UserResponseDto> getMyInfo(
             Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
         UserResponseDto userInfo = userService.getMyInfo(kakaoId);
-        return ResponseEntity.ok(userInfo);
+        return ApiResponse.onSuccess(userInfo);
     }
 
     /**
@@ -66,33 +69,28 @@ public class UserController {
      * @return 수정된 사용자 정보
      */
     @PatchMapping("/me")
-    public ResponseEntity<UserResponseDto> updateMyInfo(
+    public ApiResponse<UserResponseDto> updateMyInfo(
+            @Validated(OnProfileUpdateValidation.class)
             Authentication authentication,
             @RequestBody @Valid UserUpdateDto userUpdateDto
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
         UserResponseDto userInfo = userService.updateMyInfo(kakaoId, userUpdateDto);
-        return ResponseEntity.ok(userInfo);
+        return ApiResponse.onSuccess(userInfo);
     }
 
     /**
      * 내 계정 삭제
      */
     @DeleteMapping("/me")
-    public ResponseEntity<?> deleteMyAccount(
+    public ApiResponse<Void> deleteMyAccount(
             Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
         userService.deleteMyAccount(kakaoId);
-        return ResponseEntity.ok(
-                Map.of(
-                        "isSuccess", true,
-                        "code", 200,
-                        "message", "회원 탈퇴가 정상적으로 처리되었습니다."
-                )
-        );
+        return ApiResponse.of(SuccessStatus._OK, null);
 
     }
 }

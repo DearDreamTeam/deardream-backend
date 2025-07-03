@@ -6,10 +6,12 @@ import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
+import com.deardream.deardream_be.global.apiPayload.exception.OnKakaoLoginValidation;
 import com.deardream.deardream_be.global.util.RedisUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.jsonwebtoken.Jwts;
 
@@ -27,7 +29,8 @@ public class AuthController {
 
 
     @GetMapping("/login/kakao")         // 여기로 들어오는 code가 카카오가 준 인가코드
-    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, @RequestParam(value = "state", required = false) Long familyId, HttpServletResponse response) {
+    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(
+            @Validated(OnKakaoLoginValidation.class) @RequestParam("code") String code, @RequestParam(value = "state", required = false) Long familyId, HttpServletResponse response) {
 
         // 1. 카카오 로그인 처리 (accessCode → User)
         User user = authService.loginWithKakao(code, familyId);
@@ -37,17 +40,46 @@ public class AuthController {
         String refreshToken = authService.generateRefreshToken(user);
         log.debug("JWT 재발급");
         // refreshToken redis에 저장
-        redisUtil.setDataExpire("refresh:" + user.getKakaoId(), refreshToken, REFRESH_EXP_TIME);
+//        redisUtil.setDataExpire("refresh:" + user.getKakaoId(), refreshToken, REFRESH_EXP_TIME);
 
-        //3. 응답 DTO 구성
-        KakaoLoginResponseDto loginResponse = KakaoLoginResponseDto.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .profileImage(user.getProfileImage())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-        return ApiResponse.onSuccess(loginResponse);
+        // refreshToken redis에 저장
+        try {
+            redisUtil.setDataExpire("refresh:" + user.getKakaoId(), refreshToken, REFRESH_EXP_TIME);
+            log.info("refreshToken Redis 저장 성공");
+        } catch (Exception e) {
+            log.error("refreshToken Redis 저장 실패", e);
+            throw e;
+        }
+
+
+//        //3. 응답 DTO 구성
+//        KakaoLoginResponseDto loginResponse = KakaoLoginResponseDto.builder()
+//                .email(user.getEmail())
+//                .name(user.getName())
+//                .profileImage(user.getProfileImage())
+//                .accessToken(accessToken)
+//                .refreshToken(refreshToken)
+//                .build();
+//        return ApiResponse.onSuccess(loginResponse);
+        // 3. 응답 DTO 구성
+        try {
+            KakaoLoginResponseDto loginResponse = KakaoLoginResponseDto.builder()
+                    .email(user.getEmail())
+                    .name(user.getName())
+                    .profileImage(user.getProfileImage())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+            log.info("KakaoLoginResponseDto 생성 성공: {}", loginResponse);
+
+            // 4. ApiResponse 직렬화 및 반환
+            ApiResponse<KakaoLoginResponseDto> apiResponse = ApiResponse.onSuccess(loginResponse);
+            log.info("ApiResponse 직렬화 성공: {}", apiResponse);
+            return apiResponse;
+        } catch (Exception e) {
+            log.error("KakaoLoginResponseDto 생성 또는 ApiResponse 직렬화 중 예외 발생", e);
+            throw e;
+        }
 
     }
 

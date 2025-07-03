@@ -33,6 +33,14 @@ public class KakaoUtil {
         params.add("redirect_uri", redirect);
         params.add("code", accessCode);
 
+        // === 여기서 실제로 전달되는 파라미터 값 로그로 남기기 ===
+        log.info("Kakao token 요청 파라미터: grant_type={}, client_id={}, redirect_uri={}, code={}",
+                params.getFirst("grant_type"),
+                params.getFirst("client_id"),
+                params.getFirst("redirect_uri"),
+                params.getFirst("code")
+        );
+
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -49,8 +57,12 @@ public class KakaoUtil {
             oAuthToken = om.readValue(response.getBody(), KakaoDto.OAuthToken.class);
             log.info("accessToken: {}", oAuthToken.getAccess_token());
 
-        } catch (Exception e) {
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            log.error("Kakao token API error: status={}, body={}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw e;
+        } catch(Exception e){
             log.error("Error parsing Kakao OAuth token response", e);
+            throw new RuntimeException(e);
         }
 
         return oAuthToken;

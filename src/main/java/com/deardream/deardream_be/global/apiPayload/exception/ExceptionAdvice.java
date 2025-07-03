@@ -87,7 +87,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleExceptionInternalFalse(Exception e, ErrorStatus errorCommonStatus,
                                                                 HttpHeaders headers, HttpStatus status, WebRequest request, String errorPoint) {
-        ApiResponse<Object> body = ApiResponse.onFailure(errorCommonStatus.getCode(),errorCommonStatus.getMessage(),errorPoint);
+        ApiResponse<Object> body = ApiResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), errorPoint);
         return super.handleExceptionInternal(
                 e,
                 body,
@@ -109,9 +109,34 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
+//    private ResponseEntity<Object> handleExceptionInternalConstraint(Exception e, ErrorStatus errorCommonStatus,
+//                                                                     HttpHeaders headers, WebRequest request) {
+//        ApiResponse<Object> body = ApiResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
+//        return super.handleExceptionInternal(
+//                e,
+//                body,
+//                headers,
+//                errorCommonStatus.getHttpStatus(),
+//                request
+//        );
+//    }
+
+
+    // 테스트 위한 코드
     private ResponseEntity<Object> handleExceptionInternalConstraint(Exception e, ErrorStatus errorCommonStatus,
                                                                      HttpHeaders headers, WebRequest request) {
-        ApiResponse<Object> body = ApiResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
+
+        String errorMessage = e.getMessage(); // 기본적으로 Exception의 메시지 사용
+
+        // 만약 ConstraintViolationException이면, 좀 더 친절하게 메시지 추출
+        if (e instanceof ConstraintViolationException cve) {
+            errorMessage = cve.getConstraintViolations().stream()
+                    .map(constraintViolation -> constraintViolation.getMessage())
+                    .findFirst()
+                    .orElse("ConstraintViolationException 발생");
+        }
+
+        ApiResponse<Object> body = ApiResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), errorMessage);
         return super.handleExceptionInternal(
                 e,
                 body,

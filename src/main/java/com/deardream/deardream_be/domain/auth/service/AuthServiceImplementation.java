@@ -8,9 +8,11 @@ import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImplementation implements AuthService {
@@ -36,20 +38,41 @@ public class AuthServiceImplementation implements AuthService {
 
         // 3. kakaoId를 통해 기존 유저 확인 또는 신규 유저 등록(신규 유저인 경우 role 분기)
         // familyId 존재 -> role : USER , familyId 없음 -> role : LEADER
-        return userRepository.findByKakaoId(kakaoId)
-                .orElseGet(() ->
-                {
-                    Role role = (familyId != null) ? Role.USER : Role.LEADER;
-                    return userRepository.save(
-                            User.builder()
-                                    .kakaoId(kakaoId)
-                                    .name(name)
-                                    .profileImage(profileImage)
-                                    .email(email)
-                                    .role(role) // 분기된 role 저장
-                                    .build()
-                    );
-                });
+//        return userRepository.findByKakaoId(kakaoId)
+//                .orElseGet(() ->
+//                {
+//                    Role role = (familyId != null) ? Role.USER : Role.LEADER;
+//                    return userRepository.save(
+//                            User.builder()
+//                                    .kakaoId(kakaoId)
+//                                    .name(name)
+//                                    .profileImage(profileImage)
+//                                    .email(email)
+//                                    .role(role) // 분기된 role 저장
+//                                    .build()
+//                    );
+//                });
+
+        try {
+            User user = userRepository.findByKakaoId(kakaoId)
+                    .orElseGet(() -> {
+                        Role role = (familyId != null) ? Role.USER : Role.LEADER;
+                        User newUser = User.builder()
+                                .kakaoId(kakaoId)
+                                .name(name)
+                                .profileImage(profileImage)
+                                .email(email)
+                                .role(role)
+                                .build();
+                        log.info("신규 User 저장 시도: {}", newUser);
+                        return userRepository.save(newUser);
+                    });
+            log.info("User 저장/조회 성공: {}", user);
+            return user;
+        } catch (Exception e) {
+            log.error("User 엔티티 저장/조회 중 예외 발생", e);
+            throw e;
+        }
     }
 
     @Override

@@ -24,7 +24,7 @@ spring:
             client-id: ${KAKAO_CLIENT_ID}
             redirect-uri: ${KAKAO_REDIRECT_URI}
             authorization-grant-type: authorization_code
-            scope: profile_nickname
+            scope: name, account_email, profile_nickname
             client-name: Kakao
 
         provider:

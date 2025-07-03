@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +23,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final CorsConfigurationSource apiConfigurationSource;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(apiConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/",
                                         "/api/users/login/kakao",
@@ -46,17 +49,6 @@ public class SecurityConfig {
 
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         System.out.println("=== SecurityFilterChain 등록됨 ===");
-
-//                .oauth2Login((AbstractHttpConfigurer::disable)
-//                .oauth2Login(Customizer.withDefaults());;
-
-//                .oauth2Login(oauth2 -> oauth2
-//                                .loginPage("/login")
-//                                .defaultSuccessUrl("/welcome", true)
-
-        // 로그인 성공 시 이동할 경로
-//                );
-
 
         return http.build();
     }

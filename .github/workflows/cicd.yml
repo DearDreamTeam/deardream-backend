@@ -36,6 +36,7 @@ jobs:
         sed -i 's|${KAKAO_REDIRECT_URI}|'"${{ secrets.KAKAO_REDIRECT_URI }}"'|g' application-prod.yml
         sed -i 's|${KAKAO_CLIENT_SECRET}|'"${{ secrets.KAKAO_CLIENT_SECRET }}"'|g' application-prod.yml
         sed -i 's|${REDIS_HOST}|'"${{ secrets.REDIS_HOST }}"'|g' application-prod.yml
+        sed -i 's|${REDIS_PASSWORD}|'"${{ secrets.REDIS_PASSWORD }}"'|g' application-prod.yml
         sed -i 's|${REDIS_PORT}|'"${{ secrets.REDIS_PORT }}"'|g' application-prod.yml
         sed -i 's|${REDIS_TIMEOUT}|'"${{ secrets.REDIS_TIMEOUT }}"'|g' application-prod.yml
         sed -i 's|${JWT_SECRET}|'"${{ secrets.JWT_SECRET }}"'|g' application-prod.yml

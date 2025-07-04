@@ -41,12 +41,12 @@ public class User extends BaseEntity {
     @Column(name = "profile_image")
     private String profileImage;
 
-    @NotNull(groups = OnProfileUpdateValidation.class, message = "생년월일은 필수입니다.")
-    @Column(name = "birth")
+//  @NotNull(groups = OnProfileUpdateValidation.class, message = "생년월일은 필수입니다.")
+    @Column(name = "birth", nullable = true)
     private LocalDate birth;
 
-    @NotNull(groups = OnProfileUpdateValidation.class, message = "양력/음력 선택은 필수입니다.")
-    @Column(name = "calendar_type")
+//  @NotNull(groups = OnProfileUpdateValidation.class, message = "양력/음력 선택은 필수입니다.")
+    @Column(name = "calendar_type",  nullable = true)
     @Enumerated(EnumType.STRING)
     private CalendarType calendarType;
 

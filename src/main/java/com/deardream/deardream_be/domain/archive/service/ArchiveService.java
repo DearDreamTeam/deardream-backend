@@ -89,9 +89,17 @@ public class ArchiveService {
 
     }
 
-
-
     // 즐겨찾기 조회
+    public List<Long> getAllFavorites(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+         return  bookmarkRepository.findAllByUser(user).stream()
+                .map(bookmark -> bookmark.getArchive().getId())
+                .toList();
+
+
+    }
 
     // 어드민 기능 - 배송 상태 업데이트
 

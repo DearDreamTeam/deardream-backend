@@ -12,6 +12,7 @@ import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.common.UploadResult;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1/archives")
 public class ArchiveTestController {
 
     private final PdfRender pdfRender;
@@ -26,7 +28,7 @@ public class ArchiveTestController {
     private final ArchiveService archiveService;
 
 
-    @PostMapping("/api/v1/test/generate")
+    @PostMapping("/test/generate")
     public ApiResponse<String> generatePdf(
             @RequestBody PdfRequestDto request
     ) throws Exception {
@@ -48,7 +50,7 @@ public class ArchiveTestController {
     }
 
     // familyId에 따라 모든 pdf 파일 가져오기
-    @GetMapping("/api/v1/archives/{familyId}")
+    @GetMapping("/{familyId}")
     public ApiResponse<ArchiveListResponse> getArchivesByFamily (
             @PathVariable Long familyId
     ) {
@@ -57,7 +59,7 @@ public class ArchiveTestController {
     }
 
     // 즐겨찾기 기능
-    @PostMapping("/api/v1/archives/{archiveId}/bookmark")
+    @PostMapping("/{archiveId}/bookmark")
     public ApiResponse<BookmarkStatus> toggleBookmark(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long archiveId
@@ -66,5 +68,13 @@ public class ArchiveTestController {
                 archiveService.addBookmark(userDetails.getUserId(), archiveId)
         );
     }
+
+    // 즐겨찾기 조회
+    @GetMapping("/bookmark")
+    public ApiResponse<List<Long>> getFavorites(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.onSuccess(
+                archiveService.getAllFavorites(userDetails.getUserId()));
+    }
+
 
 }

@@ -3,13 +3,16 @@ package com.deardream.deardream_be.domain.archive.controller;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.dto.PdfRequestDto;
+import com.deardream.deardream_be.domain.archive.entity.BookmarkStatus;
 import com.deardream.deardream_be.domain.archive.service.ArchiveService;
 import com.deardream.deardream_be.domain.archive.service.PdfRender;
+import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.common.UploadResult;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,5 +57,14 @@ public class ArchiveTestController {
     }
 
     // 즐겨찾기 기능
+    @PostMapping("/api/v1/archives/{archiveId}/bookmark")
+    public ApiResponse<BookmarkStatus> toggleBookmark(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long archiveId
+            ) {
+        return ApiResponse.onSuccess(
+                archiveService.addBookmark(userDetails.getUserId(), archiveId)
+        );
+    }
 
 }

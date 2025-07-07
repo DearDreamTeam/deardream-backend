@@ -34,6 +34,9 @@ public class S3Config {
     @Value("${cloud.aws.s3.folder.profiles}")
     private String profileFolder;
 
+    @Value("${cloudfront.domain-id}")
+    private String cloudFrontDomainId;
+
     // AWS SDK에서 제공하는 S3 클라이언트 생성 후 다른 서비스에서 주입
     @Bean
     public AmazonS3Client amazonS3Client(){

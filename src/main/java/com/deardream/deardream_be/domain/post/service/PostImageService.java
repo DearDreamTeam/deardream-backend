@@ -91,4 +91,8 @@ public class PostImageService {
         URL preSignedUrl = amazonS3Client.generatePresignedUrl(request);
         return preSignedUrl.toString();
     }
+
+    public String getFilesUrl(String s3Key) {
+        return s3Config.getCloudFrontDomainId() + "/" + s3Key;
+    }
 }

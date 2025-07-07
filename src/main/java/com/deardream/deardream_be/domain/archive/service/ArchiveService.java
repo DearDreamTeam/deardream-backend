@@ -1,11 +1,13 @@
 package com.deardream.deardream_be.domain.archive.service;
 
+import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
 import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.converter.ArchiveConverter;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
 import com.deardream.deardream_be.domain.family.Family;
 import com.deardream.deardream_be.domain.family.FamilyRepository;
+import com.deardream.deardream_be.domain.post.service.PostImageService;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import lombok.AllArgsConstructor;
@@ -21,20 +23,34 @@ public class ArchiveService {
     private final FamilyRepository familyRepository;
     private final ArchiveRepository archiveRepository;
     private final ArchiveConverter converter;
+    private final PostImageService postImageService;
 
     /*
     * familyId에 따라 모든 pdf 파일 가져오기
      */
-    public List<ArchiveResponseDto> getAllArchives(Long familyId) {
+    public ArchiveListResponse getAllArchives(Long familyId) {
 
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
         List<MonthlyArchive> archives = archiveRepository.findAllByFamily(family);
 
-        return archives.stream()
-                .map(converter::toArchiveResponse)
-                .collect(Collectors.toList());
+        List<ArchiveResponseDto>  archivesDto= archives.stream()
+                .map(response ->{
+                    String yearMonth = response.getArchiveYear() + "년" + response.getArchiveMonth() + "월";
+                    String fileUrl = postImageService.getFilesUrl(response.getS3Key());
+
+                    return ArchiveResponseDto.builder()
+                            .yearMonthType(yearMonth)
+                            .pdfUrl(fileUrl)
+                            .deliveryStatus(response.getDeliveryStatus())
+                            .build();
+                }).toList();
+
+        return ArchiveListResponse.builder()
+                .count(archivesDto.size())
+                .dtos(archivesDto)
+                .build();
 
     }
 

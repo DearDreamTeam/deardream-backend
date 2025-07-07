@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum DeliveryStatus {
-    PENDING("대기 중"),
-    DELIVERED("배달 완료"),
-    FAILED("배달 실패");
+    PENDING("준비 중"),
+    DELIVERING("배달 중"),
+    DELIVERED("배달 완료");
 
     private final String description;
 

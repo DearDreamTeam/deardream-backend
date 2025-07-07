@@ -15,4 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
     Payment findLastByFamily(Family family);
 
     Optional<Payment> findFirstByFamilyAndIsActiveTrueAndSidNotNullOrderByCreatedAtDesc(Family family);
+
+    List<Payment> findAllByIsActiveTrue();
+    List<Payment> findAllByFamily(Family family);
 }

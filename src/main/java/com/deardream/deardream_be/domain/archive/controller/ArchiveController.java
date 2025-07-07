@@ -1,7 +1,6 @@
 package com.deardream.deardream_be.domain.archive.controller;
 
 import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
-import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.dto.PdfRequestDto;
 import com.deardream.deardream_be.domain.archive.entity.BookmarkStatus;
 import com.deardream.deardream_be.domain.archive.service.ArchiveService;
@@ -10,9 +9,7 @@ import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
-import com.deardream.deardream_be.global.common.UploadResult;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +18,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/archives")
-public class ArchiveTestController {
+public class ArchiveController {
 
     private final PdfRender pdfRender;
     private final PostService postService;
@@ -75,6 +72,5 @@ public class ArchiveTestController {
         return ApiResponse.onSuccess(
                 archiveService.getAllFavorites(userDetails.getUserId()));
     }
-
 
 }

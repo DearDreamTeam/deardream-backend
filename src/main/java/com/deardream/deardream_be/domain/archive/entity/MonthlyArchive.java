@@ -3,6 +3,7 @@ package com.deardream.deardream_be.domain.archive.entity;
 
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,9 +27,9 @@ public class MonthlyArchive extends BaseEntity {
     @JoinColumn(name = "family_id", nullable = false)
     private Family family;
 
-    private int archiveYear;
+    private Integer archiveYear;
 
-    private int archiveMonth;
+    private Integer archiveMonth;
 
     private String pdfUrl;
 
@@ -37,4 +38,11 @@ public class MonthlyArchive extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_id")
+    private Recipient recipient;
+
+    public void updateDeliverStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
 }

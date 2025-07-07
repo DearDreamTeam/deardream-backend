@@ -174,4 +174,25 @@ public class PostService {
         }).collect(Collectors.toList());
     }
 
+    public List<PostResponseDto> getPostsByYearMonth(Long familyId, int year, int month) {
+
+        List<Post> posts = postRepository.findByFamilyIdAndYearAndMonth(familyId, year, month);
+
+        return posts.stream().map(post -> {
+            List<String> imageUrls = postImageRepository.findByPost(post).stream()
+                    .map(image -> postImageService.getFilesUrl(image.getS3Key()))
+                    .toList();
+
+            return PostResponseDto.builder()
+                    .postId(post.getId())
+                    .authorId(post.getAuthor().getId())
+                    .authorName(post.getAuthor().getName())
+                    .relations(post.getAuthor().getRelation())
+                    .content(post.getContent())
+                    .createdAt(post.getCreatedAt())
+                    .imageUrls(imageUrls)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
 }

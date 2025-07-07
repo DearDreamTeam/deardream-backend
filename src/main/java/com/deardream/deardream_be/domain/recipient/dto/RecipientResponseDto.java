@@ -17,6 +17,6 @@ public class RecipientResponseDto {
     private DeliveryType deliveryType;
     private String address;
     private String addressDetail;
-    private String postalCode;
+    private Integer postalCode;
     private Long code;
 }

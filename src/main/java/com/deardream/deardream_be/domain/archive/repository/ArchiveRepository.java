@@ -28,4 +28,6 @@ public interface ArchiveRepository extends JpaRepository<MonthlyArchive, Long> {
             @Param("month") int month
     );
 
+    //MonthlyArchive findByIdAndArchiveYearAndAndArchiveMonth(Long archiveId, int archiveYear, int archiveMonth);
+
 }

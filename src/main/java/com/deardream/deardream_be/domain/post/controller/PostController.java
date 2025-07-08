@@ -6,6 +6,7 @@ import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
+import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,10 +28,9 @@ public class PostController {
     private final PostService postService;
 
 
-    @Operation(summary = "게시글 생성", description = "게시글 내용 + 이미지")
+    @Operation(summary = "게시글을 생성합니다. swagger 외 postman을 사용해 주세요.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Long> createPost(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(
                     description = "게시글 본문(JSON)",
                     content = @Content(
@@ -41,33 +41,34 @@ public class PostController {
             @RequestPart("request") PostRequestDto request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        Long userId = userDetails.getUserId();
-        Long postId = postService.createPost(userId, request, images != null ? images : List.of());
+        Long postId = postService.createPost(request, images != null ? images : List.of());
         return ApiResponse.onSuccess(postId);
     }
 
 
     // 나중에 로그인 완료 시 토큰에서 user 추출 필요
-    @Transactional
+    @Operation(summary = "게시글을 삭제합니다.")
     @DeleteMapping("/{postId}")
     public void deletePost(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam Long userId,
             @PathVariable Long postId) {
-        postService.deletePost(userDetails.getUserId(), postId);
+        postService.deletePost(userId, postId);
     }
 
     // test 필요
     // 나중에 로그인 완료 시 토큰에서 추출할 예정 - 리펙토링 필요
+    @Operation(summary = "게시글을 수정합니다.")
     @PutMapping("/{postId}")
-    public ApiResponse<String> updatePost(
+    public ApiResponse<?> updatePost(
             @PathVariable Long postId,
             @RequestPart PostUpdateDto request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
         postService.updatePost(postId, request, images);
-        return ApiResponse.onSuccess("Post updated successfully");
+        return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 
+    @Operation(summary = "가족의 게시글을 조회합니다.")
     @GetMapping("/{familyId}")
     public ApiResponse<List<PostResponseDto>> getPosts(
             @PathVariable Long familyId

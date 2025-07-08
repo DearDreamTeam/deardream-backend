@@ -38,9 +38,9 @@ public class PostService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    public Long createPost(Long authorId, PostRequestDto request, List<MultipartFile> imageFiles) {
+    public Long createPost(PostRequestDto request, List<MultipartFile> imageFiles) {
 
-        User author = userRepository.findById(authorId)
+        User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 게시글 저장
@@ -110,7 +110,7 @@ public class PostService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
 
         // 나중에 로그인 완료 시 userId는 토큰에서 추출하도록 변경 예정
-        if(!Objects.equals(post.getAuthor().getId(), request.getUserId())) {
+        if(!Objects.equals(post.getAuthor().getId(), request.getAuthorId())) {
             throw new GeneralException(ErrorStatus._AUTHORITY_NOT_MATCH);
         }
 

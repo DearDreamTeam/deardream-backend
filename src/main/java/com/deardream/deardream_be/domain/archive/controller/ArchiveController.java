@@ -9,6 +9,8 @@ import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class ArchiveController {
     private final ArchiveService archiveService;
 
 
+    @Operation(summary = "PDF 테스트를 생성합니다.")
     @PostMapping("/test/generate")
     public ApiResponse<String> generatePdf(
             @RequestBody PdfRequestDto request
@@ -42,11 +45,10 @@ public class ArchiveController {
         );
 
         return ApiResponse.onSuccess(pdfUrl);
-
-
     }
 
     // familyId에 따라 모든 pdf 파일 가져오기
+    @Operation(summary = "가족 ID에 따라 모든 소식지를 조회합니다.")
     @GetMapping("/{familyId}")
     public ApiResponse<ArchiveListResponse> getArchivesByFamily (
             @PathVariable Long familyId
@@ -56,21 +58,24 @@ public class ArchiveController {
     }
 
     // 즐겨찾기 기능
+    @Operation(summary = "소식지에 대한 즐겨찾기를 생성합니다.")
     @PostMapping("/{archiveId}/bookmark")
     public ApiResponse<BookmarkStatus> toggleBookmark(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long archiveId
+            @RequestParam Long userId,
+            @PathVariable @NotNull Long archiveId
             ) {
         return ApiResponse.onSuccess(
-                archiveService.addBookmark(userDetails.getUserId(), archiveId)
+                archiveService.addBookmark(userId, archiveId)
         );
     }
 
     // 즐겨찾기 조회
+    @Operation(summary = "소식지에 대한 즐겨찾기를 조회합니다.")
     @GetMapping("/bookmark")
-    public ApiResponse<List<Long>> getFavorites(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ApiResponse<List<Long>> getFavorites(
+            @RequestParam Long userId) {
         return ApiResponse.onSuccess(
-                archiveService.getAllFavorites(userDetails.getUserId()));
+                archiveService.getAllFavorites(userId));
     }
 
 }

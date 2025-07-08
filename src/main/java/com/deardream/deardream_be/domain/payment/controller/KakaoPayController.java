@@ -6,6 +6,7 @@ import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.payment.service.KakaoPayService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class KakaoPayController {
     private final KakaoPayService kakaoPayService;
 
     // 결제 요청
+    @Operation(summary = "카카오페이 결제 요청을 준비합니다. response의 url로 연결해주세요.")
     @PostMapping("/ready")
     public ApiResponse<KakaoReadyResponse> readyToKakaoPay(
             @RequestParam Long familyId
@@ -28,6 +30,7 @@ public class KakaoPayController {
     }
 
 
+    @Operation(summary = "카카오페이 결제 완료입니다. ready 후 pgToken이 필요합니다.")
     @GetMapping("/success")
     public ApiResponse<KakaoApproveResponse> afterPayRequest(
             @RequestParam String pgToken,
@@ -39,12 +42,14 @@ public class KakaoPayController {
     }
 
     // 결제 진행 중 취소
+    @Operation(summary = "카카오페이 결제 중 취소 요청입니다.")
     @GetMapping("/cancel")
     public void canclePay() {
         throw new PaymentException(PaymentErrorCode._PAYMENT_CANCELLED);
     }
 
     // 결제 실패
+    @Operation(summary = "카카오페이 결제 실패 요청입니다.")
     @GetMapping("/fail")
     public void failPay() {
         throw new PaymentException(PaymentErrorCode._PAYMENT_APPROVE_FAILED);

@@ -18,6 +18,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @RestController
@@ -28,7 +30,7 @@ public class PostController {
     private final PostService postService;
 
 
-    @Operation(summary = "게시글을 생성합니다. swagger 외 postman을 사용해 주세요.")
+    @Operation(summary = "게시글을 생성합니다. 사진은 0, 1, 2 리스트로 넣어주세요.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Long> createPost(
             @Parameter(
@@ -42,6 +44,30 @@ public class PostController {
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
         Long postId = postService.createPost(request, images != null ? images : List.of());
+        return ApiResponse.onSuccess(postId);
+    }
+
+    @Operation(summary = "게시글을 생성합니다, 이 경우 사진은 0 또는 1개 입니다.")
+    @PostMapping(
+            value = "/test",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ApiResponse<Long> createTestPost(
+            @Parameter(description = "게시글 내용", example = "오늘 날씨가 좋아요.")
+            @RequestParam("content") String content,
+
+            @Parameter(description = "작성자 ID", example = "11")
+            @RequestParam("authorId") Long authorId,
+
+            @RequestPart(value = "image", required = false)
+            MultipartFile image
+    ) {
+        PostRequestDto request = PostRequestDto.builder()
+                .content(content)
+                .authorId(authorId)
+                .build();
+
+        Long postId =postService.createTestPost(request, image);
         return ApiResponse.onSuccess(postId);
     }
 

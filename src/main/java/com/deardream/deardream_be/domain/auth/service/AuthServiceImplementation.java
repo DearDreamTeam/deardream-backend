@@ -1,29 +1,45 @@
 package com.deardream.deardream_be.domain.auth.service;
 
 import com.deardream.deardream_be.domain.auth.dto.KakaoDto;
+import com.deardream.deardream_be.domain.auth.dto.KakaoLoginResponseDto;
 import com.deardream.deardream_be.domain.auth.util.KakaoUtil;
 //import com.deardream.deardream_be.domain.jwt.util.JwtUtil;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
+import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
+import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
+import com.deardream.deardream_be.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImplementation implements AuthService {
 
+//    private final RestTemplate restTemplate;
     private final KakaoUtil kakaoUtil;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final RedisUtil redisUtil;
+    private final long REFRESH_EXP_TIME = 1000 * 60 * 60 * 24 * 7L;     // 7일
+
 
     @Override
     @Transactional
-    public User loginWithKakao(String code, Long familyId) {
+    public KakaoLoginResponseDto loginWithKakao(String code, Long familyId) {
+
         // 1. 카카오에서 access token 요청
         KakaoDto.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code);
 
@@ -36,50 +52,41 @@ public class AuthServiceImplementation implements AuthService {
                 ? kakaoProfile.getKakao_account().getName()
                 : kakaoProfile.getProperties().getNickname();
 
-        // 3. kakaoId를 통해 기존 유저 확인 또는 신규 유저 등록(신규 유저인 경우 role 분기)
-        // familyId 존재 -> role : USER , familyId 없음 -> role : LEADER
-//        return userRepository.findByKakaoId(kakaoId)
-//                .orElseGet(() ->
-//                {
-//                    Role role = (familyId != null) ? Role.USER : Role.LEADER;
-//                    return userRepository.save(
-//                            User.builder()
-//                                    .kakaoId(kakaoId)
-//                                    .name(name)
-//                                    .profileImage(profileImage)
-//                                    .email(email)
-//                                    .role(role) // 분기된 role 저장
-//                                    .build()
-//                    );
-//                });
 
-        try {
-            User user = userRepository.findByKakaoId(kakaoId)
-                    .orElseGet(() -> {
-                        Role role = (familyId != null) ? Role.USER : Role.LEADER;
-                        User newUser = User.builder()
-                                .kakaoId(kakaoId)
-                                .name(name)
-                                .profileImage(profileImage)
-                                .email(email)
-                                .role(role)
-                                .build();
-                        log.info("신규 User 저장 시도: {}", newUser);
-                        return userRepository.save(newUser);
-                    });
-            log.info("User 저장/조회 성공: {}", user);
-            return user;
-        } catch (Exception e) {
-            log.error("User 엔티티 저장/조회 중 예외 발생", e);
-            throw e;
-        }
+        // db에서 kakaoId 존재 여부 확인 -> 있으면 유저 있는 것
+        boolean exists = userRepository.existsByKakaoId(kakaoId);
+
+        // 임시 토큰 발급(유저 등록 전용)
+        String tempToken = jwtUtil.createTempToken(kakaoId);
+
+        // 응답 dto 구성
+        return KakaoLoginResponseDto.builder()
+                .email(email)
+                .name(name)
+                .profileImage(profileImage)
+                .isRegistered(exists)
+                .tempToken(tempToken)
+                .kakaoId(kakaoId)
+                .build();
     }
 
-    @Override
-    public String generateAccessToken(User user) { return jwtUtil.createAccessToken(user.getKakaoId(), user.getRole(), user.getId());}
 
-    @Override
-    public String generateRefreshToken(User user) {
-        return jwtUtil.createRefreshToken(user.getKakaoId(), user.getRole(), user.getId());
+    public void logout(String accessToken) {
+//        // 1. 카카오 서버 로그아웃
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setBearerAuth(accessToken);
+//        HttpEntity<Void> request = new HttpEntity<>(headers);
+//
+//        ResponseEntity<Map> kakaoResponse = restTemplate.exchange(
+//                "https://kapi.kakao.com/v1/user/logout",
+//                HttpMethod.POST,
+//                request,
+//                Map.class
+//        );
+//        Number idNumber = (Number) kakaoResponse.getBody().get("id");
+//        Long kakaoId = idNumber.longValue();
+//
+//        // 2. 내부 리프레시 토큰 삭제
+//        redisUtil.deleteData("refresh:" + kakaoId);
     }
 }

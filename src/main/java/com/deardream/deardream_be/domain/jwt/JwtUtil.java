@@ -28,6 +28,13 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
+    /**
+     * 임시 토큰 만료 시간 (밀리초 단위).
+     * application.yml에 없으면 기본 5분(300_000ms) 사용.
+     */
+    @Value("${jwt.temp-token-expiration:300000}")
+    private long tempTokenExpiration;
+
     @Getter
     private final Key signingKey;
 
@@ -56,6 +63,20 @@ public class JwtUtil {
                 .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+
+    // 임시 JWT 토큰(프로필 등록 전용)
+    // 로그인 직후 프로필 미완료 사용자에게만 발급할 임시 jwt
+    public String createTempToken(Long kakaoId) {
+        Date now = new Date();
+        return Jwts.builder()
+                .setSubject(String.valueOf(kakaoId))
+                .claim("type", "temp")
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + tempTokenExpiration))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }

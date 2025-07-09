@@ -1,8 +1,8 @@
 package com.deardream.deardream_be.domain.user.service;
 
-import com.deardream.deardream_be.domain.user.dto.RegisterResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
+import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 
 // 서비스 인터페이스 정의
 // 아래 주석처럼 생긴 것은 JavaDoc 주석
@@ -10,10 +10,11 @@ import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
 public interface UserService {
     /**
      * 회원 정보 등록
-     * @param kakaoId, userRequestDto 등록할 정보
+     * @param kakaoId 카카오 id
+     * @param userRequestDto 등록할 정보
      * @return 등록된 회원 정보
      */
-    RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto);
+    UserResponseDto register(Long kakaoId, UserRequestDto userRequestDto);
 
     /**
      * 내 정보 조회
@@ -25,10 +26,10 @@ public interface UserService {
     /**
      * 내 정보 수정
      * @param kakaoId
-     * @param userRequestDto 수정할 정보
+     * @param userUpdateDto 수정할 정보
      * @return 수정된 회원 정보
      */
-    UserResponseDto updateMyInfo(Long kakaoId, UserRequestDto userRequestDto);
+    UserResponseDto updateMyInfo(Long kakaoId, UserUpdateDto userUpdateDto);
 
     /**
      * 회원 탈퇴 (로그인된 회원 삭제)

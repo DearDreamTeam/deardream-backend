@@ -23,8 +23,6 @@ public class UserResponseDto {
     private String otherRelation;
     private Role role;
     private LocalDateTime createdAt;
-    private boolean isRegistered;
-    private boolean isFamilyRegistered;
     private Long familyId;
 
     // entity → dto 변환
@@ -39,8 +37,6 @@ public class UserResponseDto {
                 .relation(user.getRelation())
                 .otherRelation(user.getOtherRelation())
                 .role(user.getRole())
-                .isRegistered(user.isRegistered())
-                .isFamilyRegistered(user.getFamily() != null)
                 .createdAt(user.getCreatedAt())
                 .familyId(user.getFamily() != null ? user.getFamily().getId() : null)
                 .build();

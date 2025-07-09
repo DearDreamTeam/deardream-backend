@@ -45,18 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("Bearer token: " + token);
 
             try {
-
-                // 1) 토큰 파싱해서 type 클레임 확인
-                Claims claims = jwtUtil.parseClaims(token);
-                String type = claims.get("type", String.class);
-
-                // 2) access 토큰이 아니면 인증 스킵
-                if (!"access".equals(type)) {
-                    log.info("[JwtAuthenticationFilter] '{}' 토큰이므로 인증 스킵", type);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
                 // kakaoId 정보 추출
                 Long kakaoId = jwtUtil.getKakaoId(token);
                 // role 정보 추출

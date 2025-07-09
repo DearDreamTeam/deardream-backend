@@ -36,7 +36,7 @@ public class KakaoDto {
         @Getter
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class KakaoAccount {
-//            private String name;
+            private String name;
             private String email;
             private Profile profile;
 

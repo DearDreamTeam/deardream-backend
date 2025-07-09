@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // 1) 카카오 아이디로 찾기
     Optional<User> findByKakaoId(Long kakaoId);
-
-
+    boolean existsByKakaoId(Long kakaoId);
 }

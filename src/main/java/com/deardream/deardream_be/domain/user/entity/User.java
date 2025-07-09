@@ -1,21 +1,16 @@
 package com.deardream.deardream_be.domain.user.entity;
 
-import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.user.Relation;
 import com.deardream.deardream_be.domain.institution.CalendarType;
 import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
-import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
-import com.deardream.deardream_be.global.apiPayload.exception.OnProfileUpdateValidation;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,19 +28,17 @@ public class User extends BaseEntity {
     @Column(name = "kakao_id")
     private Long kakaoId;
 
-    @NotNull
+    //    @NotNull
     @Column(name = "name")
     private String name;
 
-    @NotNull
+    //    @NotNull
     @Column(name = "profile_image")
     private String profileImage;
 
-    @NotNull(groups = OnProfileUpdateValidation.class, message = "생년월일은 필수입니다.")
     @Column(name = "birth")
     private LocalDate birth;
 
-    @NotNull(groups = OnProfileUpdateValidation.class, message = "양력/음력 선택은 필수입니다.")
     @Column(name = "calendar_type")
     @Enumerated(EnumType.STRING)
     private CalendarType calendarType;
@@ -61,15 +54,30 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @NotNull
-    private String email;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
     private Family family;
 
-    // userRequestDto + 변경값 -> User 엔티티에 적용하여 사용자 정보 업데이트
-    public void updateAdditionalInfo(UserUpdateDto dto) {
+    // 프로필 등록 완료 여부
+    @Column(name = "is_registered", nullable = false)
+    private boolean isRegistered = false;
+
+
+    // 유저 등록
+    public void completeRegistration(UserRequestDto dto, Family family, Role assignedRole) {
+        this.name = dto.getName();
+        this.profileImage = dto.getProfileImage();
+        this.birth = dto.getBirth();
+        this.calendarType = dto.getCalendarType();
+        this.relation = dto.getRelation();
+        this.otherRelation = dto.getOtherRelation();
+        this.family = family;
+        this.role = assignedRole;
+        this.isRegistered = true;
+    }
+
+    // 유저 수정
+    public void updateUserInfo(UserRequestDto dto) {
         if (dto.getName() != null) this.name = dto.getName();
         if (dto.getProfileImage() != null) this.profileImage = dto.getProfileImage();
         if (dto.getCalendarType() != null) this.calendarType = dto.getCalendarType();

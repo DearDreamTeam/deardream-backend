@@ -16,6 +16,7 @@ public class KakaoLoginResponseDto {
     private String name;
     private String profileImage;
     private boolean isRegistered;
+    private boolean isFamilyRegistered;
     private String tempToken;
     private Long kakaoId;
 }

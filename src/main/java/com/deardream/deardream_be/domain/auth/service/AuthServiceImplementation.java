@@ -48,13 +48,23 @@ public class AuthServiceImplementation implements AuthService {
         Long kakaoId = kakaoProfile.getId();
         String email = kakaoProfile.getKakao_account().getEmail();
         String profileImage = kakaoProfile.getKakao_account().getProfile().getProfile_image_url();
-        String name = kakaoProfile.getKakao_account().getName() != null
-                ? kakaoProfile.getKakao_account().getName()
-                : kakaoProfile.getProperties().getNickname();
+        String nickname = kakaoProfile.getKakao_account().getProfile().getNickname();
+        if (nickname == null || nickname.isBlank()) {
+            nickname = kakaoProfile.getProperties().getNickname();
+        }
+
 
 
         // db에서 kakaoId 존재 여부 확인 -> 있으면 유저 있는 것
-        boolean exists = userRepository.existsByKakaoId(kakaoId);
+        boolean isRegistered = userRepository.existsByKakaoId(kakaoId);
+        boolean isFamilyRegistered = false;
+
+        if(isRegistered){
+            // 가입된 유저가 있으면 엔티티를 불러와 family_id 유무 확인
+            User entity = userRepository.findByKakaoId(kakaoId)
+                    .orElseThrow(() -> new GeneralException((ErrorStatus._USER_NOT_FOUND)));
+            isFamilyRegistered = (entity.getFamily() != null);
+        }
 
         // 임시 토큰 발급(유저 등록 전용)
         String tempToken = jwtUtil.createTempToken(kakaoId);
@@ -62,9 +72,10 @@ public class AuthServiceImplementation implements AuthService {
         // 응답 dto 구성
         return KakaoLoginResponseDto.builder()
                 .email(email)
-                .name(name)
+                .name(nickname)
                 .profileImage(profileImage)
-                .isRegistered(exists)
+                .isRegistered(isRegistered)
+                .isFamilyRegistered(isFamilyRegistered)
                 .tempToken(tempToken)
                 .kakaoId(kakaoId)
                 .build();

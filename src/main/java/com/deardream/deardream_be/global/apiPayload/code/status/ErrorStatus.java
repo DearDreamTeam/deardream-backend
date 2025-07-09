@@ -39,12 +39,18 @@ public enum ErrorStatus implements BaseErrorCode {
     _USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "해당 유저와 일치하지 않습니다."),
     _RECIPIENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "400", "소식지를 받을 사람이 존재하지 않습니다."),
     _PAYMENT_REQUEST_FAIL(HttpStatus.BAD_REQUEST, "400", "결제 요청에 실패하였습니다. 관리자에게 문의 바랍니다."),
+    _USER_AlREADY_REGISTERED(HttpStatus.BAD_REQUEST, "400", "이미 등록된 사용자입니다."),
+    _FAMILY_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "400", "이미 가족이 등록되어 있습니다. 가족 정보 수정을 해주세요."),
+    _INVALID_INVITE_LINK(HttpStatus.BAD_REQUEST, "400", "잘못된 초대 링크입니다."),
+    _ALREADY_IN_FAMILY(HttpStatus.BAD_REQUEST, "400", "이미 가족에 속해 있습니다."),
     _ARCHIVE_DELIVERY_STATUS_ALREADY_SAME(HttpStatus.BAD_REQUEST, "400", "이미 해당 월의 아카이브 배달 상태와 동일합니다."),
+
 
     // 401 Unauthorized
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),
     _TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "401", "해당 토큰이 만료되었습니다."),
     _TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "401", "해당 토큰이 유효하지 않습니다."),
+    _MUST_BE_LEADER_TO_DO(HttpStatus.UNAUTHORIZED, "401", "해당 작업을 수행할 권한이 없습니다."),
     _USER_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "해당 유저는 인증되지 않았습니다."),
 
 

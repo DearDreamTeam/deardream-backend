@@ -27,40 +27,46 @@ public enum ErrorStatus implements BaseErrorCode {
     _DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "400", "중복된 이메일입니다."),
     _DUPLICATED_LOGIN_ID(HttpStatus.BAD_REQUEST, "400", "중복된 로그인 ID입니다."),
     _FAMILY_NOT_FOUND(HttpStatus.BAD_REQUEST, "400", "해당 가족을 찾을 수 없습니다."),
-    _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 유저를 찾을 수 없습니다."),
     _NON_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "400", "존재하지 않는 이메일입니다."),
     _BAD_PASSWORD(HttpStatus.BAD_REQUEST, "400", "잘못된 패스워드입니다."),
     _PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "패스워드가 일치하지 않습니다."),
     _IMAGE_MAX_SIZE(HttpStatus.BAD_REQUEST, "400", "이미지 최대 크기는 5MB입니다."),
-    _IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "이미지를 찾을 수 없습니다."),
     _IMAGE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST, "400", "이미지 업로드에 실패하였습니다."),
     _IMAGE_DELETE_FAIL(HttpStatus.BAD_REQUEST, "400", "이미지 삭제에 실패하였습니다."),
     _IMAGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 이미지 형식입니다. (jpg, jpeg, png, gif)"),
     _IMAGE_ONLY_TWO(HttpStatus.BAD_REQUEST, "400", "이미지는 최대 2장까지 업로드 가능합니다."),
-    _POST_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글을 찾을 수 없습니다."),
     _AUTHORITY_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "해당 게시글의 작성자와 일치하지 않습니다."),
     _USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "해당 유저와 일치하지 않습니다."),
-    _ARCHIVE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 아카이브를 찾을 수 없습니다."),
     _RECIPIENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "400", "소식지를 받을 사람이 존재하지 않습니다."),
     _PAYMENT_REQUEST_FAIL(HttpStatus.BAD_REQUEST, "400", "결제 요청에 실패하였습니다. 관리자에게 문의 바랍니다."),
     _USER_AlREADY_REGISTERED(HttpStatus.BAD_REQUEST, "400", "이미 등록된 사용자입니다."),
     _FAMILY_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "400", "이미 가족이 등록되어 있습니다. 가족 정보 수정을 해주세요."),
     _INVALID_INVITE_LINK(HttpStatus.BAD_REQUEST, "400", "잘못된 초대 링크입니다."),
     _ALREADY_IN_FAMILY(HttpStatus.BAD_REQUEST, "400", "이미 가족에 속해 있습니다."),
+    _ARCHIVE_DELIVERY_STATUS_ALREADY_SAME(HttpStatus.BAD_REQUEST, "400", "이미 해당 월의 아카이브 배달 상태와 동일합니다."),
+
 
     // 401 Unauthorized
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),
     _TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "401", "해당 토큰이 만료되었습니다."),
     _TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "401", "해당 토큰이 유효하지 않습니다."),
     _MUST_BE_LEADER_TO_DO(HttpStatus.UNAUTHORIZED, "401", "해당 작업을 수행할 권한이 없습니다."),
+    _USER_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "해당 유저는 인증되지 않았습니다."),
+
 
     // 403 Forbidden
     _FORBIDDEN_PASSWORD(HttpStatus.FORBIDDEN, "403", "불가능한 패스워드입니다. 패스워드는 영어, 숫자 8~13글자만 가능합니다."),
     _ARCHIVE_ALREADY_EXISTS(HttpStatus.FORBIDDEN, "403", "이미 해당 월의 아카이브가 존재합니다."),
     _IMAGE_SIZE_EXCEEDED(HttpStatus.FORBIDDEN, "403", "이미지 크기가 너무 큽니다. 최대 5MB까지 가능합니다."),
+    _NOT_AUTHOR_OF_POST(HttpStatus.FORBIDDEN, "403", "해당 게시글의 작성자가 아닙니다."),
+    _NOT_FAMILY_MEMBER(HttpStatus.FORBIDDEN, "403", "해당 가족의 구성원이 아닙니다."),
 
     // 404 Not Found
     _TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 토큰을 찾을 수 없습니다."),
+    _POST_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글을 찾을 수 없습니다."),
+    _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 유저를 찾을 수 없습니다."),
+    _IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "이미지를 찾을 수 없습니다."),
+    _ARCHIVE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 아카이브를 찾을 수 없습니다."),
 
     // (Optional) 추가 가능
     _METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "405", "허용되지 않은 메서드입니다."),

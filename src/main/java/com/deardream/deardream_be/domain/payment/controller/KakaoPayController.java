@@ -1,4 +1,4 @@
-package com.deardream.deardream_be.domain.payment;
+package com.deardream.deardream_be.domain.payment.controller;
 
 import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.dto.KakaoReadyResponse;
@@ -7,8 +7,6 @@ import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.payment.service.KakaoPayService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.LifecycleState;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -52,15 +50,6 @@ public class KakaoPayController {
         throw new PaymentException(PaymentErrorCode._PAYMENT_APPROVE_FAILED);
     }
 
-    // 정기 결제 비활성화
-    @PostMapping("/inactive")
-    public void inactivePay() {
-        throw new PaymentException(PaymentErrorCode._PAYMENT_CANCELLED);
 
-    }
 
-    @Scheduled(cron = "0 0 1 * * *") // 매일 새벽 1시 기준 결제
-    public void subscriptionPay() {
-        throw new PaymentException(PaymentErrorCode._PAYMENT_ALREADY_COMPLETED);
-    }
 }

@@ -38,9 +38,9 @@ public class PostService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    public Long createPost(PostRequestDto request, List<MultipartFile> imageFiles) {
+    public Long createPost(Long authorId, PostRequestDto request, List<MultipartFile> imageFiles) {
 
-        User author = userRepository.findById(request.getAuthorId())
+        User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 게시글 저장
@@ -87,9 +87,13 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long authorId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
+
+        if(!Objects.equals(post.getAuthor().getId(), authorId)) {
+            throw new GeneralException(ErrorStatus._NOT_AUTHOR_OF_POST);
+        }
 
         List<PostImage> images = postImageRepository.findByPost(post);
         for(PostImage image :images) {
@@ -155,7 +159,28 @@ public class PostService {
 
         return posts.stream().map(post -> {
             List<String> imageUrls = postImageRepository.findByPost(post).stream()
-                    .map(image -> postImageService.getPreSignedUrl(image.getS3Key()))
+                    .map(image -> postImageService.getFilesUrl(image.getS3Key()))
+                    .toList();
+
+            return PostResponseDto.builder()
+                    .postId(post.getId())
+                    .authorId(post.getAuthor().getId())
+                    .authorName(post.getAuthor().getName())
+                    .relations(post.getAuthor().getRelation())
+                    .content(post.getContent())
+                    .createdAt(post.getCreatedAt())
+                    .imageUrls(imageUrls)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    public List<PostResponseDto> getPostsByYearMonth(Long familyId, int year, int month) {
+
+        List<Post> posts = postRepository.findByFamilyIdAndYearAndMonth(familyId, year, month);
+
+        return posts.stream().map(post -> {
+            List<String> imageUrls = postImageRepository.findByPost(post).stream()
+                    .map(image -> postImageService.getFilesUrl(image.getS3Key()))
                     .toList();
 
             return PostResponseDto.builder()

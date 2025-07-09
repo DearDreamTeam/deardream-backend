@@ -20,17 +20,23 @@ public class ArchiveScheduler {
     private final PostService postService;
     private final PdfRender pdfRender;
 
+    // 테스트용으로 매월 1일 자정에 실행되는 스케줄러
+    // 날짜는 다시 설정해야 합니다.
     @Scheduled(cron = "0 0 0 1 * ?") // 매월 1일 자정에 실행
     public void testArchive() throws Exception {
         List<Long> familyIds = familyRepository.findAllFamilyIds();
 
         // ex) 2025-07-02
         LocalDate now  = LocalDate.now();
+        LocalDate target = now.minusMonths(1); // → 2025-06-01
+
+        int targetYear = target.getYear();
+        int targetMonth = target.getMonthValue();
 
         // 모든 familyId에 대해서 실행
         for (Long familyId : familyIds) {
             String fileName = "Archive" + familyId + now + ".pdf";
-            List<PostResponseDto> postRequests = postService.getPosts(familyId);
+            List<PostResponseDto> postRequests = postService.getPostsByYearMonth(familyId, targetYear, targetMonth);
 
             pdfRender.generatePdfFromHtml(
                     fileName,
@@ -43,9 +49,6 @@ public class ArchiveScheduler {
             return ;
 
         }
-
-
-
 
 
     }

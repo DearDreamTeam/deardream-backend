@@ -46,6 +46,7 @@ jobs:
         sed -i 's|${S3_BUCKET_NAME}|'"${{ secrets.S3_BUCKET_NAME }}"'|g' application-prod.yml
         sed -i 's|${KAKAOPAY_CID}|'"${{ secrets.KAKAOPAY_CID }}"'|g' application-prod.yml
         sed -i 's|${KAKAOPAY_SECRET_KEY}|'"${{ secrets.KAKAOPAY_SECRET_KEY }}"'|g' application-prod.yml
+        sed -i 's|${CLOUDFRONT_DOMAIN_ID}|'"${{ secrets.CLOUDFRONT_DOMAIN_ID }}"'|g' application-prod.yml
         
     
     - name: Setup Gradle
@@ -85,6 +86,12 @@ jobs:
           sudo docker rm dear-dream || true
           sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/dear-dream || true
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dear-dream
-          sudo docker run -e SPRING_PROFILES_ACTIVE=prod \
+          # sudo docker run -e SPRING_PROFILES_ACTIVE=prod \
+          #             --name dear-dream \
+          #             -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/dear-dream
+          # host 네트워크 모드로 실행하여 컨테이너의 localhost = 호스트 localhost
+          sudo docker run --network host \
+                      -e SPRING_PROFILES_ACTIVE=prod \
                       --name dear-dream \
-                      -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/dear-dream
+                      -p 8080:8080 \
+                      -d ${{ secrets.DOCKER_USERNAME }}/dear-dream

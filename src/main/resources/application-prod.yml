@@ -69,3 +69,6 @@ cloud:
 kakaopay:
   secretKey: ${KAKAOPAY_SECRET_KEY}
   cid: ${KAKAOPAY_CID}
+
+cloudfront:
+  domain-id: ${CLOUDFRONT_DOMAIN_ID}

@@ -1,20 +1,56 @@
 package com.deardream.deardream_be.domain.archive.dto;
 
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 @Builder
 public class AdminArchive {
-    // 가족 ID, 수신자 성명, 주소1, 주소2, 우편번호, 받는 분 전화번호, PDF URL, 현재 배송 상태
-    private Long familyId;
-    private String recipientName;
-    private String address1;
-    private String address2;
-    private String postalCode;
-    private String recipientPhoneNumber;
-    private String pdfUrl;
-    private DeliveryStatus deliveryStatus;
+
+    private List<AdminHomeArchive> homeArchives;
+    private List<AdminInstitutionArchive> institutionArchives;
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class AdminHomeArchive {
+        private Long archiveId;
+        private Long familyId;
+        private String receiverName;
+        private String address1;
+        private String address2;
+        private int zipCode;
+        private String phone;
+        private String pdfUrl;
+        private DeliveryStatus deliveryStatus;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class AdminInstitutionArchive {
+        private Long institutionId;
+        private String institutionName;
+        private String address1;
+        private int zipCode;
+        private String phone;
+        private DeliveryStatus deliveryStatus;
+        private List<AdminFamilyInfo> families;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class AdminFamilyInfo {
+        private Long archiveId;
+        private Long familyId;
+        private String receiverName;
+        private String address2;
+        private String pdfUrl;
+    }
 
 }

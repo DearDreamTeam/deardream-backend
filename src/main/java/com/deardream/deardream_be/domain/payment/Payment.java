@@ -55,5 +55,9 @@ public class Payment extends BaseEntity {
 
     private Boolean isActive;
 
+    private Boolean isSubscription;
 
+    public void deActive() {
+        this.isActive = false;
+    }
 }

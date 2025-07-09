@@ -53,7 +53,7 @@ public class Recipient extends BaseEntity {
     private String addressDetail;
 
     @Column(name = "postal_code")
-    private String postalCode;
+    private Integer postalCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code")
@@ -69,7 +69,7 @@ public class Recipient extends BaseEntity {
             DeliveryType deliveryType,
             String address,
             String addressDetail,
-            String postalCode,
+            Integer postalCode,
             Family family,
             User leader,
             Institution code
@@ -110,7 +110,7 @@ public class Recipient extends BaseEntity {
             DeliveryType deliveryType,
             String address,
             String addressDetail,
-            String postalCode,
+            Integer postalCode,
             Institution code
     ) {
         if (deliveryType != null) this.deliveryType = deliveryType;

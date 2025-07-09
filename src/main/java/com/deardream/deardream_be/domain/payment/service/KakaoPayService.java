@@ -132,7 +132,7 @@ public class KakaoPayService {
         log.info("카카오페이 결제 승인 응답: {}", response);
 
         payment.setSid(response.getSid());
-        payment.setApprovedAt(LocalDate.parse(response.getApproved_at()));
+        payment.setApprovedAt(LocalDate.parse(response.getApproved_at().substring(0,10)));
         paymentRepository.save(payment);
 
         return response;
@@ -183,6 +183,7 @@ public class KakaoPayService {
                 .approvedAt(LocalDate.parse(response.getApproved_at()))
                 .isActive(true)
                 .family(family)
+                .isSubscription(true)
                 .build();
 
         paymentRepository.save(newPayment);

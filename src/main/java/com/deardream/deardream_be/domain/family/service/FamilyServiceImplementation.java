@@ -26,7 +26,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Profile("!prod")
 public class FamilyServiceImplementation implements FamilyService {
 
     @Value("{app.frontend.base-url}")
@@ -41,7 +40,7 @@ public class FamilyServiceImplementation implements FamilyService {
     // 가족 생성 (role = LEADER)
     public FamilyResponseDto createFamily(Long kakaoId) {
         // 1. 사용자 조회
-        User user = userRepository.findById(kakaoId)
+        User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 2. 이미 가족이 있으면 예외
@@ -69,7 +68,7 @@ public class FamilyServiceImplementation implements FamilyService {
     // 내 가족 조회 (memberList 포함)
     public FamilyMembersResponseDto getMyFamily(Long kakaoId) {
         // 1. 로그인한 유저 조회
-        User user = userRepository.findById(kakaoId)
+        User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 2. 유저가 속한 가족 ID 얻기
@@ -115,7 +114,7 @@ public class FamilyServiceImplementation implements FamilyService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INVALID_INVITE_LINK));
 
         // 2. kakaoId로 가입된 사용자 조회
-        User user = userRepository.findById(kakaoId)
+        User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 3. 이미 가족에 속해 있는지 확인

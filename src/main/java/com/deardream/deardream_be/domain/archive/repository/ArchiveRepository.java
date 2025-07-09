@@ -1,7 +1,7 @@
 package com.deardream.deardream_be.domain.archive.repository;
 
 import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
-import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.family.entity.Family;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

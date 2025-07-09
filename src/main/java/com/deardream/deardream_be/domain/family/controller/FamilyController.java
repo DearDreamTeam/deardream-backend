@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/family")
 @RequiredArgsConstructor
-@Profile("!prod")
 public class FamilyController {
 
     private final FamilyService familyService;

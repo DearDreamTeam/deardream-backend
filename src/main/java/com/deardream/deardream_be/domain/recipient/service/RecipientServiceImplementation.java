@@ -1,7 +1,7 @@
 package com.deardream.deardream_be.domain.recipient.service;
 
-import com.deardream.deardream_be.domain.family.Family;
-import com.deardream.deardream_be.domain.family.FamilyRepository;
+import com.deardream.deardream_be.domain.family.entity.Family;
+import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.institution.InstitutionRepository;
 import com.deardream.deardream_be.domain.jwt.CustomUserDetails;

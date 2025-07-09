@@ -1,8 +1,8 @@
 package com.deardream.deardream_be.domain.payment.service;
 
 
-import com.deardream.deardream_be.domain.family.Family;
-import com.deardream.deardream_be.domain.family.FamilyRepository;
+import com.deardream.deardream_be.domain.family.entity.Family;
+import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.payment.Payment;
 import com.deardream.deardream_be.domain.payment.PaymentRepository;

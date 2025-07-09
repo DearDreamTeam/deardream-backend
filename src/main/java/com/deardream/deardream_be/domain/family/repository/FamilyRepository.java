@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface FamilyRepository extends JpaRepository<Family, Long> {
 
     @Query("SELECT f.id FROM Family f")
-//    List<Long> findAllFamilyIds();
+    List<Long> findAllFamilyIds();
     Optional<Family> findByLeaderId(Long leadrId);
 //    Optional<Family> findFamilyByLink(String link);
     Optional<Family> findByFamilyLink(String inviteCode);

@@ -3,15 +3,13 @@ package com.deardream.deardream_be.domain.archive.entity;
 import lombok.Getter;
 
 @Getter
-public enum DeliveryStatus {
-    PENDING("준비 중"),
-    DELIVERING("배달 중"),
-    DELIVERED("배달 완료");
+public enum BookmarkStatus {
+    BOOKMARKED("북마크됨"),
+    NOT_BOOKMARKED("북마크 해제됨");
 
     private final String description;
 
-    DeliveryStatus(String description) {
+    BookmarkStatus(String description) {
         this.description = description;
     }
-
 }

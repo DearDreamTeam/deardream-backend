@@ -1,20 +1,26 @@
 package com.deardream.deardream_be.domain.archive.controller;
 
+import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.dto.PdfRequestDto;
+import com.deardream.deardream_be.domain.archive.entity.BookmarkStatus;
 import com.deardream.deardream_be.domain.archive.service.ArchiveService;
 import com.deardream.deardream_be.domain.archive.service.PdfRender;
+import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.common.UploadResult;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1/archives")
 public class ArchiveTestController {
 
     private final PdfRender pdfRender;
@@ -22,7 +28,7 @@ public class ArchiveTestController {
     private final ArchiveService archiveService;
 
 
-    @PostMapping("/api/v1/test/generate")
+    @PostMapping("/test/generate")
     public ApiResponse<String> generatePdf(
             @RequestBody PdfRequestDto request
     ) throws Exception {
@@ -44,14 +50,31 @@ public class ArchiveTestController {
     }
 
     // familyId에 따라 모든 pdf 파일 가져오기
-    @GetMapping("/api/v1/archives/{familyId}")
-    public ApiResponse<List<ArchiveResponseDto>> getArchivesByFamily (
+    @GetMapping("/{familyId}")
+    public ApiResponse<ArchiveListResponse> getArchivesByFamily (
             @PathVariable Long familyId
     ) {
-        List<ArchiveResponseDto> archives = archiveService.getAllArchives(familyId);
+        ArchiveListResponse archives = archiveService.getAllArchives(familyId);
         return ApiResponse.onSuccess(archives);
     }
 
     // 즐겨찾기 기능
+    @PostMapping("/{archiveId}/bookmark")
+    public ApiResponse<BookmarkStatus> toggleBookmark(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long archiveId
+            ) {
+        return ApiResponse.onSuccess(
+                archiveService.addBookmark(userDetails.getUserId(), archiveId)
+        );
+    }
+
+    // 즐겨찾기 조회
+    @GetMapping("/bookmark")
+    public ApiResponse<List<Long>> getFavorites(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.onSuccess(
+                archiveService.getAllFavorites(userDetails.getUserId()));
+    }
+
 
 }

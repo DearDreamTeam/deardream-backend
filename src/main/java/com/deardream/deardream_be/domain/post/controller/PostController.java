@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.post.controller;
 
+import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.post.dto.PostRequestDto;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +30,7 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "게시글 내용 + 이미지")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Long> createPost(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(
                     description = "게시글 본문(JSON)",
                     content = @Content(
@@ -37,7 +41,8 @@ public class PostController {
             @RequestPart("request") PostRequestDto request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        Long postId = postService.createPost(request, images != null ? images : List.of());
+        Long userId = userDetails.getUserId();
+        Long postId = postService.createPost(userId, request, images != null ? images : List.of());
         return ApiResponse.onSuccess(postId);
     }
 
@@ -45,8 +50,10 @@ public class PostController {
     // 나중에 로그인 완료 시 토큰에서 user 추출 필요
     @Transactional
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public void deletePost(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long postId) {
+        postService.deletePost(userDetails.getUserId(), postId);
     }
 
     // test 필요

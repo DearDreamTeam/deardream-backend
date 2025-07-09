@@ -67,9 +67,8 @@ public class PdfRender {
 
         archiveRepository.save(archive);
 
-        return postImageService.getPreSignedUrl(archive.getS3Key());
 
-
+        return postImageService.getFilesUrl(archive.getS3Key());
     }
 
 

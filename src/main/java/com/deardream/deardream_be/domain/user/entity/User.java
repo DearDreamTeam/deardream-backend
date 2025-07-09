@@ -86,4 +86,15 @@ public class User extends BaseEntity {
         if (dto.getOtherRelation() != null) this.otherRelation = dto.getOtherRelation();
     }
 
+    // 가족 생성하고 리더로 합류할 때 호출
+    public void joinFamilyAsLeader(Family family) {
+        this.family = family;
+        this.role = Role.LEADER;
+    }
+
+    // 초대 링크로 가입된 멤버를 처리할 때 호출 (아직 사용 x)
+    public void joinFamilyAsUser(Family family) {
+        this.family = family;
+        this.role = Role.USER;
+    }
 }

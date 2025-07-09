@@ -46,16 +46,15 @@ public class UserServiceImplementation implements UserService {
             throw new GeneralException(ErrorStatus._USER_AlREADY_REGISTERED);
         }
 
-        // 만약 userRequestDto에 familyId가 있다면 -> familyId 저장 / role = user
-        // 만약 userRequestDto에 familyId가 없다면 -> role = default
+
+        // 2. 초대 코드가 있으면 USER / 초대 코드가 없으면 DEFAULT
         Family family = null;
-        Role assignedRole;
-        if (userRequestDto.getFamilyId() != null) {
-            family = familyRepository.findById(userRequestDto.getFamilyId())
-                    .orElseThrow(()-> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+        Role assignedRole = Role.DEFAULT;
+
+        if (userRequestDto.getFamilyLink() != null && !userRequestDto.getFamilyLink().isEmpty()) {
+            family = familyRepository.findByFamilyLink(userRequestDto.getFamilyLink())
+                    .orElseThrow(()-> new GeneralException(ErrorStatus._INVALID_INVITE_LINK));
             assignedRole = Role.USER;
-        } else {
-            assignedRole = Role.DEFAULT;
         }
 
         // 3. 프로필 등록 완료

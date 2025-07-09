@@ -79,12 +79,14 @@ public class KakaoUtil {
 
         UriComponents uri = UriComponentsBuilder
                 .fromHttpUrl("https://kapi.kakao.com/v2/user/me")
-                .queryParam("property_keys","[\"kakao_account.name\",\"kakao_account.email\",\"kakao_account.profile\"]")
+                .queryParam("property_keys","[\"properties\",\"kakao_account.email\",\"kakao_account.profile\"]")
                 .build()
                 .encode();
 
         ResponseEntity<String> response = restTemplate.exchange(
                 uri.toUri(), HttpMethod.GET, requestEntity, String.class);
+
+        log.info("Kakao /v2/user/me raw response: {}", response.getBody());
 
 
         ObjectMapper om = new ObjectMapper();
@@ -96,7 +98,7 @@ public class KakaoUtil {
             // 디버그용 로그
             log.info("email: {}, name: {}, profileImage: {}",
                     kakaoProfile.getKakao_account().getEmail(),
-                    kakaoProfile.getKakao_account().getName(),
+                    kakaoProfile.getKakao_account().getProfile().getNickname(),
                     kakaoProfile.getKakao_account().getProfile().getProfile_image_url()
             );
 

@@ -1,16 +1,19 @@
 package com.deardream.deardream_be.domain.user.service;
 
-import com.deardream.deardream_be.domain.family.Family;
-import com.deardream.deardream_be.domain.family.FamilyRepository;
+import com.deardream.deardream_be.domain.family.entity.Family;
+import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.jwt.JwtUtil;
+import com.deardream.deardream_be.domain.user.Role;
+import com.deardream.deardream_be.domain.user.dto.RegisterResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
-import com.deardream.deardream_be.domain.user.dto.UserUpdateDto;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
-import jakarta.persistence.EntityNotFoundException;
+import com.deardream.deardream_be.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,22 +24,55 @@ public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
     private final FamilyRepository familyRepository;
+    private final RedisUtil redisUtil;
+    private final JwtUtil jwtUtil;
+    private final long REFRESH_EXP_TIME = 1000 * 60 * 60 * 24 * 7L;
 
-    // 보류
     @Override
-    public UserResponseDto register(Long kakaoId, UserRequestDto userRequestDto) {
+    @Transactional
+    public RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto) {
         // 카카오 ID로 이미 존재하는 사용자 조회
         User user = userRepository.findByKakaoId(kakaoId)
-                .orElseThrow(() ->
-                        new GeneralException(ErrorStatus._USER_NOT_FOUND));
+                .orElseGet(() -> {
+                        User stub = User.builder()
+                        .kakaoId(kakaoId)
+                        .isRegistered(false)
+                        .build();
+                return userRepository.save(stub);
+                });
 
-        // familyId로 Family 엔티티 조회
-        Family family = familyRepository.findById(userRequestDto.getFamilyId())
-                .orElseThrow(()-> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+        // 1. 이미 가입된 kakaoId 중복 체크
+        if(user.isRegistered()) {
+            throw new GeneralException(ErrorStatus._USER_AlREADY_REGISTERED);
+        }
 
-        // 엔티티에 요청 DTO 값 적용
-//        user.updateAdditionalInfo(user);
-        return UserResponseDto.of(user);
+
+        // 2. 초대 코드가 있으면 USER / 초대 코드가 없으면 DEFAULT
+        Family family = null;
+        Role assignedRole = Role.DEFAULT;
+
+        if (userRequestDto.getFamilyLink() != null && !userRequestDto.getFamilyLink().isEmpty()) {
+            family = familyRepository.findByFamilyLink(userRequestDto.getFamilyLink())
+                    .orElseThrow(()-> new GeneralException(ErrorStatus._INVALID_INVITE_LINK));
+            assignedRole = Role.USER;
+        }
+
+        // 3. 프로필 등록 완료
+        user.completeRegistration(userRequestDto, family, assignedRole);
+
+        // 4. jwt 토큰 발급
+        String accessToken = jwtUtil.createAccessToken(user.getKakaoId(), user.getRole(), user.getId());
+        String refreshToken = jwtUtil.createRefreshToken(user.getKakaoId(), user.getRole(), user.getId());
+
+        // 5. redis에 리프레시 토큰 저장
+        redisUtil.setDataExpire("refresh:" + kakaoId, refreshToken, REFRESH_EXP_TIME);
+
+        // 6) 응답 DTO 생성
+        return RegisterResponseDto.builder()
+                .user(UserResponseDto.of(user))
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override
@@ -50,12 +86,12 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDto updateMyInfo(Long kakaoId, UserUpdateDto userUpdateDto) {
+    public UserResponseDto updateMyInfo(Long kakaoId, UserRequestDto userRequestDto) {
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() ->
                         new GeneralException(ErrorStatus._USER_NOT_FOUND)
                 );
-        user.updateAdditionalInfo(userUpdateDto);
+        user.updateUserInfo(userRequestDto);
         return UserResponseDto.of(user);
     }
 

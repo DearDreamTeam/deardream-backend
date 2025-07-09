@@ -1,6 +1,6 @@
 package com.deardream.deardream_be.domain.post;
 
-import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;

@@ -1,7 +1,7 @@
 package com.deardream.deardream_be.domain.post.service;
 
-import com.deardream.deardream_be.domain.family.Family;
-import com.deardream.deardream_be.domain.family.FamilyRepository;
+import com.deardream.deardream_be.domain.family.entity.Family;
+import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.post.Post;
 import com.deardream.deardream_be.domain.post.PostImage;
 import com.deardream.deardream_be.domain.post.dto.PostRequestDto;

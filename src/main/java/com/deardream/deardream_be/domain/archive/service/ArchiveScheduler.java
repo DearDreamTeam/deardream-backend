@@ -1,7 +1,7 @@
 package com.deardream.deardream_be.domain.archive.service;
 
 import com.deardream.deardream_be.domain.archive.service.PdfRender;
-import com.deardream.deardream_be.domain.family.FamilyRepository;
+import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;

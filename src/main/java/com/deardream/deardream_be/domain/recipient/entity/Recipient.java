@@ -1,6 +1,6 @@
 package com.deardream.deardream_be.domain.recipient.entity;
 
-import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.recipient.dto.RecipientAddressUpdateDto;

@@ -2,7 +2,7 @@ package com.deardream.deardream_be.domain.archive.entity;
 
 
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
-import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;

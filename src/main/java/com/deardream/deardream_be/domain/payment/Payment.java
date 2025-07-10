@@ -1,6 +1,6 @@
 package com.deardream.deardream_be.domain.payment;
 
-import com.deardream.deardream_be.domain.family.Family;
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;

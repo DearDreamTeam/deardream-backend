@@ -44,6 +44,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _INVALID_INVITE_LINK(HttpStatus.BAD_REQUEST, "400", "잘못된 초대 링크입니다."),
     _ALREADY_IN_FAMILY(HttpStatus.BAD_REQUEST, "400", "이미 가족에 속해 있습니다."),
     _ARCHIVE_DELIVERY_STATUS_ALREADY_SAME(HttpStatus.BAD_REQUEST, "400", "이미 해당 월의 아카이브 배달 상태와 동일합니다."),
+    _INSTITUTION_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "400", "이미 해당 기관이 존재합니다."),
 
 
     // 401 Unauthorized
@@ -67,12 +68,15 @@ public enum ErrorStatus implements BaseErrorCode {
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 유저를 찾을 수 없습니다."),
     _IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "이미지를 찾을 수 없습니다."),
     _ARCHIVE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 아카이브를 찾을 수 없습니다."),
+    _INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "코드에 해당하는 기관을 찾을 수 없습니다."),
 
     // (Optional) 추가 가능
     _METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "405", "허용되지 않은 메서드입니다."),
     _UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "415", "지원하지 않는 미디어 타입입니다."),
     _TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "429", "요청이 너무 많습니다. 잠시 후 다시 시도하세요."),
     _SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "503", "서비스를 사용할 수 없습니다. 점검 중일 수 있습니다."),
+    _INVALID_INSTITUTION_CODE(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 기관 코드입니다."),
+    _INSTITUTION_CODE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 기관 코드입니다."),
     ;
 
     private final HttpStatus httpStatus;

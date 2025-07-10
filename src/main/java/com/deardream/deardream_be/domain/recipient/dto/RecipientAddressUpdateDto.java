@@ -11,5 +11,5 @@ public class RecipientAddressUpdateDto {
     private String address;
     private String addressDetail;
     private Integer postalCode;
-    private Long code;
+    private String code;
 }

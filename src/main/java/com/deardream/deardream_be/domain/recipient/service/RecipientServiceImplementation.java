@@ -105,7 +105,7 @@ public class RecipientServiceImplementation implements RecipientService {
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
 
-        Institution institution = dto.getCode() != null ? institutionRepository.findById(dto.getCode()).orElse(null) : null;
+        Institution institution = dto.getCode() != null ? institutionRepository.findByCode(dto.getCode()).orElse(null) : null;
         recipient.updateWithRecipientAddressRequestDto(
                 dto.getDeliveryType(),
                 dto.getAddress(),

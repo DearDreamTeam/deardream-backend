@@ -34,6 +34,7 @@ public class AdminArchive {
     @Getter
     public static class AdminInstitutionArchive {
         private Long institutionId;
+        private String institutionCode;
         private String institutionName;
         private String address1;
         private int zipCode;

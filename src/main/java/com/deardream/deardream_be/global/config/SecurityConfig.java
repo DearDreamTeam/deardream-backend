@@ -46,7 +46,8 @@ public class SecurityConfig {
                                         "/api/v1/users/register",
                                         "/api/v1/test/**",
                                         "/api/v1/archives/**",
-                                        "/api/v1/posts/**"
+                                        "/api/v1/posts/**",
+                                "/api/v1/institutions/**"
                                         ).permitAll()
                         .anyRequest().authenticated()
                 )

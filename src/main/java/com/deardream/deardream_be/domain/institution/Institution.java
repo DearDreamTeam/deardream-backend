@@ -1,9 +1,7 @@
 package com.deardream.deardream_be.domain.institution;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +16,12 @@ import lombok.NoArgsConstructor;
 public class Institution {
 
     @Id
-    private Long code;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+
+    @NotNull
+    @Column(name = "code", unique = true)
+    private String code;
 
     private String name;
     private String address;

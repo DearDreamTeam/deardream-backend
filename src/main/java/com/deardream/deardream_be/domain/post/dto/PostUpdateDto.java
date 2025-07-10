@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostUpdateDto {
-    private Long userId;
+    private Long authorId;
     @Size(max = 1000, message = "Content must be less than 1000 characters")
     private String content;
 }

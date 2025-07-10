@@ -10,11 +10,13 @@ import java.util.List;
 @Builder
 public class PostResponseDto {
     private Long postId;
-    private String content;
-    private List<String> imageUrls;
     private Long authorId;
+    private List<String> imageUrls;
+    private String authorProfileImg;
+    private String relations;
     private String authorName;
-    private Relation relations;
+    private String content;
+    // 이건 추훙에 들어가할 사항
     private LocalDateTime createdAt;
 
 }

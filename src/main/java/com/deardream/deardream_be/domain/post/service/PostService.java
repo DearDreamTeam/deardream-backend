@@ -16,6 +16,7 @@ import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.common.UploadResult;
 import com.deardream.deardream_be.global.config.S3Config;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class PostService {
 
     private final PostImageRepository postImageRepository;
@@ -38,9 +40,9 @@ public class PostService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    public Long createPost(Long authorId, PostRequestDto request, List<MultipartFile> imageFiles) {
+    public Long createPost(PostRequestDto request, List<MultipartFile> imageFiles) {
 
-        User author = userRepository.findById(authorId)
+        User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 게시글 저장
@@ -86,6 +88,62 @@ public class PostService {
         return post.getId();
     }
 
+    // 사진이 1개이거나 없을 경우 게시글 저장 테스트 서비스
+    @Transactional
+    public Long createTestPost(PostRequestDto request, MultipartFile image) {
+        User author = userRepository.findById(request.getAuthorId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 게시글 저장
+        Post post = Post.builder()
+                .author(author)
+                .content(request.getContent())
+                .family(author.getFamily())
+                .build();
+
+        postRepository.save(post);
+
+        log.info("Is PostImage Null?: " + (image!=null && image.isEmpty()));
+
+        // 이미지가 있다면 업로드 (최대 2장)
+        // 헐 항상 image!=null 부터 체크해야 함.. 당연하지만 ㅋ
+        if (image!=null && !image.isEmpty()) {
+
+            log.info("Image file name: {}", image.getOriginalFilename());
+
+            // 이미지가 일정 사이즈 이상일 경우 업로드 불가
+            long maxSizeBytes = 1024 * 1024; // 1MB
+            if (image.getSize() > maxSizeBytes) {
+                throw new GeneralException(ErrorStatus._IMAGE_SIZE_EXCEEDED);
+            }
+
+
+            Long familyId = author.getFamily().getId();
+            String fileName = familyId + post.getId() + image.getOriginalFilename();
+
+            UploadResult result = postImageService.uploadFile(s3Config.getPostImagesFolder(), fileName, image);
+
+
+            log.info("Image upload result: {}", result);
+
+            PostImage postImage = PostImage.builder()
+                    .post(post)
+                    .s3Key(result.getKey())
+                    .fileName(image.getOriginalFilename())
+                    .s3Url(result.getUrl())
+                    .build();
+            postImageRepository.save(postImage);
+        }
+
+        return post.getId();
+    }
+
+    @Transactional
+    public void createImage(MultipartFile image) {
+
+    }
+
+
     @Transactional
     public void deletePost(Long authorId, Long postId) {
         Post post = postRepository.findById(postId)
@@ -110,7 +168,7 @@ public class PostService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
 
         // 나중에 로그인 완료 시 userId는 토큰에서 추출하도록 변경 예정
-        if(!Objects.equals(post.getAuthor().getId(), request.getUserId())) {
+        if(!Objects.equals(post.getAuthor().getId(), request.getAuthorId())) {
             throw new GeneralException(ErrorStatus._AUTHORITY_NOT_MATCH);
         }
 
@@ -166,10 +224,11 @@ public class PostService {
                     .postId(post.getId())
                     .authorId(post.getAuthor().getId())
                     .authorName(post.getAuthor().getName())
-                    .relations(post.getAuthor().getRelation())
+                    .relations(post.getAuthor().getRelation().getDescription())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)
+                    .authorProfileImg(post.getAuthor().getProfileImage())
                     .build();
         }).collect(Collectors.toList());
     }
@@ -187,7 +246,7 @@ public class PostService {
                     .postId(post.getId())
                     .authorId(post.getAuthor().getId())
                     .authorName(post.getAuthor().getName())
-                    .relations(post.getAuthor().getRelation())
+                    .relations(post.getAuthor().getRelation().getDescription())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)

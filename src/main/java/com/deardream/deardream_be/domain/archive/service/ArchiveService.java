@@ -1,6 +1,7 @@
 package com.deardream.deardream_be.domain.archive.service;
 
 import com.deardream.deardream_be.domain.archive.dto.AdminArchive;
+import com.deardream.deardream_be.domain.archive.dto.AdminRequestDto;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
 import com.deardream.deardream_be.domain.archive.entity.ArchiveBookmark;
 import com.deardream.deardream_be.domain.archive.entity.BookmarkStatus;
@@ -153,7 +154,7 @@ public class ArchiveService {
 
     // 어드민 기능 - 배송 상태 업데이트
     @Transactional
-    public void updateHomeDeliverStatus(Long archiveId, DeliveryStatus deliveryStatus) {
+    public void updateHomeDeliverStatus(Long archiveId, DeliveryStatus  deliveryStatus) {
         MonthlyArchive archive = archiveRepository.findById(archiveId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ARCHIVE_NOT_FOUND));
 
@@ -168,18 +169,18 @@ public class ArchiveService {
     }
 
     @Transactional
-    public void updateInstitutionDeliveryStatus(Long institutionId, DeliveryStatus deliveryStatus, Integer year, Integer month) {
+    public void updateInstitutionDeliveryStatus(Long institutionId, AdminRequestDto request) {
 
         // 요청한 달에 존재하는 기관의 모든 아카이브를 가져옵니다.
-        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionIdAndYearMonth(institutionId, year, month);
+        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionIdAndYearMonth(institutionId, request.getYear(), request.getMonth());
 
         if(archives.isEmpty()) {
             throw new GeneralException(ErrorStatus._ARCHIVE_NOT_FOUND);
         }
 
         for(MonthlyArchive archive : archives) {
-            if(archive.getDeliveryStatus() != deliveryStatus) {
-                archive.updateDeliverStatus(deliveryStatus);
+            if(archive.getDeliveryStatus() != request.getDeliveryStatus()) {
+                archive.updateDeliverStatus(request.getDeliveryStatus());
             }
         }
 

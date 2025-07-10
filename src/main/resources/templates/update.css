@@ -1,0 +1,124 @@
+@page {
+    size: A3 portrait;
+    margin: 20mm;
+}
+
+/* 본문 기본 폰트 + 한글 호환 폰트 설정 */
+body {
+    margin: 40px 20px;
+    font-family: "NotoSansKR", sans-serif;
+}
+
+/* ✅ PDF 렌더링용 ttf 폰트 선언 */
+@font-face {
+    font-family: "NotoSansKR";
+    font-style: normal;
+    font-weight: normal;
+    src: url("fonts/NotoSansKR-VariableFont_wght.ttf") format("truetype");
+}
+
+/* 카드 하나 (554x370 박스) */
+.container {
+    width: 554px;
+    height: 370px;
+    position: relative;
+    border: 1px solid transparent; /* 디버깅용 */
+    overflow: hidden;
+}
+
+/* 텍스트 스타일 */
+.label-2 {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.4px;
+}
+
+.headline-3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: -0.3px;
+}
+
+.text-relation {
+    color: #9a9a9a;
+}
+
+.text-content {
+    color: #5e5e5e;
+}
+
+.text-name {
+    color: #313131;
+}
+
+/* -------- 이미지 영역 -------- */
+
+.aspect-34-container {
+    float: left;
+    width: 100%;
+}
+
+.aspect-43-container {
+    float: left;
+    width: 100%;
+}
+
+.aspect-34-image {
+    width: 205px;
+    height: 275px;
+    float: left;
+}
+
+.aspect-43-image-container {
+    width: 100%;
+}
+
+.aspect-43-image-container img {
+    float: left;
+    margin-right: 8px;
+}
+
+.aspect-43-image {
+    width: 277.5px;
+    height: 370px;
+}
+
+/* -------- 내용 영역 -------- */
+
+.contents-container {
+    float: left;
+    margin-left: 20px;
+    width: 300px;
+}
+
+/* 위치 조정 보완 */
+.aspect-34-contents {
+    margin-left: 220px;
+    margin-top: 10px;
+}
+
+.aspect-43-contents {
+    margin-top: 10px;
+}
+
+/* 프로필 이미지 */
+.profile-image {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 7px solid #fefefe;
+}
+
+/* 텍스트 세로 정렬 */
+.text-container > * {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* 이름과 관계 가로 정렬 */
+.name-relation-container > * {
+    display: inline-block;
+    margin-right: 4px;
+}

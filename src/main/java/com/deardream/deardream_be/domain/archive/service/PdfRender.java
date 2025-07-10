@@ -17,6 +17,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -34,19 +35,20 @@ public class PdfRender {
     /*
     * PDF 를 메모리에 생성해서 S3에 업로드 하는 방식으로 사용 예정
      */
-    public String generatePdfFromHtml(String fileName, int year, int month, List<PostResponseDto> posts, Long familyId) throws Exception {
+    public String generatePdfFromHtml(String fileName, List<PostResponseDto> posts, Long familyId) throws Exception {
 
+
+        // posts -> post.imageUrls []리스트 형식, post.authorProfileImg, post.relations, post.authorName, post.content
         Context context = new Context();
-        context.setVariable("year", year);
-        context.setVariable("month", month);
         context.setVariable("posts", posts);
 
-        String renderedHtml = templateEngine.process("monthly-archive", context);
+
+        String renderedHtml = templateEngine.process("index", context);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
 
-        builder.useFont(new ClassPathResource("fonts/NotoSansKR-VariableFont_wght.ttf").getFile(), "NotoSansKR");
+        builder.useFont(new ClassPathResource("templates/fonts/PretendardVariable.woff2").getFile(), "PretendardVariable");
         builder.toStream(baos);
         builder.withHtmlContent(renderedHtml, "/");
         builder.run();
@@ -56,10 +58,12 @@ public class PdfRender {
 
         UploadResult result =  postImageService.uploadPDF(s3Config.getPdfFolder(), fileName, baos.toByteArray());
 
+        LocalDate now = LocalDate.now();
+
         MonthlyArchive archive = MonthlyArchive.builder()
                 .family(family)
-                .archiveYear(year)
-                .archiveMonth(month)
+                .archiveYear(now.getYear())
+                .archiveMonth(now.getDayOfMonth())
                 .pdfUrl(result.getUrl())
                 .s3Key(result.getKey())
                 .deliveryStatus(DeliveryStatus.PENDING)

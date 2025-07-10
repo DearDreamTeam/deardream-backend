@@ -123,6 +123,9 @@ public class PostService {
 
             UploadResult result = postImageService.uploadFile(s3Config.getPostImagesFolder(), fileName, image);
 
+
+            log.info("Image upload result: {}", result);
+
             PostImage postImage = PostImage.builder()
                     .post(post)
                     .s3Key(result.getKey())
@@ -225,6 +228,7 @@ public class PostService {
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)
+                    .authorProfileImg(post.getAuthor().getProfileImage())
                     .build();
         }).collect(Collectors.toList());
     }

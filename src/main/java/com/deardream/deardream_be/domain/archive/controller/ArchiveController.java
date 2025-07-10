@@ -38,8 +38,6 @@ public class ArchiveController {
 
         String pdfUrl = pdfRender.generatePdfFromHtml(
                 fileName,
-                request.getYear(),
-                request.getMonth(),
                 postRequests,
                 request.getFamilyId()
         );

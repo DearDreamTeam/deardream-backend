@@ -40,8 +40,6 @@ public class ArchiveScheduler {
 
             pdfRender.generatePdfFromHtml(
                     fileName,
-                    now.getYear(),
-                    now.getMonthValue(),
                     postRequests,
                     familyId
             );

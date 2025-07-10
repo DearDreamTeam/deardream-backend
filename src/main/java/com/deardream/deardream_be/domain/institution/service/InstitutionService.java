@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +20,8 @@ public class InstitutionService {
     public InstitutionResponseDto getInstitutionInfo(String code) {
         Institution institution = institutionRepository.findByCode(code)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSTITUTION_NOT_FOUND));
+
+
 
         return InstitutionResponseDto.builder()
                 .code(institution.getCode())
@@ -74,7 +75,7 @@ public class InstitutionService {
     }
 
 
-    private String generateRandomCode(String name, Integer postalCode) {
+    private String generateRandomCode(String name, String postalCode) {
 
         if(name.length() < 3) {
             name += name;
@@ -82,6 +83,7 @@ public class InstitutionService {
 
         return name.substring(0,3)
                 + "-"
-                +  postalCode;
+                +  postalCode.substring(1,3);
     }
+
 }

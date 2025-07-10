@@ -10,5 +10,5 @@ public class InstitutionResponseDto {
     private String name;
     private String address;
     private String phone;
-    private Integer postalCode;
+    private String postalCode;
 }

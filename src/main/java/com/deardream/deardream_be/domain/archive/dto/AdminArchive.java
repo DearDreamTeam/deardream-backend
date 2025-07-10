@@ -23,7 +23,7 @@ public class AdminArchive {
         private String receiverName;
         private String address1;
         private String address2;
-        private int zipCode;
+        private String zipCode;
         private String phone;
         private String pdfUrl;
         private DeliveryStatus deliveryStatus;
@@ -37,7 +37,7 @@ public class AdminArchive {
         private String institutionCode;
         private String institutionName;
         private String address1;
-        private int zipCode;
+        private String zipCode;
         private String phone;
         private DeliveryStatus deliveryStatus;
         private List<AdminFamilyInfo> families;

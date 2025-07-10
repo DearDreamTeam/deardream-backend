@@ -17,5 +17,5 @@ public class CreateInstitutionDto {
     private String phone;
 
     @NotNull
-    private Integer postalCode;
+    private String postalCode;
 }

@@ -6,6 +6,10 @@ import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.service.PostImageService;
+import com.deardream.deardream_be.domain.recipient.entity.Recipient;
+import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
+import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
+import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.common.UploadResult;
 import com.deardream.deardream_be.global.config.S3Config;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -31,6 +35,7 @@ public class PdfRender {
     private final TemplateEngine templateEngine;
     private final FamilyRepository familyRepository;
     private final ArchiveRepository archiveRepository;
+    private final RecipientRepository recipientRepository;
 
     /*
     * PDF 를 메모리에 생성해서 S3에 업로드 하는 방식으로 사용 예정
@@ -42,19 +47,28 @@ public class PdfRender {
         Context context = new Context();
         context.setVariable("posts", posts);
 
+        ClassPathResource cssFile = new ClassPathResource("templates/update.css");
+        String cssContent = new String(cssFile.getInputStream().readAllBytes());
 
         String renderedHtml = templateEngine.process("index", context);
+        renderedHtml = renderedHtml.replaceAll("(?i)<link[^>]*href=[\"'][^\"']*style\\.css[\"'][^>]*/?>", "");
+
+
+        String resultHtml = renderedHtml.replace("</head>", "<style>" + cssContent + "</style></head>");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
 
-        builder.useFont(new ClassPathResource("templates/fonts/PretendardVariable.woff2").getFile(), "PretendardVariable");
+        builder.useFont(new ClassPathResource("templates/fonts/NotoSansKR-VariableFont_wght.ttf").getFile(), "NotoSansKR");
         builder.toStream(baos);
-        builder.withHtmlContent(renderedHtml, "/");
+        builder.withHtmlContent(resultHtml, "/");
         builder.run();
 
         Family family = familyRepository.findById(familyId)
-                .orElseThrow(() -> new IllegalArgumentException("Family not found with id: " + familyId));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        Recipient recipient = recipientRepository.findByFamilyId(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
 
         UploadResult result =  postImageService.uploadPDF(s3Config.getPdfFolder(), fileName, baos.toByteArray());
 
@@ -67,6 +81,7 @@ public class PdfRender {
                 .pdfUrl(result.getUrl())
                 .s3Key(result.getKey())
                 .deliveryStatus(DeliveryStatus.PENDING)
+                .recipient(recipient) // recipient는 나중에 설정할 예정
                 .build();
 
         archiveRepository.save(archive);

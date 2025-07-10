@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" th:href="@{./style.css}" />
 </head>
 
 <body>
@@ -18,7 +18,7 @@
       <div
         th:class="${post.imageUrls.size() == 1} ? 'contents-container aspect-34-contents' : 'contents-container aspect-43-contents'">
 
-        <img th:src="${post.authorProfileImg}" class="profile-image"/>
+        <img th:src="${post.authorProfileImg}" class="profile-image" alt="이미지가 들어가야 할 자리"/>
 
         <div class="text-container">
           <div class="name-relation-container headline-3">

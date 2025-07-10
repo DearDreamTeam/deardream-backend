@@ -13,7 +13,7 @@ public class PostResponseDto {
     private Long authorId;
     private List<String> imageUrls;
     private String authorProfileImg;
-    private Relation relations;
+    private String relations;
     private String authorName;
     private String content;
     // 이건 추훙에 들어가할 사항

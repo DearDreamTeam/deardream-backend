@@ -16,7 +16,7 @@ public class UserResponseDto {
     private Long id;
     private Long kakaoId;
     private String name;
-    private String profileImage;
+    private String profileImageUrl;
     private LocalDate birth;
     private CalendarType calendarType;
     private Relation relation;
@@ -33,7 +33,7 @@ public class UserResponseDto {
                 .id(user.getId())
                 .kakaoId(user.getKakaoId())
                 .name(user.getName())
-                .profileImage(user.getProfileImage())
+                .profileImageUrl(user.getProfileImageUrl())
                 .birth(user.getBirth())
                 .calendarType(user.getCalendarType())
                 .relation(user.getRelation())

@@ -12,10 +12,13 @@ import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -34,10 +37,11 @@ public class UserController {
      * @param userRequestDto 등록할 사용자 정보
      * @return 등록된 사용자 정보
      */
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<RegisterResponseDto> registerUser(
             @RequestHeader("Authorization") String authorization,
-            @RequestBody @Valid UserRequestDto userRequestDto
+            @RequestPart("userRequestDto") @Valid UserRequestDto userRequestDto,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
 
     ) {
 
@@ -51,7 +55,7 @@ public class UserController {
         Long kakaoId = jwtUtil.getKakaoId(tempToken);
 
         // 3. 프로필 등록
-        RegisterResponseDto registerResponseDto = userService.register(kakaoId, userRequestDto);
+        RegisterResponseDto registerResponseDto = userService.register(kakaoId, userRequestDto, profileImage);
 
         return ApiResponse.onSuccess(registerResponseDto);
     }
@@ -77,14 +81,15 @@ public class UserController {
      * @param userRequestDto 수정할 정보
      * @return 수정된 사용자 정보
      */
-    @PatchMapping("/me")
+    @PatchMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<UserResponseDto> updateMyInfo(
             Authentication authentication,
-            @RequestBody @Valid UserRequestDto userRequestDto
+            @RequestPart("userRequestDto") @Valid UserRequestDto userRequestDto,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
-        UserResponseDto userInfo = userService.updateMyInfo(kakaoId, userRequestDto);
+        UserResponseDto userInfo = userService.updateMyInfo(kakaoId, userRequestDto, profileImage);
         return ApiResponse.onSuccess(userInfo);
     }
 

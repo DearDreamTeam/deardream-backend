@@ -28,13 +28,14 @@ public class User extends BaseEntity {
     @Column(name = "kakao_id")
     private Long kakaoId;
 
-    //    @NotNull
     @Column(name = "name")
     private String name;
 
-    //    @NotNull
-    @Column(name = "profile_image")
-    private String profileImage;
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    @Column(name = "profile_image_key")
+    private String profileImageKey;
 
     @Column(name = "birth")
     private LocalDate birth;
@@ -64,9 +65,10 @@ public class User extends BaseEntity {
 
 
     // 유저 등록
-    public void completeRegistration(UserRequestDto dto, Family family, Role assignedRole) {
+    public void completeRegistration(UserRequestDto dto, Family family, Role assignedRole, String profileImageUrl, String profileImageKey) {
         this.name = dto.getName();
-        this.profileImage = dto.getProfileImage();
+        this.profileImageUrl = profileImageUrl;
+        this.profileImageKey = profileImageKey;
         this.birth = dto.getBirth();
         this.calendarType = dto.getCalendarType();
         this.relation = dto.getRelation();
@@ -77,9 +79,10 @@ public class User extends BaseEntity {
     }
 
     // 유저 수정
-    public void updateUserInfo(UserRequestDto dto) {
+    public void updateUserInfo(UserRequestDto dto, String profileImageUrl, String profileImageKey) {
         if (dto.getName() != null) this.name = dto.getName();
-        if (dto.getProfileImage() != null) this.profileImage = dto.getProfileImage();
+        if (profileImageUrl != null) this.profileImageUrl = profileImageUrl;
+        if (profileImageKey != null) this.profileImageKey = profileImageKey;
         if (dto.getCalendarType() != null) this.calendarType = dto.getCalendarType();
         if (dto.getBirth() != null) this.birth = dto.getBirth();
         if (dto.getRelation() != null) this.relation = dto.getRelation();

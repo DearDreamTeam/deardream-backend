@@ -24,7 +24,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 "https://vote-dream.p-e.kr"));
 
         configuration.addAllowedHeader("*");
-        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

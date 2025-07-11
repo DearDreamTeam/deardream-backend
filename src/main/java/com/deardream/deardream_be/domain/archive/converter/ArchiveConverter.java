@@ -39,7 +39,8 @@ public class ArchiveConverter {
                                                                   DeliveryStatus deliveryStatus,
                                                                   List<AdminArchive.AdminFamilyInfo> familyInfoList) {
         return AdminArchive.AdminInstitutionArchive.builder()
-                .institutionId(institution.getCode())
+                .institutionId(institution.getId())
+                .institutionCode(institution.getCode())
                 .institutionName(institution.getName())
                 .address1(institution.getAddress())
                 .zipCode(institution.getPostalCode())

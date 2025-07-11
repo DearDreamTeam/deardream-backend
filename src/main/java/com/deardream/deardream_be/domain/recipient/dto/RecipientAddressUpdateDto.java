@@ -10,6 +10,6 @@ public class RecipientAddressUpdateDto {
     private DeliveryType deliveryType;
     private String address;
     private String addressDetail;
-    private Integer postalCode;
-    private Long code;
+    private String postalCode;
+    private String code;
 }

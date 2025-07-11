@@ -18,6 +18,6 @@ public class RecipientRequestDto {
     private DeliveryType deliveryType;
     private String address;
     private String addressDetail;
-    private Integer postalCode;
+    private String postalCode;
     private Long code; // Institution의 PK
 }

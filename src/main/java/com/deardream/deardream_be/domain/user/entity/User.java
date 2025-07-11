@@ -31,8 +31,8 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "profile_image_url")
-    private String profileImageUrl;
+    @Column(name = "profile_image")
+    private String profileImage;
 
     @Column(name = "profile_image_key")
     private String profileImageKey;
@@ -65,9 +65,9 @@ public class User extends BaseEntity {
 
 
     // 유저 등록
-    public void completeRegistration(UserRequestDto dto, Family family, Role assignedRole, String profileImageUrl, String profileImageKey) {
+    public void completeRegistration(UserRequestDto dto, Family family, Role assignedRole, String profileImage, String profileImageKey) {
         this.name = dto.getName();
-        this.profileImageUrl = profileImageUrl;
+        this.profileImage = profileImage;
         this.profileImageKey = profileImageKey;
         this.birth = dto.getBirth();
         this.calendarType = dto.getCalendarType();
@@ -79,9 +79,9 @@ public class User extends BaseEntity {
     }
 
     // 유저 수정
-    public void updateUserInfo(UserRequestDto dto, String profileImageUrl, String profileImageKey) {
+    public void updateUserInfo(UserRequestDto dto, String profileImage, String profileImageKey) {
         if (dto.getName() != null) this.name = dto.getName();
-        if (profileImageUrl != null) this.profileImageUrl = profileImageUrl;
+        if (profileImage != null) this.profileImage = profileImage;
         if (profileImageKey != null) this.profileImageKey = profileImageKey;
         if (dto.getCalendarType() != null) this.calendarType = dto.getCalendarType();
         if (dto.getBirth() != null) this.birth = dto.getBirth();

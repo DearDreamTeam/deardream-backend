@@ -59,7 +59,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(String.valueOf(kakaoId))
                 .claim("type", type)
-                .claim("role", role)
+//                .claim("role", role)
                 .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -89,10 +89,10 @@ public class JwtUtil {
     }
 
     // role 추출
-    public Role getRole(String token) {
-        Claims claims = parseClaims(token);
-        return Role.valueOf(claims.get("role", String.class));
-    }
+//    public Role getRole(String token) {
+//        Claims claims = parseClaims(token);
+//        return Role.valueOf(claims.get("role", String.class));
+//    }
 
     // kakaoId 추출
     public Long getKakaoId(String token){

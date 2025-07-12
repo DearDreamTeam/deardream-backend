@@ -1,27 +1,6 @@
-@media print {
-  @page {
-    size: A3 portrait; /* 또는 landscape */
-    margin: 20mm; /* 원하는 여백 설정 */
-  }
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 400 600;
-  font-style: normal;
-  font-display: swap;
-  src: url("./fonts/PretendardVariable.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 400;
-  src: url("./fonts/Pretendard-Regular.ttf") format("truetype");
-}
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 600;
-  src: url("./fonts/Pretendard-SemiBold.ttf") format("truetype");
+@page  {
+  size: A4 portrait;
+  margin: 20mm;
 }
 
 body {

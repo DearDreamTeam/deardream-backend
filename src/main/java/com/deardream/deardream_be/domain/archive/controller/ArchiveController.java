@@ -34,7 +34,7 @@ public class ArchiveController {
     ) throws Exception {
         String fileName = "test-Archive" + request.getYear() + "-" + request.getMonth() + ".pdf";
 
-        List<PostResponseDto> postRequests = postService.getPosts(request.getFamilyId());
+        List<PostResponseDto> postRequests = postService.getPostsByYearMonth(request.getFamilyId(), request.getYear(), request.getMonth());
 
         String pdfUrl = pdfRender.generatePdfFromHtml(
                 fileName,

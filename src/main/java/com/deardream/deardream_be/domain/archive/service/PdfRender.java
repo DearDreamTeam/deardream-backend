@@ -47,7 +47,7 @@ public class PdfRender {
         Context context = new Context();
         context.setVariable("posts", posts);
 
-        ClassPathResource cssFile = new ClassPathResource("templates/update.css");
+        ClassPathResource cssFile = new ClassPathResource("templates/style.css");
         String cssContent = new String(cssFile.getInputStream().readAllBytes());
 
         String renderedHtml = templateEngine.process("index", context);
@@ -77,7 +77,7 @@ public class PdfRender {
         MonthlyArchive archive = MonthlyArchive.builder()
                 .family(family)
                 .archiveYear(now.getYear())
-                .archiveMonth(now.getDayOfMonth())
+                .archiveMonth(now.getMonthValue())
                 .pdfUrl(result.getUrl())
                 .s3Key(result.getKey())
                 .deliveryStatus(DeliveryStatus.PENDING)

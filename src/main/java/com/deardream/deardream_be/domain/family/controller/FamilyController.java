@@ -46,9 +46,9 @@ public class FamilyController {
             Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getUserId();
+        Long kakaoId = userDetails.getKakaoId();
 
-        String link = familyService.createInviteLink(userId);
+        String link = familyService.createInviteLink(kakaoId);
         return ApiResponse.onSuccess(link);
     }
 

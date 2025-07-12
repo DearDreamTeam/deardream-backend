@@ -151,6 +151,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     private void validateProfileImage(MultipartFile profileImage) {
+        // 파일 크기 제한 (1MB)
         long maxSizeBytes = 1024 * 1024;
         if (profileImage.getSize() > maxSizeBytes) {
             throw new GeneralException(ErrorStatus._IMAGE_SIZE_EXCEEDED);

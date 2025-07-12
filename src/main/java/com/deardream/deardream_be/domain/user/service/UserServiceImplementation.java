@@ -73,8 +73,8 @@ public class UserServiceImplementation implements UserService {
             String fileName = "profile_" + kakaoId + "_" + System.currentTimeMillis() + "_" + profileImage.getOriginalFilename();
             UploadResult uploadResult = postImageService.uploadFile(s3Config.getProfileFolder(), fileName, profileImage);
 
-            profileImageUrl = uploadResult.getUrl();
             profileImageKey = uploadResult.getKey();
+            profileImageUrl = postImageService.getFilesUrl(profileImageKey);
         }
 
         // 4. 프로필 등록 완료
@@ -125,8 +125,8 @@ public class UserServiceImplementation implements UserService {
             String fileName = "profile_" + kakaoId + "_" + System.currentTimeMillis() + "_" + profileImage.getOriginalFilename();
             UploadResult uploadResult = postImageService.uploadFile(s3Config.getProfileFolder(), fileName, profileImage);
 
-            profileImageUrl = uploadResult.getUrl();
             profileImageKey = uploadResult.getKey();
+            profileImageUrl = postImageService.getFilesUrl(profileImageKey);
         }
 
         user.updateUserInfo(userRequestDto, profileImageUrl, profileImageKey);
@@ -151,8 +151,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     private void validateProfileImage(MultipartFile profileImage) {
-        // 파일 크기 제한 (5MB)
-        long maxSizeBytes = 5 * 1024 * 1024;
+        // 파일 크기 제한 (1MB)
+        long maxSizeBytes = 1024 * 1024;
         if (profileImage.getSize() > maxSizeBytes) {
             throw new GeneralException(ErrorStatus._IMAGE_SIZE_EXCEEDED);
         }

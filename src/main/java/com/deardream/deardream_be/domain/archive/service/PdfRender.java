@@ -59,7 +59,7 @@ public class PdfRender {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
 
-        builder.useFont(new ClassPathResource("templates/fonts/NotoSansKR-VariableFont_wght.ttf").getFile(), "NotoSansKR");
+        builder.useFont(new ClassPathResource("templates/fonts/PretendardVariable.ttf").getFile(), "Pretendard");
         builder.toStream(baos);
         builder.withHtmlContent(resultHtml, "/");
         builder.run();

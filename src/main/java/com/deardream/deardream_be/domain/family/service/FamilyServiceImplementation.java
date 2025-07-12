@@ -28,7 +28,7 @@ import java.util.UUID;
 @Transactional
 public class FamilyServiceImplementation implements FamilyService {
 
-    @Value("${app.frontend.base-url}")
+    @Value("{app.frontend.base-url}")
     private String frontendBaseUrl;
 
     private final FamilyRepository familyRepository;
@@ -85,7 +85,7 @@ public class FamilyServiceImplementation implements FamilyService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     // 새 멤버 초대하기 버튼 누를 때 초대 링크 만들어짐
     // 초대 링크 생성 (role : LEADER)
     public String createInviteLink(Long leaderId) {

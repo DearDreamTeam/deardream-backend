@@ -1,9 +1,5 @@
 package com.deardream.deardream_be.domain.jwt;
 import com.deardream.deardream_be.domain.user.Role;
-import com.deardream.deardream_be.domain.user.entity.User;
-import com.deardream.deardream_be.domain.user.repository.UserRepository;
-import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
-import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -26,11 +22,9 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
         System.out.println("=== JwtAuthenticationFilter 생성됨 ===");
     }
 
@@ -63,23 +57,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                // 1) kakaoId 정보 추출
+                // kakaoId 정보 추출
                 Long kakaoId = jwtUtil.getKakaoId(token);
                 // role 정보 추출
-                // Role role = jwtUtil.getRole(token);
+                Role role = jwtUtil.getRole(token);
                 // userId 정보 추출
-                // Long userId = jwtUtil.getUserId(token);
+                Long userId = jwtUtil.getUserId(token);
 
+                log.info("Extracted kakaoId: {}, role: {}, userId: {}, ", kakaoId, role, userId);
 
-                // 2) db에서 User 조회 -> 최신 role 꺼냄
-                User user = userRepository.findByKakaoId(kakaoId)
-                        .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
-
-
-//                log.info("Extracted kakaoId: {}, role: {}, userId: {}, ", kakaoId, role, userId);
-
-                // 3) CustomUserDetails 생성
-                CustomUserDetails userDetails = new CustomUserDetails(user.getId(), kakaoId, user.getRole());
+                // CustomUserDetails 생성
+                CustomUserDetails userDetails = new CustomUserDetails(userId, kakaoId, role);
 
                 // 역할 기반 권한 생성 - role (인증과 인가 문제) -> 추후 수정 (권한 생성)
 //                List<GrantedAuthority> authorities = new ArrayList<>();
@@ -88,12 +76,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //                    authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
 //                }
 
-                // 4) 인증 객체 설정 SecurityContext에 등록
+                // 인증 객체 설정 SecurityContext에 등록
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                log.info("Authenticated kakaoId={}, role={}", kakaoId, user.getRole());
 
             } catch (Exception e) {
                 log.error("JwtAuthenticationFilter] JWT 인증 실패: " + e.getMessage(), e);

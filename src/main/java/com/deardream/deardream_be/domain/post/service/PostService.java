@@ -64,6 +64,10 @@ public class PostService {
 
             for (MultipartFile image : imageFiles) {
 
+                if(image == null || image.isEmpty() || image.getOriginalFilename() == null) {
+                    continue; // 이미지가 없으면 건너뜀
+                }
+
                 // 이미지가 일정 사이즈 이상일 경우 업로드 불가
                 long maxSizeBytes = 1024 * 1024; // 1MB
                 if(image.getSize() > maxSizeBytes) {

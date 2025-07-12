@@ -19,7 +19,9 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,7 +35,14 @@ public class PostImageService {
 
     @Transactional
     public UploadResult uploadFile(String folder, String fileName, MultipartFile file) {
-        String uniqueFileName = UUID.randomUUID() + "-" + fileName;
+        // 확장자만 남기고 UUID + 롹장자 형식으로
+        String extension = getFileExtension(fileName);
+
+        if (extension == null) {
+            throw new GeneralException(ErrorStatus._FILE_EXTENSION_ERROR);
+        }
+
+        String uniqueFileName = UUID.randomUUID() + "-" + extension;
         String key = folder + "/" + uniqueFileName;
 
         ObjectMetadata metadata = new ObjectMetadata();
@@ -96,5 +105,14 @@ public class PostImageService {
 
     public String getFilesUrl(String s3Key) {
         return s3Config.getCloudFrontDomainId() + "/" + s3Key;
+    }
+
+    private String getFileExtension(String fileName) {
+        // 확장자만 남기고 UUID + 롹장자 형식으로
+        String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
+
+        List<String> allowedExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".pdf");
+        return allowedExtensions.contains(extension) ? extension : null;
+
     }
 }

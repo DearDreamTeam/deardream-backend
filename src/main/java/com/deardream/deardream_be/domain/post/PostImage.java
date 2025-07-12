@@ -20,7 +20,7 @@ public class PostImage {
 
     // 원본 파일 이름과 서버 저장 파일 경로 분리
     // 동일 이름 파일 업로드 시 오류 발생
-    @Column(unique = true, nullable = false)
+    @Column(unique = false, nullable = false)
     private String fileName;
 
     // URL 경로 처럼 사용되는 버킷 경로

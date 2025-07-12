@@ -160,9 +160,8 @@ public class PostService {
         List<PostImage> images = postImageRepository.findByPost(post);
         for(PostImage image :images) {
             postImageService.deleteFile(image.getS3Key());
+            postImageRepository.delete(image);
         }
-
-        postImageRepository.deleteAll();
         postRepository.delete(post);
     }
 

@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.global.config;
 
+import com.deardream.deardream_be.domain.common.TimeTraceAop;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,4 +32,5 @@ public class CorsConfig implements WebMvcConfigurer {
 
         return source;
     }
+
 }

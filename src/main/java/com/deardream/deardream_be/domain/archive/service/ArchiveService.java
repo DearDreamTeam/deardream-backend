@@ -11,6 +11,7 @@ import com.deardream.deardream_be.domain.archive.converter.ArchiveConverter;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
 import com.deardream.deardream_be.domain.archive.repository.BookmarkRepository;
+import com.deardream.deardream_be.domain.common.AuditingBookmark;
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
@@ -73,6 +74,7 @@ public class ArchiveService {
 
 
     // 즐겨찾기 토글
+    @AuditingBookmark("즐겨찾기 삭제/추가")
     @Transactional
     public BookmarkStatus addBookmark(Long userId, Long archiveId) {
         User user = userRepository.findById(userId)
@@ -100,6 +102,7 @@ public class ArchiveService {
     }
 
     // 즐겨찾기 조회
+    @AuditingBookmark("즐겨찾기 조회")
     public List<Long> getAllFavorites(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));

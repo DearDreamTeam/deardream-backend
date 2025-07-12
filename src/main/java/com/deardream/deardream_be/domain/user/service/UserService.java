@@ -3,6 +3,7 @@ package com.deardream.deardream_be.domain.user.service;
 import com.deardream.deardream_be.domain.user.dto.RegisterResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
 // 서비스 인터페이스 정의
 // 아래 주석처럼 생긴 것은 JavaDoc 주석
@@ -13,7 +14,7 @@ public interface UserService {
      * @param kakaoId, userRequestDto 등록할 정보
      * @return 등록된 회원 정보
      */
-    RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto);
+    RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto, MultipartFile profileImage);
 
     /**
      * 내 정보 조회
@@ -28,7 +29,7 @@ public interface UserService {
      * @param userRequestDto 수정할 정보
      * @return 수정된 회원 정보
      */
-    UserResponseDto updateMyInfo(Long kakaoId, UserRequestDto userRequestDto);
+    UserResponseDto updateMyInfo(Long kakaoId, UserRequestDto userRequestDto, MultipartFile profileImage);
 
     /**
      * 회원 탈퇴 (로그인된 회원 삭제)

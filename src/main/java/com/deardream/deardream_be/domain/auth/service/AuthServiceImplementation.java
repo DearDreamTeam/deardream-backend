@@ -58,12 +58,18 @@ public class AuthServiceImplementation implements AuthService {
         // db에서 kakaoId 존재 여부 확인 -> 있으면 유저 있는 것
         boolean isRegistered = userRepository.existsByKakaoId(kakaoId);
         boolean isFamilyRegistered = false;
+        String newAccessToken = null;
+        String newRefreshToken = null;
 
         if(isRegistered){
             // 가입된 유저가 있으면 엔티티를 불러와 family_id 유무 확인
             User entity = userRepository.findByKakaoId(kakaoId)
                     .orElseThrow(() -> new GeneralException((ErrorStatus._USER_NOT_FOUND)));
             isFamilyRegistered = (entity.getFamily() != null);
+
+            newAccessToken = jwtUtil.createAccessToken(entity.getKakaoId(), entity.getRole(), entity.getId());
+            newRefreshToken = jwtUtil.createRefreshToken(entity.getKakaoId(), entity.getRole(), entity.getId());
+            redisUtil.setDataExpire("refresh:" + kakaoId, newRefreshToken, REFRESH_EXP_TIME);
         }
 
         // 임시 토큰 발급(유저 등록 전용)
@@ -77,6 +83,8 @@ public class AuthServiceImplementation implements AuthService {
                 .isRegistered(isRegistered)
                 .isFamilyRegistered(isFamilyRegistered)
                 .tempToken(tempToken)
+                .newAccessToken(newAccessToken)
+                .newRefreshToken(newRefreshToken)
                 .kakaoId(kakaoId)
                 .build();
     }

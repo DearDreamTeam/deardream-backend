@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" th:href="@{./style.css}" />
 </head>
 
 <body>
-  <div th:each="post : ${posts}" class="container">
-    <div th:class="${post.imageUrls.size() == 1} ? 'aspect-34-container' : 'aspect-43-container'">
+<div th:each="post : ${posts}" class="container">
+  <img
+          class="aspect-34-image"
+          th:if="${post.imageUrls.size() == 1}"
+          th:src="${post.imageUrls[0]}"
+          alt="img1" />
+  <th:block th:if="${post.imageUrls.size() == 2}">
+    <img
+            th:each="url : ${post.imageUrls}"
+            class="aspect-43-image"
+            th:src="${url}"
+            alt="img2" />
+  </th:block>
 
-      <img class="aspect-34-image" th:if="${post.imageUrls.size() == 1}" th:src="${post.imageUrls[0]}" alt="img1" />
-      <div class="aspect-43-image-container" th:if="${post.imageUrls.size() == 2}">
-        <img th:each="url : ${post.imageUrls}" class="aspect-43-image" th:src="${url}" alt="img2" />
+  <div
+          th:class="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
+    <img th:src="${post.authorProfileImg}" class="profile-image" />
+
+    <div
+            th:class="${post.imageUrls.size() == 1 ? 'text-container-34' : 'text-container'}">
+      <div>
+        <span class="text-relation" th:text="${post.relations}"></span>
+        <span class="text-name" th:text="${post.authorName}"></span>
+        <span
+                th:class="${post.imageUrls.size() == 1 ? 'text-date-34' : 'text-date'}"
+                th:text="${post.createdAt}"></span>
       </div>
-
-      <div
-        th:class="${post.imageUrls.size() == 1} ? 'contents-container aspect-34-contents' : 'contents-container aspect-43-contents'">
-
-        <img th:src="${post.authorProfileImg}" class="profile-image" alt="이미지가 들어가야 할 자리"/>
-
-        <div class="text-container">
-          <div class="name-relation-container headline-3">
-            <div class="text-relation" th:text="${post.relations}"></div>
-            <div class="text-name" th:text="${post.authorName}"></div>
-          </div>
-          <div class="text-content label-2" th:text="${post.content}"></div>
-        </div>
-        
-      </div>
+      <div class="text-content" th:text="${post.content}"></div>
     </div>
-      </div>
+  </div>
+</div>
 </body>
-
 </html>

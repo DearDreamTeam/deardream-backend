@@ -2,6 +2,7 @@ package com.deardream.deardream_be.global.config;
 
 import com.deardream.deardream_be.domain.jwt.JwtAuthenticationFilter;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
+import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CorsConfigurationSource apiConfigurationSource;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,7 +55,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userRepository), UsernamePasswordAuthenticationFilter.class);
         System.out.println("=== SecurityFilterChain 등록됨 ===");
 
         return http.build();

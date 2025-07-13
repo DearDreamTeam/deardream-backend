@@ -95,7 +95,7 @@ public class User extends BaseEntity {
         this.role = Role.LEADER;
     }
 
-    // 초대 링크로 가입된 멤버를 처리할 때 호출 (아직 사용 x)
+    // 초대 링크로 가입된 멤버를 처리할 때 호출
     public void joinFamilyAsUser(Family family) {
         this.family = family;
         this.role = Role.USER;

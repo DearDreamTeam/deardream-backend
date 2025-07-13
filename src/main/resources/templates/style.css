@@ -1,37 +1,48 @@
-@page  {
+@page {
   size: A4 portrait;
-  margin: 20mm;
 }
 
 body {
-  margin: 40px 20px;
   font-family: "Pretendard", sans-serif;
+  margin: 0;
+}
+
+.A4-wrapper {
+  width: 595px;
+  height: 842px;
+  position: relative;
+
+  page-break-inside: avoid; /* 요소 내부에서 잘리지 않게 함 */
+  page-break-after: always; /* 다음 페이지로 넘어가게 함 */
 }
 
 .container {
   width: 554px;
   height: 370px;
-  position: relative;
 
-  border: 1px solid grey;
+  margin: 0 20px;
 }
 
-.label-2 {
-  /* Label/Label2 */
+.even-container {
+  padding-top: 40px;
+}
+
+.odd-container {
+  padding-top: 16px;
+}
+
+.page-number {
+  color: #5e5e5e;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px; /* 150% */
   letter-spacing: -0.4px;
+  bottom: 12px;
+  left: 294px;
+  position: absolute;
 }
 
-.headline-3 {
-  /* Headline/Head3 */
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 30px; /* 150% */
-  letter-spacing: -0.3px;
-}
-
+/* text 설정 */
 .text-name {
   color: #313131;
   padding-right: 8px;
@@ -40,8 +51,6 @@ body {
   font-weight: 600;
   line-height: 30px; /* 150% */
   letter-spacing: -0.3px;
-
-  border: 1px solid black;
 }
 
 .text-relation {
@@ -52,8 +61,6 @@ body {
   font-weight: 600;
   line-height: 30px; /* 150% */
   letter-spacing: -0.3px;
-
-  border: 1px solid green;
 }
 
 .text-content {
@@ -63,8 +70,6 @@ body {
   font-weight: 400;
   line-height: 24px; /* 150% */
   letter-spacing: -0.4px;
-
-  border: 1px solid blue;
 }
 
 .text-date {
@@ -75,8 +80,6 @@ body {
   font-weight: 400;
   line-height: 24px; /* 200% */
   letter-spacing: -0.3px;
-
-  border: 1px solid grey;
 }
 
 .text-date-34 {
@@ -87,53 +90,71 @@ body {
   font-weight: 400;
   line-height: 24px; /* 200% */
   letter-spacing: -0.3px;
+}
 
-  border: 1px solid grey;
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: inline-block;
 }
 
 .aspect-34-image {
-  width: 205px;
-  height: 275px;
+  width: 277.5px;
+  height: 370px;
+  float: left;
 }
 
 .aspect-43-image {
-  width: 277.5px;
-  height: 370px;
-  margin-right: 8px;
+  width: 273px;
+  height: 204.75px;
 }
 
-.aspect-34-contents {
-  position: absolute;
-  right: -4px;
-
-  border: 1px solid tomato;
-}
-
-.aspect-43-contents {
-  position: absolute;
-  bottom: -4px;
-
-  border: 1px solid salmon;
+.second-image {
+  float: right;
 }
 
 .profile-image {
   width: 58px;
   height: 58px;
 
-  border-radius: 58px;
+  border-radius: 100px;
   border: 7px solid #fefefe;
+  position: absolute;
+  left: -8px;
 }
 
-.text-container {
-  padding-left: 8px;
-  width: 488px;
+.aspect-2-image-profile {
+  top: -24px;
+}
 
-  border: 1px solid cyan;
+.aspect-34-contents {
+  position: relative;
+  width: 285px;
+
+  margin-left: auto;
+  margin-right: 0;
 }
 
 .text-container-34 {
-  padding-left: 8px;
   width: 219px;
 
-  border: 1px solid cyan;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.aspect-43-contents {
+  bottom: -4px;
+  position: relative;
+}
+
+.text-container {
+  width: 488px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.aspect-43-image-container {
+  height: 204.75px;
+  padding-bottom: 10px;
 }

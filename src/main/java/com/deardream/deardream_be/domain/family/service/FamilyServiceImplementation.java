@@ -28,7 +28,7 @@ import java.util.UUID;
 @Transactional
 public class FamilyServiceImplementation implements FamilyService {
 
-    @Value("{app.frontend.base-url}")
+    @Value("${app.frontend.base-url}")
     private String frontendBaseUrl;
 
     private final FamilyRepository familyRepository;
@@ -85,7 +85,7 @@ public class FamilyServiceImplementation implements FamilyService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     // 새 멤버 초대하기 버튼 누를 때 초대 링크 만들어짐
     // 초대 링크 생성 (role : LEADER)
     public String createInviteLink(Long leaderId) {
@@ -94,14 +94,20 @@ public class FamilyServiceImplementation implements FamilyService {
         Family family = familyRepository.findByLeaderId(leaderId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._MUST_BE_LEADER_TO_DO));
 
-        // 2. 초대 토큰 생성
-        String inviteLinkToken = UUID.randomUUID().toString();
+        String inviteLinkToken = family.getFamilyLink();
 
-        // 3. 엔티티에 토큰 반영
-        family.updateFamilyInviteLink(inviteLinkToken);
-        familyRepository.save(family);
+        // 2. leaderId의 familyLink가 널값인지, 아니면 이미 만들어져 있는지 확인
+        if(inviteLinkToken == null) {
 
-        // 4. 완전한 초대 url 반환
+            // 3. 초대 토큰 생성
+            inviteLinkToken = UUID.randomUUID().toString();
+
+            // 4. 엔티티에 토큰 반영
+            family.updateFamilyInviteLink(inviteLinkToken);
+            familyRepository.save(family);
+        }
+
+        // 5. 이미 있다면 초대 url 반환
         return String.format("%s/family/join?code=%s", frontendBaseUrl, inviteLinkToken);
     }
 

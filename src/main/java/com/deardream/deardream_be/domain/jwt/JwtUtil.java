@@ -55,11 +55,11 @@ public class JwtUtil {
 
 
     // 키 객체 사용
-        private String createToken(Long kakaoId, Role role, Long userId, long expiration, String type) {
+    private String createToken(Long kakaoId, Role role, Long userId, long expiration, String type) {
         return Jwts.builder()
                 .setSubject(String.valueOf(kakaoId))
                 .claim("type", type)
-                .claim("role", role)
+//                .claim("role", role)
                 .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -89,10 +89,10 @@ public class JwtUtil {
     }
 
     // role 추출
-    public Role getRole(String token) {
-        Claims claims = parseClaims(token);
-        return Role.valueOf(claims.get("role", String.class));
-    }
+//    public Role getRole(String token) {
+//        Claims claims = parseClaims(token);
+//        return Role.valueOf(claims.get("role", String.class));
+//    }
 
     // kakaoId 추출
     public Long getKakaoId(String token){

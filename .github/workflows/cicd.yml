@@ -47,7 +47,7 @@ jobs:
         sed -i 's|${KAKAOPAY_CID}|'"${{ secrets.KAKAOPAY_CID }}"'|g' application-prod.yml
         sed -i 's|${KAKAOPAY_SECRET_KEY}|'"${{ secrets.KAKAOPAY_SECRET_KEY }}"'|g' application-prod.yml
         sed -i 's|${CLOUDFRONT_DOMAIN_ID}|'"${{ secrets.CLOUDFRONT_DOMAIN_ID }}"'|g' application-prod.yml
-        
+        sed -i 's|${APP_FRONTEND_BASE_URL}|'"${{ secrets.APP_FRONTEND_BASE_URL }}"'|g' application-prod.yml
     
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4

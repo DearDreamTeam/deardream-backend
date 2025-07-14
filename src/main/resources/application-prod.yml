@@ -72,3 +72,7 @@ kakaopay:
 
 cloudfront:
   domain-id: ${CLOUDFRONT_DOMAIN_ID}
+
+app:
+  frontend:
+    base-url: ${APP_FRONTEND_BASE_URL}

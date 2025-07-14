@@ -27,4 +27,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     int countByFamilyAndCreatedAtBetween(Family family, LocalDateTime start, LocalDateTime end);
 
+    void deleteAllByFamily(Family family);
+
 }

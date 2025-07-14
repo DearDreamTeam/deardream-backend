@@ -14,13 +14,8 @@ import java.util.Optional;
 public interface PaymentRepository extends JpaRepository<Payment, String> {
     Payment findByTid(String tid);
 
-    Payment findByFamily(Family family);
-
-    Payment findLastByFamily(Family family);
-
-
     List<Payment> findAllByIsActiveTrue();
-    List<Payment> findAllByFamily(Family family);
+    List<Payment> findAllByUser(User user);
 
     @Query("""
     SELECT p FROM Payment p
@@ -40,6 +35,7 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
 """)
     List<Payment> findExpiredActivePayments(@Param("cutoffDate") LocalDate cutoffDate);
 
+    void deleteAllByUser(User user);
 
 
 }

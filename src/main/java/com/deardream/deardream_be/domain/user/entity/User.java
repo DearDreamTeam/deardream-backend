@@ -100,4 +100,8 @@ public class User extends BaseEntity {
         this.family = family;
         this.role = Role.USER;
     }
+
+    public void deleteFamily() {
+        this.family = null;
+    }
 }

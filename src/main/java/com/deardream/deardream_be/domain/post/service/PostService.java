@@ -4,10 +4,7 @@ import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.post.Post;
 import com.deardream.deardream_be.domain.post.PostImage;
-import com.deardream.deardream_be.domain.post.dto.CreatePostResponseDto;
-import com.deardream.deardream_be.domain.post.dto.PostRequestDto;
-import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
-import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
+import com.deardream.deardream_be.domain.post.dto.*;
 import com.deardream.deardream_be.domain.post.repository.PostImageRepository;
 import com.deardream.deardream_be.domain.post.repository.PostRepository;
 import com.deardream.deardream_be.domain.user.entity.User;
@@ -26,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -177,7 +173,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostUpdateDto request, List<MultipartFile> images) {
+    public UpdateResponseDto updatePost(Long postId, PostUpdateDto request, List<MultipartFile> images) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
 
@@ -193,8 +189,8 @@ public class PostService {
         List<PostImage> existingImages = postImageRepository.findByPost(post);
         for (PostImage image : existingImages) {
             postImageService.deleteFile(image.getS3Key());
+            postImageRepository.delete(image);
         }
-        postImageRepository.deleteAll(existingImages);
 
         // List<MultipartFile> newImages = images;
 
@@ -206,18 +202,29 @@ public class PostService {
 
             for(MultipartFile image : images) {
                 String fileName = post.getFamily().getId() + image.getOriginalFilename();
-                String s3Key = s3Config.getPostImagesFolder() + "/" + fileName;
 
-                postImageService.uploadFile(s3Config.getPostImagesFolder(),fileName,image);
+                UploadResult result =  postImageService.uploadFile(s3Config.getPostImagesFolder(),fileName,image);
                 PostImage postImage = PostImage.builder()
                         .post(post)
-                        .s3Key(s3Key)
+                        .s3Key(result.getKey())
+                        .s3Url(result.getUrl())
                         .fileName(image.getOriginalFilename())
                         .build();
 
                 postImageRepository.save(postImage);
             }
         }
+
+        UpdateResponseDto response = UpdateResponseDto.builder()
+                .authorName(post.getAuthor().getName())
+                .content(post.getContent())
+                .imageUrls(postImageRepository.findByPost(post).stream()
+                        .map(image -> postImageService.getFilesUrl(image.getS3Key()))
+                        .collect(Collectors.toList()))
+                .createdAt(post.getCreatedAt())
+                .build();
+
+        return response;
     }
 
     public List<PostResponseDto> getPosts(Long familyId) {

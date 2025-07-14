@@ -1,10 +1,7 @@
 package com.deardream.deardream_be.domain.post.controller;
 
 import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
-import com.deardream.deardream_be.domain.post.dto.CreatePostResponseDto;
-import com.deardream.deardream_be.domain.post.dto.PostRequestDto;
-import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
-import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
+import com.deardream.deardream_be.domain.post.dto.*;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
@@ -86,13 +83,13 @@ public class PostController {
     // 나중에 로그인 완료 시 토큰에서 추출할 예정 - 리펙토링 필요
     @Operation(summary = "게시글을 수정합니다.")
     @PutMapping("/{postId}")
-    public ApiResponse<?> updatePost(
+    public ApiResponse<UpdateResponseDto> updatePost(
             @PathVariable Long postId,
             @RequestPart PostUpdateDto request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        postService.updatePost(postId, request, images);
-        return ApiResponse.onSuccess(SuccessStatus._OK);
+        ;
+        return ApiResponse.onSuccess(postService.updatePost(postId, request, images));
     }
 
     @Operation(summary = "가족의 게시글을 조회합니다.")

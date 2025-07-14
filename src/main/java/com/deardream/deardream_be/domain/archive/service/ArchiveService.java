@@ -129,7 +129,7 @@ public class ArchiveService {
         // INSTITUTION
         Map<Institution, List<MonthlyArchive>> institutionGroup = archives.stream()
                 .filter(archive -> archive.getRecipient().getDeliveryType() == DeliveryType.INSTITUTION)
-                .collect(Collectors.groupingBy(archive -> archive.getRecipient().getCode()));
+                .collect(Collectors.groupingBy(archive -> archive.getRecipient().getInstitution()));
 
         List<AdminArchive.AdminInstitutionArchive> institutionArchives = new ArrayList<>();
 

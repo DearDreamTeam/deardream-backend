@@ -12,11 +12,14 @@ public class RecipientResponseDto {
     private Long leaderId;
     private String name;
     private String birth;
-    private String calendarType;
     private String phone;
-    private DeliveryType deliveryType;
-    private String address;
-    private String addressDetail;
-    private String postalCode;
-    private String code;
+    private String calendarType;
+    private String profileImage;
+    private String profileImageKey;
+    private RecipientAddressUpdateDto address;
+//    private DeliveryType deliveryType;
+//    private String address;
+//    private String addressDetail;
+//    private String postalCode;
+//    private String code;
 }

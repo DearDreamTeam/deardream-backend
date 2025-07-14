@@ -18,7 +18,7 @@ public interface ArchiveRepository extends JpaRepository<MonthlyArchive, Long> {
     SELECT ma FROM MonthlyArchive ma
     JOIN ma.family f
     JOIN Recipient r ON r.family = f
-    WHERE r.code.code = :institutionId
+    WHERE r.institution.code = :institutionId
       AND ma.archiveYear = :year
       AND ma.archiveMonth = :month
 """)

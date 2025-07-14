@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface RecipientRepository extends JpaRepository<Recipient, Long> {
     Optional<Recipient> findByFamilyId(Long familyId);
+    Optional<Recipient> findByLeaderId(Long leaderId);
+
 }

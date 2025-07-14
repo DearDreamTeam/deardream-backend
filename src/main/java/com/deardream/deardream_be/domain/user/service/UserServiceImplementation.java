@@ -147,8 +147,11 @@ public class UserServiceImplementation implements UserService {
     public Long getFamilyIdByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
-        return user.getFamily().getId();
+//        return user.getFamily().getId();
+        Family family = user.getFamily();
+        return (family != null) ? family.getId() : null;
     }
+
 
     private void validateProfileImage(MultipartFile profileImage) {
         // 파일 크기 제한 (1MB)

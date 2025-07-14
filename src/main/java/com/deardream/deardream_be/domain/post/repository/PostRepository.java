@@ -24,4 +24,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findPostsForMonth(@Param("familyId") Long familyId,
                                  @Param("start") LocalDate start,
                                  @Param("end") LocalDate end);
+
+    int countByFamilyAndCreatedAtBetween(Family family, LocalDateTime start, LocalDateTime end);
+
 }

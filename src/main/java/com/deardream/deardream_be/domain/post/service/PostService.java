@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -89,6 +91,9 @@ public class PostService {
                 postImageRepository.save(postImage);
             }
         }
+
+        int postCount = countPosts(author.getFamily().getId());
+
         return post.getId();
     }
 
@@ -255,6 +260,19 @@ public class PostService {
                     .imageUrls(imageUrls)
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    // 가족 당 한 달 post의 개수는 최대 20개
+    private int countPosts(Long familyId) {
+        LocalDate now = LocalDate.now();
+
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        return postRepository.countByFamilyAndCreatedAtBetween(family,
+                LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0),
+                LocalDateTime.of(now.getYear(), now.getMonth(), now.lengthOfMonth(), 23, 59, 59));
+
     }
 
 }

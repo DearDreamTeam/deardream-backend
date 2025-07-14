@@ -1,6 +1,7 @@
 package com.deardream.deardream_be.domain.post.controller;
 
 import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
+import com.deardream.deardream_be.domain.post.dto.CreatePostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostRequestDto;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
@@ -32,7 +33,7 @@ public class PostController {
 
     @Operation(summary = "게시글을 생성합니다. 사진은 0, 1, 2 리스트로 넣어주세요.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<Long> createPost(
+    public ApiResponse<CreatePostResponseDto> createPost(
             @Parameter(
                     description = "게시글 본문(JSON)",
                     content = @Content(
@@ -43,8 +44,8 @@ public class PostController {
             @RequestPart("request") PostRequestDto request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        Long postId = postService.createPost(request, images != null ? images : List.of());
-        return ApiResponse.onSuccess(postId);
+        CreatePostResponseDto response = postService.createPost(request, images != null ? images : List.of());
+        return ApiResponse.onSuccess(response);
     }
 
     @Operation(summary = "게시글을 생성합니다, 이 경우 사진은 0 또는 1개 입니다.")

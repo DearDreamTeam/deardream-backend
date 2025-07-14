@@ -4,6 +4,7 @@ import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.post.Post;
 import com.deardream.deardream_be.domain.post.PostImage;
+import com.deardream.deardream_be.domain.post.dto.CreatePostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostRequestDto;
 import com.deardream.deardream_be.domain.post.dto.PostResponseDto;
 import com.deardream.deardream_be.domain.post.dto.PostUpdateDto;
@@ -42,7 +43,7 @@ public class PostService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    public Long createPost(PostRequestDto request, List<MultipartFile> imageFiles) {
+    public CreatePostResponseDto createPost(PostRequestDto request, List<MultipartFile> imageFiles) {
 
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
@@ -94,7 +95,12 @@ public class PostService {
 
         int postCount = countPosts(author.getFamily().getId());
 
-        return post.getId();
+        CreatePostResponseDto responseDto = CreatePostResponseDto.builder()
+                .postId(post.getId())
+                .postCounts(postCount)
+                .build();
+
+        return responseDto;
     }
 
     // 사진이 1개이거나 없을 경우 게시글 저장 테스트 서비스

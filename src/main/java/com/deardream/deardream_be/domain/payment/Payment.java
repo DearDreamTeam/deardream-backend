@@ -2,6 +2,7 @@ package com.deardream.deardream_be.domain.payment;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
+import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -36,15 +37,12 @@ public class Payment extends BaseEntity {
     private String sid;
 
     // 가맹점 회원 ID, 결제 준비 API 응답과 일치
-    @NotNull
-    private String partnerUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @NotNull
     private String itemName;
-
-    @ManyToOne
-    @JoinColumn(name = "family_id", nullable = false)
-    private Family family;
 
     // 자택 배송과 기관 방문 중 선택
     @Enumerated(EnumType.STRING)
@@ -53,11 +51,24 @@ public class Payment extends BaseEntity {
     @Setter
     private LocalDate approvedAt;
 
+    // 구독 활성화 여부
     private Boolean isActive;
 
     private Boolean isSubscription;
 
     public void deActive() {
         this.isActive = false;
+    }
+
+    public void updateSuccess(String sid) {
+        this.sid = sid;
+        this.approvedAt = LocalDate.now();
+        this.isActive = true;
+        this.isSubscription = true;
+    }
+
+    public void updateCancel() {
+        this.isActive = false;
+        this.isSubscription = false;
     }
 }

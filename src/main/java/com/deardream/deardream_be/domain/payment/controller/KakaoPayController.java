@@ -24,9 +24,9 @@ public class KakaoPayController {
     @Operation(summary = "카카오페이 결제 요청을 준비합니다. response의 url로 연결해주세요.")
     @PostMapping("/ready")
     public ApiResponse<KakaoReadyResponse> readyToKakaoPay(
-            @RequestParam Long familyId
+            @RequestParam Long userId
     ) {
-        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(familyId));
+        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(userId));
     }
 
 
@@ -44,7 +44,7 @@ public class KakaoPayController {
     // 결제 진행 중 취소
     @Operation(summary = "카카오페이 결제 중 취소 요청입니다.")
     @GetMapping("/cancel")
-    public void canclePay() {
+    public void cancelPay() {
         throw new PaymentException(PaymentErrorCode._PAYMENT_CANCELLED);
     }
 
@@ -55,6 +55,14 @@ public class KakaoPayController {
         throw new PaymentException(PaymentErrorCode._PAYMENT_APPROVE_FAILED);
     }
 
+    @Operation(summary = "카카오페이 정기 결제에 대한 구독 취소 기능입니다.")
+    @PatchMapping("/unsubscribe")
+    public ApiResponse<Void> cancelSubscription(
+            @RequestParam Long userId
+    ) {
+        kakaoPayService.cancelSubscription(userId);
+        return ApiResponse.onSuccess(null);
+    }
 
 
 }

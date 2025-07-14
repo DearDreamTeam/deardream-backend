@@ -39,7 +39,7 @@ public class PaymentService {
             if(payment.getApprovedAt() != null &&
             payment.getApprovedAt().plusDays(30).isBefore(today)) {
                 payment.deActive();
-                log.info("구독 해제: {} - {}", payment.getFamily().getId(), payment.getTid());
+                log.info("구독 해제: {} - {}", payment.getUser().getId(), payment.getTid());
             }
         }
 

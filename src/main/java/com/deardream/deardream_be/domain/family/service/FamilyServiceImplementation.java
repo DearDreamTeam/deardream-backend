@@ -5,6 +5,8 @@ import com.deardream.deardream_be.domain.family.dto.FamilyRequestDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyResponseDto;
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.recipient.entity.Recipient;
+import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
 import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
 import com.deardream.deardream_be.domain.user.entity.User;
@@ -33,6 +35,7 @@ public class FamilyServiceImplementation implements FamilyService {
 
     private final FamilyRepository familyRepository;
     private final UserRepository userRepository;
+    private final RecipientRepository recipientRepository;
 
     @Override
     @Transactional
@@ -59,6 +62,12 @@ public class FamilyServiceImplementation implements FamilyService {
         user.joinFamilyAsLeader(tempFamilySaved);
         userRepository.save(user);
 
+        // 6. 대표자의 recipient가 있다면 familyId 연동
+        Recipient recipient = recipientRepository.findByLeaderId(user.getId()).orElse(null);
+        if (recipient != null) {
+            recipient.assignFamily(tempFamilySaved);
+            recipientRepository.save(recipient);
+        }
 
         return FamilyResponseDto.of(tempFamilySaved);
     }

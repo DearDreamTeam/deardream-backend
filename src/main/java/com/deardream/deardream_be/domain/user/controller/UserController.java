@@ -39,6 +39,7 @@ public class UserController {
      */
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<RegisterResponseDto> registerUser(
+            @RequestParam(value = "code", required = false) String inviteCode,
             @RequestHeader("Authorization") String authorization,
             @RequestPart("userRequestDto") @Valid UserRequestDto userRequestDto,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
@@ -55,7 +56,7 @@ public class UserController {
         Long kakaoId = jwtUtil.getKakaoId(tempToken);
 
         // 3. 프로필 등록
-        RegisterResponseDto registerResponseDto = userService.register(kakaoId, userRequestDto, profileImage);
+        RegisterResponseDto registerResponseDto = userService.register(kakaoId, userRequestDto, profileImage, inviteCode);
 
         return ApiResponse.onSuccess(registerResponseDto);
     }

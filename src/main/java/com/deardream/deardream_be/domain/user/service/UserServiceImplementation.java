@@ -36,7 +36,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     @Transactional
-    public RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto, MultipartFile profileImage) {
+    public RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto, MultipartFile profileImage, String inviteCode) {
         // 카카오 ID로 이미 존재하는 사용자 조회
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> {
@@ -57,8 +57,8 @@ public class UserServiceImplementation implements UserService {
         Family family = null;
         Role assignedRole = Role.DEFAULT;
 
-        if (userRequestDto.getFamilyLink() != null && !userRequestDto.getFamilyLink().isEmpty()) {
-            family = familyRepository.findByFamilyLink(userRequestDto.getFamilyLink())
+        if (inviteCode != null && !inviteCode.isEmpty()) {
+            family = familyRepository.findByFamilyLink(inviteCode)
                     .orElseThrow(()-> new GeneralException(ErrorStatus._INVALID_INVITE_LINK));
             assignedRole = Role.USER;
         }

@@ -4,6 +4,7 @@ import com.deardream.deardream_be.domain.archive.dto.AdminArchive;
 import com.deardream.deardream_be.domain.archive.dto.AdminRequestDto;
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import com.deardream.deardream_be.domain.archive.service.ArchiveService;
+import com.deardream.deardream_be.domain.institution.dto.DeleteUsersRequestDto;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,5 +50,8 @@ public class AdminArchiveController {
         return ApiResponse.onSuccess(SuccessStatus._OK);
 
     }
+
+
+
 }
 

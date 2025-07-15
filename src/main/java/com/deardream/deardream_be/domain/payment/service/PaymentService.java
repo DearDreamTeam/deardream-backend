@@ -5,6 +5,7 @@ import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.payment.Payment;
 import com.deardream.deardream_be.domain.payment.PaymentRepository;
 import com.deardream.deardream_be.domain.payment.dto.SubscriptionDto;
+import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final FamilyRepository familyRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
@@ -39,7 +40,7 @@ public class PaymentService {
             if(payment.getApprovedAt() != null &&
             payment.getApprovedAt().plusDays(30).isBefore(today)) {
                 payment.deActive();
-                log.info("구독 해제: {} - {}", payment.getFamily().getId(), payment.getTid());
+                log.info("구독 해제: {} - {}", payment.getUser().getId(), payment.getTid());
             }
         }
 
@@ -47,11 +48,11 @@ public class PaymentService {
     }
 
     @Transactional
-    public List<SubscriptionDto> getSubscriptions(Long familyId) {
-        Family family = familyRepository.findById(familyId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+    public List<SubscriptionDto> getSubscriptions(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        List<Payment> payments = paymentRepository.findAllByFamily(family);
+        List<Payment> payments = paymentRepository.findAllByUser(user);
 
         return payments.stream().map(payment -> SubscriptionDto.builder()
                 .paymentDate(payment.getApprovedAt())

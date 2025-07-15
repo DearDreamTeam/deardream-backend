@@ -1,41 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" th:href="@{./style.css}" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{./style.css}" />
+  </head>
 
-<body>
-<div th:each="post : ${posts}" class="container">
-  <img
-          class="aspect-34-image"
+  <body>
+    <div class="A4-wrapper">
+      <div
+        th:each="post, iterStat : ${posts}"
+        class="container"
+        th:classappend="${iterStat.even ? 'even-container' : 'odd-container'}">
+        <img
           th:if="${post.imageUrls.size() == 1}"
+          class="aspect-34-image"
           th:src="${post.imageUrls[0]}"
-          alt="img1" />
-  <th:block th:if="${post.imageUrls.size() == 2}">
-    <img
-            th:each="url : ${post.imageUrls}"
+          alt="img 1" />
+
+        <div
+          class="aspect-43-image-container"
+          th:if="${post.imageUrls.size() == 2}">
+          <img
+            th:src="${post.imageUrls[0]}"
             class="aspect-43-image"
-            th:src="${url}"
-            alt="img2" />
-  </th:block>
+            alt="first img" />
 
-  <div
-          th:class="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
-    <img th:src="${post.authorProfileImg}" class="profile-image" />
+          <img
+            th:src="${post.imageUrls[1]}"
+            class="aspect-43-image second-image"
+            alt="second img" />
+        </div>
 
-    <div
-            th:class="${post.imageUrls.size() == 1 ? 'text-container-34' : 'text-container'}">
-      <div>
-        <span class="text-relation" th:text="${post.relations}"></span>
-        <span class="text-name" th:text="${post.authorName}"></span>
-        <span
-                th:class="${post.imageUrls.size() == 1 ? 'text-date-34' : 'text-date'}"
+        <div
+          th:classappend="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
+          <img
+            th:src="${post.authorProfileImg}"
+            class="profile-image"
+            th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''" />
+
+          <div
+            th:classappend="${post.imageUrls.size() == 1 ? 'text-container-34' : 'text-container'}">
+            <div>
+              <span class="text-relation" th:text="${post.relations}"></span>
+              <span class="text-name" th:text="${post.authorName}"></span>
+              <span
+                th:classappend="${post.imageUrls.size() == 1 ? 'text-date-34' : 'text-date'}"
                 th:text="${post.createdAt}"></span>
+            </div>
+            <div class="text-content" th:text="${post.content}"></div>
+          </div>
+        </div>
+        <div
+          th:if="${iterStat.odd}"
+          class="page-number"
+          th:text="${iterStat.count / 2}"></div>
       </div>
-      <div class="text-content" th:text="${post.content}"></div>
     </div>
-  </div>
-</div>
-</body>
+  </body>
 </html>

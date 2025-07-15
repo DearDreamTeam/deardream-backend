@@ -105,4 +105,8 @@ public class User extends BaseEntity {
     public void joinRecipientMakerAsLeader() {
         this.role = Role.LEADER;
     }
+
+    public void deleteFamily() {
+        this.family = null;
+    }
 }

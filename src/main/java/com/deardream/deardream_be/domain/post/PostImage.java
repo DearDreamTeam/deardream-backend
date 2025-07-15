@@ -29,7 +29,7 @@ public class PostImage {
     private String s3Url;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
 }

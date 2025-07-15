@@ -160,5 +160,10 @@ public class Recipient extends BaseEntity {
                 .build();
     }
 
+    public void assignFamily(Family family) {
+        this.family = family;
+    }
+
 }
+
 

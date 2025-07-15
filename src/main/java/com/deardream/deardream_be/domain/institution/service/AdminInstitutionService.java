@@ -60,7 +60,7 @@ public class AdminInstitutionService {
         Institution institution = institutionRepository.findByCode(code)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INVALID_INSTITUTION_CODE));
 
-        List<Recipient> recipients = recipientRepository.findAllByCode(institution);
+        List<Recipient> recipients = recipientRepository.findAllByInstitution(institution);
 
         return recipients.stream().map(recipient -> InstitutionUserResponse.builder()
                 .familyId(recipient.getFamily().getId())

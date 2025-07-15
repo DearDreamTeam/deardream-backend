@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface RecipientRepository extends JpaRepository<Recipient, Long> {
     Optional<Recipient> findByFamilyId(Long familyId);
-    List<Recipient> findAllByCode(Institution institution);
+    List<Recipient> findAllByInstitution(Institution institution);
     Optional<Recipient> findByLeaderId(Long leaderId);
 
 }

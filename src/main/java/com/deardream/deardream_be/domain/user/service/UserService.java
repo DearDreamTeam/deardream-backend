@@ -14,7 +14,7 @@ public interface UserService {
      * @param kakaoId, userRequestDto 등록할 정보
      * @return 등록된 회원 정보
      */
-    RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto, MultipartFile profileImage);
+    RegisterResponseDto register(Long kakaoId, UserRequestDto userRequestDto, MultipartFile profileImage, String inviteCode);
 
     /**
      * 내 정보 조회

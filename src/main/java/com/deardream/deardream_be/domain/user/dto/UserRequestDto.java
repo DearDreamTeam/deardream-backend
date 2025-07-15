@@ -37,7 +37,7 @@ public class UserRequestDto {
     @JoinColumn(name = "family_id")
     private Long familyId;
 
-    private String familyLink;
+//    private String familyLink;
 
 
 }

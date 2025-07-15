@@ -101,6 +101,11 @@ public class User extends BaseEntity {
         this.role = Role.USER;
     }
 
+    // 수신자 등록 시 리더로 합류할 때 호출
+    public void joinRecipientMakerAsLeader() {
+        this.role = Role.LEADER;
+    }
+
     public void deleteFamily() {
         this.family = null;
     }

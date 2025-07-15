@@ -8,8 +8,12 @@ import lombok.Getter;
 @Builder
 public class RecipientAddressUpdateDto {
     private DeliveryType deliveryType;
+    private String recipientName;
+    private String recipientPhone;
+    private String postalCode;
     private String address;
     private String addressDetail;
-    private String postalCode;
+    private String institutionName;
+    private String institutionPhone;
     private String code;
 }

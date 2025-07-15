@@ -21,6 +21,10 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -59,7 +63,13 @@ public class PdfRender {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
 
-        builder.useFont(new ClassPathResource("templates/fonts/PretendardVariable.ttf").getFile(), "Pretendard");
+        ClassPathResource fontResource = new ClassPathResource("templates/fonts/PretendardVariable.ttf");
+        File tempFontFile = File.createTempFile("Pretendard", ".ttf");
+        tempFontFile.deleteOnExit();
+        try (InputStream fontStream = fontResource.getInputStream()) {
+            Files.copy(fontStream, tempFontFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        builder.useFont(tempFontFile, "Pretendard");
         builder.toStream(baos);
         builder.withHtmlContent(resultHtml, "/");
         builder.run();

@@ -64,7 +64,7 @@ public class Recipient extends BaseEntity {
     private String postalCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code")
+    @JoinColumn(name = "code", referencedColumnName = "code")
     private Institution institution;
 
 

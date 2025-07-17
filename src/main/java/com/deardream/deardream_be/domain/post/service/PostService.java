@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -220,6 +221,78 @@ public class PostService {
                 .content(post.getContent())
                 .imageUrls(postImageRepository.findByPost(post).stream()
                         .map(image -> postImageService.getFilesUrl(image.getS3Key()))
+                        .collect(Collectors.toList()))
+                .createdAt(post.getCreatedAt())
+                .build();
+
+        return response;
+    }
+
+    @Transactional
+    public UpdateResponseDto patchPost(Long postId, PatchPostDto request, List<MultipartFile> images) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
+
+        // 나중에 로그인 완료 시 userId는 토큰에서 추출하도록 변경 예정
+        if(!Objects.equals(post.getAuthor().getId(), request.getAuthorId())) {
+            throw new GeneralException(ErrorStatus._AUTHORITY_NOT_MATCH);
+        }
+
+        // 게시글 내용 수정
+        post.updateContent(request.getContent());
+
+        // 2. 기존 이미지들 가져오기
+        List<PostImage> existingImages = postImageRepository.findByPost(post);
+
+        // 3. 유지하고 싶은 이미지 URL 리스트 받기
+        List<String> keepImageUrls = request.getExistingImageUrls() != null
+                ? request.getExistingImageUrls()
+                : new ArrayList<>();
+
+        // 4. 기존 이미지 중 삭제 대상만 삭제
+        for (PostImage image : existingImages) {
+            String url = postImageService.getFilesUrl(image.getS3Key());
+
+            // 프론트에서 유지하겠다는 URL이 아닌 경우 삭제
+            if (!keepImageUrls.contains(url)) {
+                postImageService.deleteFile(image.getS3Key());
+                postImageRepository.delete(image);
+            }
+        }
+
+        // 5. 새 이미지 업로드 (최대 2장 제한: 기존 + 새 이미지 합 기준)
+        int currentImageCount = keepImageUrls.size();
+        int newImageCount = (images != null) ? images.size() : 0;
+
+        if (currentImageCount + newImageCount > 2) {
+            throw new GeneralException(ErrorStatus._IMAGE_ONLY_TWO);
+        }
+
+        if (images != null) {
+            for (MultipartFile image : images) {
+                String fileName = post.getFamily().getId() + image.getOriginalFilename();
+
+                UploadResult result = postImageService.uploadFile(
+                        s3Config.getPostImagesFolder(), fileName, image
+                );
+
+                PostImage postImage = PostImage.builder()
+                        .post(post)
+                        .s3Key(result.getKey())
+                        .s3Url(result.getUrl())
+                        .fileName(image.getOriginalFilename())
+                        .build();
+
+                postImageRepository.save(postImage);
+            }
+        }
+
+        // 6. 응답 객체 생성
+        UpdateResponseDto response = UpdateResponseDto.builder()
+                .authorName(post.getAuthor().getName())
+                .content(post.getContent())
+                .imageUrls(postImageRepository.findByPost(post).stream()
+                        .map(img -> postImageService.getFilesUrl(img.getS3Key()))
                         .collect(Collectors.toList()))
                 .createdAt(post.getCreatedAt())
                 .build();

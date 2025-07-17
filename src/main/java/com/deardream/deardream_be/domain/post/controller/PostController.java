@@ -92,6 +92,15 @@ public class PostController {
         return ApiResponse.onSuccess(postService.updatePost(postId, request, images));
     }
 
+    @PatchMapping("/{postId}")
+    public ApiResponse<UpdateResponseDto> updatePostWithImages(
+        @PathVariable Long postId,
+        @RequestPart PatchPostDto request,
+        @RequestPart(value = "images", required = false) List<MultipartFile> images
+    ){
+        return ApiResponse.onSuccess(postService.patchPost(postId, request, images));
+    }
+
     @Operation(summary = "가족의 게시글을 조회합니다.")
     @GetMapping("/{familyId}")
     public ApiResponse<List<PostResponseDto>> getPosts(

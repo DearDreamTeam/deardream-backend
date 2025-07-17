@@ -11,5 +11,5 @@ public interface RecipientRepository extends JpaRepository<Recipient, Long> {
     Optional<Recipient> findByFamilyId(Long familyId);
     List<Recipient> findAllByInstitution(Institution institution);
     Optional<Recipient> findByLeaderId(Long leaderId);
-
+    boolean existsByLeaderId(Long leaderId);
 }

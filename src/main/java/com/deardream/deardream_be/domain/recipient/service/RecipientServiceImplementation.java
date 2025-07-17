@@ -54,6 +54,12 @@ public class RecipientServiceImplementation implements RecipientService {
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
+        // 1-1. 이미 등록된 수신자가 있는지 사전 검사
+        boolean recipientExists = recipientRepository.existsByLeaderId(user.getId());
+        if (recipientExists) {
+            throw new GeneralException(ErrorStatus._RECIPIENT_ALREADY_REGISTERED);
+        }
+
         user.joinRecipientMakerAsLeader();
         userRepository.save(user);
 

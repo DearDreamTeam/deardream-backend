@@ -50,7 +50,9 @@ public class SecurityConfig {
                                         "/api/v1/archives/**",
                                         "/api/v1/posts/**",
                                 "/api/v1/institutions/**",
-                                        "/api/v1/admin/**"
+                                        "/api/v1/admin/**",
+                                        "/api/users/logout",
+                                        "/api/users/logout/callback"
                                         ).permitAll()
                         .anyRequest().authenticated()
                 )

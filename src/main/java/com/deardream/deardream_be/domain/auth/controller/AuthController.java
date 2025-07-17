@@ -10,6 +10,7 @@ import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.apiPayload.exception.OnKakaoLoginValidation;
 import com.deardream.deardream_be.global.util.RedisUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -85,26 +86,26 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ApiResponse<String> logout(@RequestHeader("Authorization") String token) {
-
         String accessToken = token.replace("Bearer ", "");
-
-        authService.logout(token);
-
+        authService.logout(accessToken);
         return ApiResponse.onSuccess("로그아웃에 성공했습니다.");
-//
-//        // 1. 토큰에서 kakaoId 추출
-//        Long kakaoId = Long.valueOf(Jwts.parserBuilder()
-//                .setSigningKey(jwtUtil.getSecret().getBytes())
-//                .build()
-//                .parseClaimsJws(accessToken)
-//                .getBody()
-//                .getSubject());
-//
-//        // 2. Redis에서 refresh token 삭제
-//        redisUtil.deleteData("refresh:" + kakaoId);
-//
-//        return ApiResponse.onSuccess("로그아웃 성공");
     }
+
+    @GetMapping("logout/kakao-account")
+    public ApiResponse<String> logoutKakaoAccount(@RequestParam("redirectUri") String logoutRedirectUri) {
+        String url = authService.logoutWithKakaoAccount(logoutRedirectUri);
+        return ApiResponse.onSuccess(url);
+    }
+
+    @GetMapping("/logout/callback")
+    public ApiResponse<String> kakaoAccountLogoutCallback(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token != null && !token.isBlank()) {
+            String accessToken = token.replace("Bearer ", "");
+            authService.logout(accessToken);
+        }
+        return ApiResponse.onSuccess("카카오 계정 및 서비스 로그아웃 완료");
+    }
+
 
 
 }

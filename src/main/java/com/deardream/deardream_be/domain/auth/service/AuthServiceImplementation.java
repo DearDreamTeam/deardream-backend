@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
@@ -90,22 +92,22 @@ public class AuthServiceImplementation implements AuthService {
     }
 
 
+    // 기본 로그아웃 - 토큰만 만료
     public void logout(String accessToken) {
-//        // 1. 카카오 서버 로그아웃
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setBearerAuth(accessToken);
-//        HttpEntity<Void> request = new HttpEntity<>(headers);
-//
-//        ResponseEntity<Map> kakaoResponse = restTemplate.exchange(
-//                "https://kapi.kakao.com/v1/user/logout",
-//                HttpMethod.POST,
-//                request,
-//                Map.class
-//        );
-//        Number idNumber = (Number) kakaoResponse.getBody().get("id");
-//        Long kakaoId = idNumber.longValue();
-//
-//        // 2. 내부 리프레시 토큰 삭제
-//        redisUtil.deleteData("refresh:" + kakaoId);
+
+        kakaoUtil.logout(accessToken);
+
+        // 2. 토큰에서 kakaoId 추출
+        Long kakaoId = jwtUtil.getKakaoId(accessToken);
+
+        // 3. refresh 토큰/인증정보 redis에서 삭제
+        redisUtil.deleteData("refresh:" + kakaoId);
+
+    }
+
+    // 카카오 계정과 함께 로그아웃 -> 카카오 로그아웃 이후 리다이렉트 uri
+    // 클라이언트가 이 url로 리다이렉트하면 카카오 계정 세션까지 종료됨
+    public String logoutWithKakaoAccount(String logoutRedirectUri){
+        return kakaoUtil.logoutWithKakaoAccount(logoutRedirectUri);
     }
 }

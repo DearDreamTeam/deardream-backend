@@ -17,12 +17,14 @@ public class FamilyMembersResponseDto {
     private Long familyId;
     private String familyLink;
     private LocalDateTime createdAt;
+    private String leaderName;
+    private String recipientName;
     private List<UserResponseDto> members;
 
 
     // family엔티티 + 해당 familyId에 속한 User 리스트를
     // UserResponseDto로 매핑한 뒤 dto에 담아 반환함
-    public static FamilyMembersResponseDto of(Family family, List<User> users) {
+    public static FamilyMembersResponseDto of(Family family, List<User> users, String leaderName, String recipientName) {
         List<UserResponseDto> memberDtos = users.stream()
                 .map(UserResponseDto::of)
                 .collect(Collectors.toList());
@@ -32,6 +34,8 @@ public class FamilyMembersResponseDto {
                 .familyLink(family.getFamilyLink())
                 .createdAt(family.getCreatedAt())
                 .members(memberDtos)
+                .leaderName(leaderName)
+                .recipientName(recipientName)
                 .build();
     }
 }

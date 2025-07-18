@@ -89,8 +89,20 @@ public class FamilyServiceImplementation implements FamilyService {
         // 3. 해당 familyId를 가진 모든 유저 조회
         List<User> familyMembers = userRepository.findAllByFamilyId(family.getId());
 
+        // 3-1. 해당 familyId를 가진 leaderId 조회 (리더 조회)
+        User leader = family.getLeader();
+        String leaderName = leader != null ? leader.getName() : null;
+
+        // 3-2. 해당 leaderId를 가진 수신자 조회(수신자 조회)
+        String recipientName = null;
+        if (leader != null) {
+            recipientName = recipientRepository.findByLeaderId(leader.getId())
+                    .map(Recipient::getName)
+                    .orElse(null);
+        }
+
         // 4. dto에 담아 반환
-        return FamilyMembersResponseDto.of(family, familyMembers);
+        return FamilyMembersResponseDto.of(family, familyMembers, leaderName,recipientName);
     }
 
     @Override

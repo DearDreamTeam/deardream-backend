@@ -129,7 +129,8 @@ public class FamilyServiceImplementation implements FamilyService {
         }
 
         // 5. 이미 있다면 초대 url 반환
-        return String.format("%s/family/join?code=%s", frontendBaseUrl, inviteLinkToken);
+//        return String.format("%s/family/join?code=%s", frontendBaseUrl, inviteLinkToken);
+            return inviteLinkToken;
     }
 
     @Override

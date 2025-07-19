@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.family.controller;
 
+import com.deardream.deardream_be.domain.family.dto.FamilyInvitationDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyMembersResponseDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyResponseDto;
 import com.deardream.deardream_be.domain.family.service.FamilyService;
@@ -40,9 +41,19 @@ public class FamilyController {
         return ApiResponse.onSuccess(familyMembersResponseDto);
     }
 
-    // 3) 초대 링크 생성 (LEADER)
-    @GetMapping("/link")
-    public ApiResponse<String> getInviteLink(
+    // 3) 가족 초대장 정보 조회 (토큰 없음) - 추가
+    @GetMapping("/invitation")
+    public ApiResponse<FamilyInvitationDto> getMyInvitation(
+            @RequestParam("code") String inviteCode
+    ) {
+        FamilyInvitationDto familyInvitation = familyService.getMyFamilyInvitation(inviteCode);
+        return ApiResponse.onSuccess(familyInvitation);
+    }
+
+
+    // 4) 초대 링크 생성 (LEADER)
+    @PostMapping("/link")
+    public ApiResponse<String> createInviteLink(
             Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -52,7 +63,18 @@ public class FamilyController {
         return ApiResponse.onSuccess(link);
     }
 
-    // 4) 초대 링크로 가입 (role=USER)
+
+    // 5) 초대 링크 조회 - 추가
+    @GetMapping("/link")
+    public ApiResponse<String> getInviteLink(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long kakaoId = userDetails.getKakaoId();
+        String link = familyService.getInviteLink(kakaoId);
+
+        return ApiResponse.onSuccess(link);
+    }
+
+    // 5) 초대 링크로 가입 (role=USER)
     @PostMapping("/join")
     public ApiResponse<Void> joinByInvite(
             @RequestParam("code") String inviteCode,

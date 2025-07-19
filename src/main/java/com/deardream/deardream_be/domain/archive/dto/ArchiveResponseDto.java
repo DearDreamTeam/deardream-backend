@@ -11,4 +11,6 @@ public class ArchiveResponseDto {
     private String yearMonthType;
     private String pdfUrl;
     private DeliveryStatus deliveryStatus;
+
+    private String thumbnailUrl;
 }

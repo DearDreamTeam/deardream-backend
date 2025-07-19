@@ -21,9 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -359,6 +357,20 @@ public class PostService {
                 LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0),
                 LocalDateTime.of(now.getYear(), now.getMonth(), now.lengthOfMonth(), 23, 59, 59));
 
+    }
+
+    public Optional<String> getRandomThumbnailUrl(Family family, int year, int month) {
+        List<Post> posts = postRepository.findByFamilyIdAndYearAndMonth(family.getId(), year, month);
+
+        List<String> imageUrls = posts.stream()
+                .flatMap(post -> postImageRepository.findByPost(post).stream()
+                        .map(image -> postImageService.getFilesUrl(image.getS3Key())))
+                .toList();
+
+        if (imageUrls.isEmpty()) return Optional.empty();
+
+        // 랜덤하게 하나 뽑기
+        return Optional.of(imageUrls.get(new Random().nextInt(imageUrls.size())));
     }
 
 }

@@ -17,6 +17,7 @@ import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.post.service.PostImageService;
+import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
 import com.deardream.deardream_be.domain.user.entity.User;
@@ -41,6 +42,7 @@ public class ArchiveService {
     private final PostImageService postImageService;
     private final UserRepository userRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final PostService postService;
     private final RecipientRepository recipientRepository;
 
     /*
@@ -58,10 +60,14 @@ public class ArchiveService {
                     String yearMonth = response.getArchiveYear() + "년" + response.getArchiveMonth() + "월";
                     String fileUrl = postImageService.getFilesUrl(response.getS3Key());
 
+                    String thumbnailUrl = postService.getRandomThumbnailUrl(family, response.getArchiveYear(), response.getArchiveMonth())
+                            .orElse(null);
+
                     return ArchiveResponseDto.builder()
                             .yearMonthType(yearMonth)
                             .pdfUrl(fileUrl)
                             .deliveryStatus(response.getDeliveryStatus())
+                            .thumbnailUrl(thumbnailUrl)
                             .build();
                 }).toList();
 

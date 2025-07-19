@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.family.service;
 
+import com.deardream.deardream_be.domain.family.dto.FamilyInvitationDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyMembersResponseDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyRequestDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyResponseDto;
@@ -101,9 +102,43 @@ public class FamilyServiceImplementation implements FamilyService {
                     .orElse(null);
         }
 
+        // 3-3. 수신자 이미지 반환
+        String recipientProfileImage = null;
+        if (leader != null) {
+            recipientProfileImage = recipientRepository.findByLeaderId(leader.getId())
+                    .map(Recipient::getProfileImage)
+                    .orElse(null);
+        }
+
         // 4. dto에 담아 반환
-        return FamilyMembersResponseDto.of(family, familyMembers, leaderName,recipientName);
+        return FamilyMembersResponseDto.of(family, familyMembers, leaderName, recipientName, recipientProfileImage);
     }
+
+
+    @Override
+    @Transactional
+    // 로그인 전 초대장 받았을 때 가족 초대장 조회 api
+    public FamilyInvitationDto getMyFamilyInvitation(String inviteCode) {
+        Family family = familyRepository.findByFamilyLink(inviteCode)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INVALID_INVITE_LINK));
+
+        User leader = family.getLeader();
+        String leaderName = leader != null ? leader.getName() : null;
+
+        String recipientName = null;
+        if (leader != null) {
+            recipientName = recipientRepository.findByLeaderId(leader.getId())
+                    .map(Recipient::getName)
+                    .orElse(null);
+        }
+
+        return FamilyInvitationDto.builder()
+                .leaderName(leaderName)
+                .recipientName(recipientName)
+                .build();
+    }
+
+
 
     @Override
     @Transactional
@@ -117,21 +152,48 @@ public class FamilyServiceImplementation implements FamilyService {
 
         String inviteLinkToken = family.getFamilyLink();
 
-        // 2. leaderId의 familyLink가 널값인지, 아니면 이미 만들어져 있는지 확인
-        if(inviteLinkToken == null) {
+//        // 2. leaderId의 familyLink가 널값인지, 아니면 이미 만들어져 있는지 확인
+//        if(inviteLinkToken == null) {
+//
+//            // 3. 초대 토큰 생성
+//            inviteLinkToken = UUID.randomUUID().toString();
+//
+//            // 4. 엔티티에 토큰 반영
+//            family.updateFamilyInviteLink(inviteLinkToken);
+//            familyRepository.save(family);
+//        }
+//
+//        // 5. 이미 있다면 초대 url 반환
+//        return inviteLinkToken;
+//        // return String.format("%s/family/join?code=%s", frontendBaseUrl, inviteLinkToken);
 
-            // 3. 초대 토큰 생성
-            inviteLinkToken = UUID.randomUUID().toString();
-
-            // 4. 엔티티에 토큰 반영
-            family.updateFamilyInviteLink(inviteLinkToken);
-            familyRepository.save(family);
+        // 2. 이미 familyLink가 있다면 예외 발생
+        if(inviteLinkToken != null) {
+            throw new GeneralException(ErrorStatus._INVITE_LINK_ALREADY_EXISTS);
         }
 
-        // 5. 이미 있다면 초대 url 반환
-//        return String.format("%s/family/join?code=%s", frontendBaseUrl, inviteLinkToken);
-            return inviteLinkToken;
+        // 3. familyLink가 없을 때만 새로 생성
+        inviteLinkToken = UUID.randomUUID().toString();
+        family.updateFamilyInviteLink(inviteLinkToken);
+        familyRepository.save(family);
+
+        return inviteLinkToken;
     }
+
+    @Override
+    @Transactional
+    public String getInviteLink(Long kakaoId) {
+        User user = userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        Family family = user.getFamily();
+        if (family == null) {
+            throw new GeneralException(ErrorStatus._FAMILY_NOT_FOUND);
+        }
+
+        return family.getFamilyLink();
+    }
+
 
     @Override
     @Transactional

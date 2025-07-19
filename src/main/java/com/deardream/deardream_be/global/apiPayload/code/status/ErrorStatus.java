@@ -63,6 +63,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_AUTHOR_OF_POST(HttpStatus.FORBIDDEN, "403", "해당 게시글의 작성자가 아닙니다."),
     _NOT_FAMILY_MEMBER(HttpStatus.FORBIDDEN, "403", "해당 가족의 구성원이 아닙니다."),
     _RECIPIENT_ALREADY_REGISTERED(HttpStatus.FORBIDDEN, "403", "이미 수신자가 등록되어 있습니다. 수신자 수정을 이용해 주세요."),
+    _INVITE_LINK_ALREADY_EXISTS(HttpStatus.FORBIDDEN, "403", "가족 초대 링크가 이미 생성되어 있습니다. 가족 초대 링크 조회를 이용해주세요."),
 
     // 404 Not Found
     _TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 토큰을 찾을 수 없습니다."),

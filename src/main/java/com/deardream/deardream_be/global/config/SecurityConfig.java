@@ -50,7 +50,8 @@ public class SecurityConfig {
                                         "/api/v1/archives/**",
                                         "/api/v1/posts/**",
                                 "/api/v1/institutions/**",
-                                        "/api/v1/admin/**"
+                                        "/api/v1/admin/**",
+                                    "api/v1/family/invitation/**"
                                         ).permitAll()
                         .anyRequest().authenticated()
                 )

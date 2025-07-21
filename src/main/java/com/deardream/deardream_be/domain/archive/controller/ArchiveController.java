@@ -27,7 +27,7 @@ public class ArchiveController {
     private final ArchiveService archiveService;
 
 
-    @Operation(summary = "PDF 테스트를 생성합니다.")
+    @Operation(summary = "[테스트 기능]PDF 테스트를 생성합니다.")
     @PostMapping("/test/generate")
     public ApiResponse<String> generatePdf(
             @RequestBody PdfRequestDto request

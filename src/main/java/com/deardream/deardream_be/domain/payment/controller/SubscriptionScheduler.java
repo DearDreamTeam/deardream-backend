@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Component
@@ -24,7 +25,7 @@ public class SubscriptionScheduler {
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     @Transactional
     public void monthlySubscriptions() {
-        LocalDate cutOff = LocalDate.now().minusMonths(1);
+        LocalDate cutOff = LocalDate.now(ZoneId.of("Asia/Seoul")).minusMonths(1);
 
         List<Payment> expiredPayments = paymentRepository.findExpiredActivePayments(cutOff);
 

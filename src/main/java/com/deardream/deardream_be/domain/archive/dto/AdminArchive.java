@@ -21,9 +21,9 @@ public class AdminArchive {
         private Long archiveId;
         private Long familyId;
         private String receiverName;
-        private String address1;
-        private String address2;
-        private String zipCode;
+        private String address;
+        private String addressDetail;
+        private String postalCode;
         private String phone;
         private String pdfUrl;
         private DeliveryStatus deliveryStatus;
@@ -36,8 +36,8 @@ public class AdminArchive {
         private Long institutionId;
         private String institutionCode;
         private String institutionName;
-        private String address1;
-        private String zipCode;
+        private String address;
+        private String postalCode;
         private String phone;
         private DeliveryStatus deliveryStatus;
         private List<AdminFamilyInfo> families;
@@ -50,7 +50,7 @@ public class AdminArchive {
         private Long archiveId;
         private Long familyId;
         private String receiverName;
-        private String address2;
+        private String addressDetail;
         private String pdfUrl;
     }
 

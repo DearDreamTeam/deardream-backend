@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -82,7 +83,7 @@ public class PdfRender {
 
         UploadResult result =  postImageService.uploadPDF(s3Config.getPdfFolder(), fileName, baos.toByteArray());
 
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         MonthlyArchive archive = MonthlyArchive.builder()
                 .family(family)

@@ -18,4 +18,9 @@ public class CreateInstitutionDto {
 
     @NotNull
     private String postalCode;
+
+    @NotNull
+    private String startDate;
+
+    private Integer membersCount;
 }

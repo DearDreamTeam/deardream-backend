@@ -1,6 +1,8 @@
 package com.deardream.deardream_be.domain.archive.converter;
 
 import com.deardream.deardream_be.domain.archive.dto.AdminArchive;
+import com.deardream.deardream_be.domain.archive.dto.AdminHomeArchiveResponse;
+import com.deardream.deardream_be.domain.archive.dto.AdminInstitutionArchiveResponse;
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
@@ -42,8 +44,8 @@ public class ArchiveConverter {
                 .institutionId(institution.getId())
                 .institutionCode(institution.getCode())
                 .institutionName(institution.getName())
-                .address1(institution.getAddress())
-                .zipCode(institution.getPostalCode())
+                .address(institution.getAddress())
+                .postalCode(institution.getPostalCode())
                 .phone(institution.getPhone())
                 .deliveryStatus(deliveryStatus)
                 .families(familyInfoList)
@@ -57,7 +59,7 @@ public class ArchiveConverter {
                 .archiveId(archive.getId())
                 .familyId(archive.getFamily().getId())
                 .receiverName(recipient.getName())
-                .address2(recipient.getAddressDetail())
+                .addressDetail(recipient.getAddressDetail())
                 .pdfUrl(postImageService.getFilesUrl(archive.getS3Key()))
                 .build();
     }
@@ -69,14 +71,43 @@ public class ArchiveConverter {
                 .archiveId(archive.getId())
                 .familyId(archive.getFamily().getId())
                 .receiverName(recipient.getName())
-                .address1(recipient.getAddress())
-                .address2(recipient.getAddressDetail())
-                .zipCode(recipient.getPostalCode())
+                .address(recipient.getAddress())
+                .addressDetail(recipient.getAddressDetail())
+                .postalCode(recipient.getPostalCode())
                 .phone(recipient.getPhone())
                 .pdfUrl(postImageService.getFilesUrl(archive.getS3Key()))
                 .deliveryStatus(archive.getDeliveryStatus())
                 .build();
 
+    }
+
+    public AdminHomeArchiveResponse.HomeArchiveDto toHomeArchiveResponse(MonthlyArchive archive) {
+        Recipient recipient = archive.getRecipient();
+
+        return AdminHomeArchiveResponse.HomeArchiveDto.builder()
+                .archiveId(archive.getId())
+                .receiverName(recipient.getName())
+                .address(recipient.getAddress())
+                .addressDetail(recipient.getAddressDetail())
+                .postalCode(recipient.getPostalCode())
+                .phone(recipient.getPhone())
+                .deliveryStatus(archive.getDeliveryStatus())
+                .pdfUrl(postImageService.getFilesUrl(archive.getS3Key()))
+                .build();
+
+    }
+
+    public AdminInstitutionArchiveResponse.InstitutionArchiveDto toInstitutionArchiveResponse(MonthlyArchive archive) {
+        Recipient recipient = archive.getRecipient();
+
+        return AdminInstitutionArchiveResponse.InstitutionArchiveDto.builder()
+                .familyId(archive.getFamily().getId())
+                .receiverName(recipient.getName())
+                .address(recipient.getAddress())
+                .addressDetail(recipient.getAddressDetail())
+                .phone(recipient.getPhone())
+                .pdfUrl(postImageService.getFilesUrl(archive.getS3Key()))
+                .build();
     }
 
 

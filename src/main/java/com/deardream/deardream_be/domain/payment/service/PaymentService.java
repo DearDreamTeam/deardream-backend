@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class PaymentService {
     @Transactional
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void deActivePayment() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         List<Payment> payments = paymentRepository.findAllByIsActiveTrue();
 

@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -348,7 +349,7 @@ public class PostService {
 
     // 가족 당 한 달 post의 개수는 최대 20개
     private int countPosts(Long familyId) {
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));

@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -62,7 +63,7 @@ public class Payment extends BaseEntity {
 
     public void updateSuccess(String sid) {
         this.sid = sid;
-        this.approvedAt = LocalDate.now();
+        this.approvedAt = LocalDate.now(ZoneId.of("Asia/Seoul"));
         this.isActive = true;
         this.isSubscription = true;
     }

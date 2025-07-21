@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/master/admin")
 public class AdminArchiveController {
 
     private final ArchiveService archiveService;
 
-    @Operation(summary = "[어드민 기능] 월별 소식지를 조회합니다.")
+    @Operation(summary = "[마스터 어드민 기능] 월별 소식지를 조회합니다.")
     @GetMapping("/archives")
     public ApiResponse<AdminArchive> getAllArchives(
             @RequestParam int year,
@@ -29,7 +29,7 @@ public class AdminArchiveController {
     }
 
     // HOME delivery status 변경
-    @Operation(summary = "[어드민 기능] 가정 배송에 대한 배송 상태를 변경합니다.")
+    @Operation(summary = "[마스터 어드민 기능] 가정 배송에 대한 배송 상태를 변경합니다.")
     @PostMapping("/{archiveId}/home")
     public ApiResponse<?> updateHomeDeliveryStatus(
             @PathVariable Long archiveId,
@@ -40,7 +40,7 @@ public class AdminArchiveController {
     }
 
     // INSTITUTION delivery status 변경
-    @Operation(summary = "[어드민 기능] 기관 배송에 대환 일괄 배송 상태를 변경합니다.")
+    @Operation(summary = "[마스터 어드민 기능] 기관 배송에 대환 일괄 배송 상태를 변경합니다.")
     @PostMapping("/{institutionId}/institution")
     public ApiResponse<?> updateInstitutionDeliveryStatus(
             @PathVariable Long institutionId,

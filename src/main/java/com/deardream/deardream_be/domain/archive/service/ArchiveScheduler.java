@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Component
@@ -27,7 +28,7 @@ public class ArchiveScheduler {
         List<Long> familyIds = familyRepository.findAllFamilyIds();
 
         // ex) 2025-07-02
-        LocalDate now  = LocalDate.now();
+        LocalDate now  = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate target = now.minusMonths(1); // → 2025-06-01
 
         int targetYear = target.getYear();

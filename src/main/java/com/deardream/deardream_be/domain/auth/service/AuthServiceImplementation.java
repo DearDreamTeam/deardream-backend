@@ -95,19 +95,19 @@ public class AuthServiceImplementation implements AuthService {
     // 기본 로그아웃 - 토큰만 만료
     public void logout(String accessToken) {
 
-        kakaoUtil.logout(accessToken);
+        // kakaoUtil.logout(accessToken);
 
-        // 2. 토큰에서 kakaoId 추출
+        // 1. jwt 유효성 검사 및 파싱
         Long kakaoId = jwtUtil.getKakaoId(accessToken);
 
-        // 3. refresh 토큰/인증정보 redis에서 삭제
+        // 2. refresh 토큰/인증정보 redis에서 삭제
         redisUtil.deleteData("refresh:" + kakaoId);
 
     }
 
     // 카카오 계정과 함께 로그아웃 -> 카카오 로그아웃 이후 리다이렉트 uri
     // 클라이언트가 이 url로 리다이렉트하면 카카오 계정 세션까지 종료됨
-    public String logoutWithKakaoAccount(String logoutRedirectUri){
-        return kakaoUtil.logoutWithKakaoAccount(logoutRedirectUri);
+    public String logoutWithKakaoAccount(){
+        return kakaoUtil.logoutWithKakaoAccount();
     }
 }

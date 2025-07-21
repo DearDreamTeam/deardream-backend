@@ -91,21 +91,24 @@ public class AuthController {
         return ApiResponse.onSuccess("로그아웃에 성공했습니다.");
     }
 
-    @GetMapping("logout/kakao-account")
-    public ApiResponse<String> logoutKakaoAccount(@RequestParam("redirectUri") String logoutRedirectUri) {
-        String url = authService.logoutWithKakaoAccount(logoutRedirectUri);
-        return ApiResponse.onSuccess(url);
-    }
-
-    @GetMapping("/logout/callback")
-    public ApiResponse<String> kakaoAccountLogoutCallback(@RequestHeader(value = "Authorization", required = false) String token) {
+    @GetMapping("/logout/kakao-account")
+    public ApiResponse<String> logoutKakaoAccount(@RequestHeader(value = "Authorization") String token) {
         if (token != null && !token.isBlank()) {
             String accessToken = token.replace("Bearer ", "");
             authService.logout(accessToken);
         }
-        return ApiResponse.onSuccess("카카오 계정 및 서비스 로그아웃 완료");
+        String logoutRedirectUri = authService.logoutWithKakaoAccount();
+        return ApiResponse.onSuccess(logoutRedirectUri);
     }
 
+//    @GetMapping("/logout/callback")
+//    public ApiResponse<String> kakaoAccountLogoutCallback(@RequestHeader(value = "Authorization", required = false) String token) {
+//        if (token != null && !token.isBlank()) {
+//            String accessToken = token.replace("Bearer ", "");
+//            authService.logout(accessToken);
+//        }
+//        return ApiResponse.onSuccess("카카오 계정 및 서비스 로그아웃 완료");
+//    }
 
 
 }

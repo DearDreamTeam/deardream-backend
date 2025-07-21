@@ -12,7 +12,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,8 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 public class KakaoUtil {
 
-    private final ScheduledTaskHolder scheduledTaskHolder;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
 
     @Value("${kakao.client-id}")
@@ -33,12 +31,11 @@ public class KakaoUtil {
     @Value("${kakao.logout-redirect-uri}")
     private String logoutRedirectUri;
 
-    public KakaoUtil(ScheduledTaskHolder scheduledTaskHolder) {
-        this.scheduledTaskHolder = scheduledTaskHolder;
+    public KakaoUtil(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public KakaoDto.OAuthToken getAccessToken(String accessCode) {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -84,7 +81,6 @@ public class KakaoUtil {
     }
 
     public KakaoDto.KakaoProfile getUserInfo(String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         headers.add("Authorization", "Bearer " + accessToken);
@@ -127,8 +123,6 @@ public class KakaoUtil {
     // 일반 로그아웃
     public void logout(String accessToken) {
 
-//        RestTemplate restTemplate = new RestTemplate();
-
         if(accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.substring(7);
         }
@@ -160,7 +154,7 @@ public class KakaoUtil {
 
 
     // 카카오계정과 함께 로그아웃 : 계정 세션까지 만료(리다이렉트 url 반환)
-    public String logoutWithKakaoAccount(String logoutRedirectUri) {
+    public String logoutWithKakaoAccount() {
 
         // 카카오 rest api 키로 링크 생성
         return UriComponentsBuilder

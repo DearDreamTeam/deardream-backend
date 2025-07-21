@@ -1,0 +1,27 @@
+name: 리팩토링 제안
+description: 코드 구조 개선, 성능 향상 등의 리팩토링이 필요할 때 작성해 주세요.
+title: "[REFACTOR] "
+labels: ["refactor"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧹 리팩토링 제안서
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 리팩토링 대상
+      description: 어떤 코드 또는 구조를 개선하고 싶은지 설명해 주세요.
+      placeholder: "ex) useEffect 내부 로직 분리"
+    validations:
+      required: true
+
+  - type: input
+    id: benefit
+    attributes:
+      label: 🎯 기대 효과
+      description: 리팩토링 후 어떤 이점이 생기는지
+      placeholder: "가독성 향상, 테스트 용이성 증가 등"

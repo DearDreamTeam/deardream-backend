@@ -1,14 +1,11 @@
 package com.deardream.deardream_be.domain.archive.service;
 
-import com.deardream.deardream_be.domain.archive.dto.AdminArchive;
-import com.deardream.deardream_be.domain.archive.dto.AdminRequestDto;
-import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
+import com.deardream.deardream_be.domain.archive.dto.*;
 import com.deardream.deardream_be.domain.archive.entity.ArchiveBookmark;
 import com.deardream.deardream_be.domain.archive.entity.BookmarkStatus;
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.converter.ArchiveConverter;
-import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
 import com.deardream.deardream_be.domain.archive.repository.BookmarkRepository;
 import com.deardream.deardream_be.domain.common.AuditingBookmark;
@@ -160,6 +157,34 @@ public class ArchiveService {
                 .institutionArchives(institutionArchives)
                 .build();
     }
+
+    // 어드민 기능 - 개인 플랜 정보 조회
+    public AdminHomeArchiveResponse getHomeArchives(int year, int month) {
+        List<MonthlyArchive> archives = archiveRepository.findHomeArchives(year, month);
+
+        List<AdminHomeArchiveResponse.HomeArchiveDto> home = archives.stream()
+                .map(converter::toHomeArchiveResponse)
+                .toList();
+
+        return AdminHomeArchiveResponse.builder()
+                .homeArchives(home)
+                .build();
+    }
+
+
+    // 어드민 기능 - 기관 플랜 정보 조회
+    public AdminInstitutionArchiveResponse getInstitutionArchives(Long institutionId, int year, int month) {
+        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionIdAndYearMonth(institutionId, year, month);
+
+        List<AdminInstitutionArchiveResponse.InstitutionArchiveDto> institution = archives.stream()
+                .map(converter::toInstitutionArchiveResponse)
+                .toList();
+
+        return AdminInstitutionArchiveResponse.builder()
+                .institutions(institution)
+                .build();
+    }
+
 
     // 어드민 기능 - 배송 상태 업데이트
     @Transactional

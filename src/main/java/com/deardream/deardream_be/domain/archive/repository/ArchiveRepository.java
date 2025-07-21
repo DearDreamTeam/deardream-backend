@@ -28,6 +28,7 @@ public interface ArchiveRepository extends JpaRepository<MonthlyArchive, Long> {
             @Param("month") int month
     );
 
-    //MonthlyArchive findByIdAndArchiveYearAndAndArchiveMonth(Long archiveId, int archiveYear, int archiveMonth);
+    @Query("SELECT a FROM MonthlyArchive a WHERE a.archiveYear = :year AND a.archiveMonth = :month AND a.recipient.deliveryType = 'HOME'")
+    List<MonthlyArchive> findHomeArchives(int year, int month);
 
 }

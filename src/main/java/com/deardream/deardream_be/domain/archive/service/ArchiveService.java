@@ -13,6 +13,7 @@ import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.institution.Institution;
+import com.deardream.deardream_be.domain.institution.InstitutionRepository;
 import com.deardream.deardream_be.domain.post.service.PostImageService;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
@@ -40,6 +41,7 @@ public class ArchiveService {
     private final UserRepository userRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostService postService;
+    private final InstitutionRepository institutionRepository;
     private final RecipientRepository recipientRepository;
 
     /*
@@ -217,6 +219,44 @@ public class ArchiveService {
                 archive.updateDeliverStatus(request.getDeliveryStatus());
             }
         }
+
+    }
+
+    // 어드민 기능 - 기관 전체 조회
+    public InstitutionResponseDto getAllInstitutionsInfo(AdminArchiveRequest request) {
+
+        int year = request.getYear();   // 연도
+        int month = request.getMonth(); // 월
+
+        // 해당 연/월의 archive 중, INSTITUTION 대상만 조회
+        List<MonthlyArchive> monthlyArchives = archiveRepository.findAllByArchiveYearAndArchiveMonth(year, month)
+                .stream()
+                .filter(archive -> archive.getRecipient().getDeliveryType() == DeliveryType.INSTITUTION)
+                .toList();
+
+        // Institution -> 그 달의 대표 DeliveryStatus 매핑
+        Map<Institution, DeliveryStatus> institutionStatusMap = new HashMap<>();
+
+        for (MonthlyArchive archive : monthlyArchives) {
+            Institution institution = archive.getRecipient().getInstitution();
+            if (institution != null && !institutionStatusMap.containsKey(institution)) {
+                institutionStatusMap.put(institution, archive.getDeliveryStatus()); // 첫번째 걸 대표로
+            }
+        }
+
+        // 모든 Institution 가져와서, 있으면 상태 매핑
+        List<Institution> allInstitutions = institutionRepository.findAll();
+
+        List<InstitutionResponseDto.InstitutionInfo> infos = allInstitutions.stream()
+                .map(inst -> {
+                    DeliveryStatus status = institutionStatusMap.getOrDefault(inst, null); // 없으면 null
+                    return converter.inInstitutionResponseInfo(inst, status);
+                })
+                .toList();
+
+        return InstitutionResponseDto.builder()
+                .institutionInfoList(infos)
+                .build();
 
     }
 

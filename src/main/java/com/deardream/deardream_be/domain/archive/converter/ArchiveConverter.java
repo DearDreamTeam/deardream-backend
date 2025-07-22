@@ -1,11 +1,8 @@
 package com.deardream.deardream_be.domain.archive.converter;
 
-import com.deardream.deardream_be.domain.archive.dto.AdminArchive;
-import com.deardream.deardream_be.domain.archive.dto.AdminHomeArchiveResponse;
-import com.deardream.deardream_be.domain.archive.dto.AdminInstitutionArchiveResponse;
+import com.deardream.deardream_be.domain.archive.dto.*;
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
-import com.deardream.deardream_be.domain.archive.dto.ArchiveResponseDto;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.post.service.PostImageService;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
@@ -108,6 +105,22 @@ public class ArchiveConverter {
                 .phone(recipient.getPhone())
                 .pdfUrl(postImageService.getFilesUrl(archive.getS3Key()))
                 .build();
+    }
+
+    public InstitutionResponseDto.InstitutionInfo inInstitutionResponseInfo(Institution institution, DeliveryStatus deliveryStatus) {
+
+        return InstitutionResponseDto.InstitutionInfo.builder()
+                .institutionId(institution.getId())
+                .name(institution.getName())
+                .code(institution.getCode())
+                .currentMembers(10)
+                .nextMembers(10)
+                .address(institution.getAddress())
+                .postalCode(institution.getPostalCode())
+                .phone(institution.getPhone())
+                .deliveryStatus(deliveryStatus)
+                .build();
+
     }
 
 

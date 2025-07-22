@@ -46,6 +46,16 @@ public class AdminArchiveController {
         return ApiResponse.onSuccess(archiveService.getInstitutionArchives(institutionId, year, month));
     }
 
+    @Operation(summary = "[마스터 어드민 기능] 기관 전체 조회를 합니다.")
+    @GetMapping("/institutions")
+    public ApiResponse<InstitutionResponseDto> getAllInstitutions(
+            @RequestParam int year,
+            @RequestParam int month
+    ) {
+        AdminArchiveRequest request = AdminArchiveRequest.builder().year(year).month(month).build();
+        return ApiResponse.onSuccess(archiveService.getAllInstitutionsInfo(request));
+    }
+
 
     // HOME delivery status 변경
     @Operation(summary = "[마스터 어드민 기능] 가정 배송에 대한 배송 상태를 변경합니다.")
@@ -70,7 +80,4 @@ public class AdminArchiveController {
 
     }
 
-
-
 }
-

@@ -14,7 +14,6 @@ public interface FamilyRepository extends JpaRepository<Family, Long> {
 
     @Query("SELECT f.id FROM Family f")
     List<Long> findAllFamilyIds();
-    Optional<Family> findByLeaderId(Long leadrId);
-//    Optional<Family> findFamilyByLink(String link);
+    Optional<Family> findByLeaderId(Long leaderId);
     Optional<Family> findByFamilyLink(String inviteCode);
 }

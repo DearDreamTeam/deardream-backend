@@ -42,7 +42,7 @@ public class FamilyServiceImplementation implements FamilyService {
     @Transactional
     // 결제하기 버튼 누르면 createFamily 함
     // 가족 생성 (role = LEADER)
-    public FamilyResponseDto createFamily(Long kakaoId) {
+    public FamilyResponseDto createMyFamily(Long kakaoId) {
         // 1. 사용자 조회
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
@@ -152,21 +152,6 @@ public class FamilyServiceImplementation implements FamilyService {
 
         String inviteLinkToken = family.getFamilyLink();
 
-//        // 2. leaderId의 familyLink가 널값인지, 아니면 이미 만들어져 있는지 확인
-//        if(inviteLinkToken == null) {
-//
-//            // 3. 초대 토큰 생성
-//            inviteLinkToken = UUID.randomUUID().toString();
-//
-//            // 4. 엔티티에 토큰 반영
-//            family.updateFamilyInviteLink(inviteLinkToken);
-//            familyRepository.save(family);
-//        }
-//
-//        // 5. 이미 있다면 초대 url 반환
-//        return inviteLinkToken;
-//        // return String.format("%s/family/join?code=%s", frontendBaseUrl, inviteLinkToken);
-
         // 2. 이미 familyLink가 있다면 예외 발생
         if(inviteLinkToken != null) {
             throw new GeneralException(ErrorStatus._INVITE_LINK_ALREADY_EXISTS);
@@ -198,7 +183,7 @@ public class FamilyServiceImplementation implements FamilyService {
     @Override
     @Transactional
     // 초대 링크로 가입(role : USER) -> 이미 가입된 유저가 초대 그룹에 USER로 합류
-    public void joinByInvite(String inviteCode, Long kakaoId) {
+    public void joinByInviteCode(String inviteCode, Long kakaoId) {
         // 1. 초대코드로 Family 조회 (familyId는 family.getId()에 들어있음)
         Family family = familyRepository.findByFamilyLink(inviteCode)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INVALID_INVITE_LINK));

@@ -5,7 +5,7 @@ import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.institution.InstitutionRepository;
 import com.deardream.deardream_be.domain.institution.dto.DeleteUsersRequestDto;
 import com.deardream.deardream_be.domain.institution.dto.InstitutionUserResponse;
-import com.deardream.deardream_be.domain.payment.PaymentRepository;
+import com.deardream.deardream_be.domain.payment.repository.PaymentRepository;
 import com.deardream.deardream_be.domain.post.repository.PostRepository;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;

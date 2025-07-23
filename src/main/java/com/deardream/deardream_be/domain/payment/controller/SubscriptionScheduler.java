@@ -1,7 +1,7 @@
 package com.deardream.deardream_be.domain.payment.controller;
 
-import com.deardream.deardream_be.domain.payment.Payment;
-import com.deardream.deardream_be.domain.payment.PaymentRepository;
+import com.deardream.deardream_be.domain.payment.entity.Payment;
+import com.deardream.deardream_be.domain.payment.repository.PaymentRepository;
 import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.service.KakaoPayService;
 import lombok.RequiredArgsConstructor;

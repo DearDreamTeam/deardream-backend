@@ -1,7 +1,7 @@
-package com.deardream.deardream_be.domain.payment;
+package com.deardream.deardream_be.domain.payment.repository;
 
 
-import com.deardream.deardream_be.domain.family.entity.Family;
+import com.deardream.deardream_be.domain.payment.entity.Payment;
 import com.deardream.deardream_be.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

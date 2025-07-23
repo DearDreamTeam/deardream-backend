@@ -1,11 +1,10 @@
 package com.deardream.deardream_be.domain.payment.service;
 
 
-import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
-import com.deardream.deardream_be.domain.payment.Payment;
-import com.deardream.deardream_be.domain.payment.PaymentRepository;
+import com.deardream.deardream_be.domain.payment.entity.Payment;
+import com.deardream.deardream_be.domain.payment.repository.PaymentRepository;
 import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.dto.KakaoReadyResponse;
 import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
@@ -17,7 +16,6 @@ import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.config.KakaoPayConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.LifecycleState;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -26,9 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

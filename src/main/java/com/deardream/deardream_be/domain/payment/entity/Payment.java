@@ -1,16 +1,13 @@
-package com.deardream.deardream_be.domain.payment;
+package com.deardream.deardream_be.domain.payment.entity;
 
-import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Entity
@@ -39,7 +36,7 @@ public class Payment extends BaseEntity {
 
     // 가맹점 회원 ID, 결제 준비 API 응답과 일치
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @NotNull
@@ -51,6 +48,9 @@ public class Payment extends BaseEntity {
 
     @Setter
     private LocalDate approvedAt;
+
+    // 결제 만료일
+    private LocalDate expiredAt;
 
     // 구독 활성화 여부
     private Boolean isActive;
@@ -64,6 +64,7 @@ public class Payment extends BaseEntity {
     public void updateSuccess(String sid) {
         this.sid = sid;
         this.approvedAt = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        this.expiredAt = this.approvedAt.plusMonths(1);
         this.isActive = true;
         this.isSubscription = true;
     }
@@ -71,5 +72,6 @@ public class Payment extends BaseEntity {
     public void updateCancel() {
         this.isActive = false;
         this.isSubscription = false;
+        this.expiredAt =  null;
     }
 }

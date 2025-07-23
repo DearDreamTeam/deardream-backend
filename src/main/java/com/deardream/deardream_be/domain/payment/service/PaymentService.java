@@ -1,9 +1,7 @@
 package com.deardream.deardream_be.domain.payment.service;
 
-import com.deardream.deardream_be.domain.family.entity.Family;
-import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
-import com.deardream.deardream_be.domain.payment.Payment;
-import com.deardream.deardream_be.domain.payment.PaymentRepository;
+import com.deardream.deardream_be.domain.payment.entity.Payment;
+import com.deardream.deardream_be.domain.payment.repository.PaymentRepository;
 import com.deardream.deardream_be.domain.payment.dto.SubscriptionDto;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,4 +58,5 @@ public class PaymentService {
                 .build()).collect(Collectors.toList());
 
     }
+
 }

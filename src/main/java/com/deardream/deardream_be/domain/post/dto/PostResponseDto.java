@@ -19,4 +19,8 @@ public class PostResponseDto {
     // 이건 추훙에 들어가할 사항
     private LocalDateTime createdAt;
 
+    public void setRelations(String relations, String otherRelation) {
+        this.relations = relations != null ? relations : otherRelation;
+    }
+
 }

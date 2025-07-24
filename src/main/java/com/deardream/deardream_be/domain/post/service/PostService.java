@@ -90,6 +90,10 @@ public class PostService {
 
         int postCount = countPosts(author.getFamily().getId());
 
+        if (postCount > 20) {
+            throw new GeneralException(ErrorStatus._POST_UP_TO_20);
+        }
+
         CreatePostResponseDto responseDto = CreatePostResponseDto.builder()
                 .postId(post.getId())
                 .postCounts(postCount)
@@ -309,11 +313,15 @@ public class PostService {
                     .map(image -> postImageService.getFilesUrl(image.getS3Key()))
                     .toList();
 
+            String relations = post.getAuthor().getRelation() != null
+                    ? post.getAuthor().getRelation().getDescription()
+                    : post.getAuthor().getOtherRelation();
+
             return PostResponseDto.builder()
                     .postId(post.getId())
                     .authorId(post.getAuthor().getId())
                     .authorName(post.getAuthor().getName())
-                    .relations(post.getAuthor().getRelation().getDescription())
+                    .relations(relations)
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)

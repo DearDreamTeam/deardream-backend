@@ -1,4 +1,4 @@
-package com.deardream.deardream_be.domain.payment;
+package com.deardream.deardream_be.domain.payment.entity;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
@@ -42,34 +42,31 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotNull
-    private String itemName;
-
     // 자택 배송과 기관 방문 중 선택
     @Enumerated(EnumType.STRING)
-    private DeliveryType amountType;
+    @Column(nullable = false)
+    private DeliveryType deliveryType;
 
-    @Setter
-    private LocalDate approvedAt;
+    private LocalDateTime approvedAt;
 
-    // 구독 활성화 여부
-    private Boolean isActive;
+    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL)
+    private Subscription subscription;
 
-    private Boolean isSubscription;
-
-    public void deActive() {
-        this.isActive = false;
-    }
 
     public void updateSuccess(String sid) {
         this.sid = sid;
-        this.approvedAt = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        this.isActive = true;
-        this.isSubscription = true;
+        this.approvedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
-    public void updateCancel() {
-        this.isActive = false;
-        this.isSubscription = false;
+    // 결제 취소 시 처리
+    public void cancel() {
+        if(this.subscription != null) {
+            this.subscription.cancel();
+        }
     }
+
+    public void updateSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
 }

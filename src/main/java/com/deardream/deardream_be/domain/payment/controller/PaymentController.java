@@ -24,6 +24,6 @@ public class PaymentController {
     public ApiResponse<List<SubscriptionDto>> getAllPayments(
             @RequestParam Long familyId
     ) {
-        return ApiResponse.onSuccess(paymentService.getSubscriptions(familyId));
+        return ApiResponse.onSuccess(paymentService.getPayment(familyId));
     }
 }

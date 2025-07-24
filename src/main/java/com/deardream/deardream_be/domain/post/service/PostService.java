@@ -82,7 +82,6 @@ public class PostService {
                 PostImage postImage = PostImage.builder()
                         .post(post)
                         .s3Key(result.getKey())
-                        .fileName(image.getOriginalFilename())
                         .s3Url(result.getUrl())
                         .build();
                 postImageRepository.save(postImage);
@@ -140,7 +139,6 @@ public class PostService {
             PostImage postImage = PostImage.builder()
                     .post(post)
                     .s3Key(result.getKey())
-                    .fileName(image.getOriginalFilename())
                     .s3Url(result.getUrl())
                     .build();
             postImageRepository.save(postImage);
@@ -208,7 +206,6 @@ public class PostService {
                         .post(post)
                         .s3Key(result.getKey())
                         .s3Url(result.getUrl())
-                        .fileName(image.getOriginalFilename())
                         .build();
 
                 postImageRepository.save(postImage);
@@ -279,7 +276,6 @@ public class PostService {
                         .post(post)
                         .s3Key(result.getKey())
                         .s3Url(result.getUrl())
-                        .fileName(image.getOriginalFilename())
                         .build();
 
                 postImageRepository.save(postImage);

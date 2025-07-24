@@ -72,6 +72,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "이미지를 찾을 수 없습니다."),
     _ARCHIVE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 아카이브를 찾을 수 없습니다."),
     _INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "코드에 해당하는 기관을 찾을 수 없습니다."),
+    _INVALID_DELIVERY_TYPE(HttpStatus.NOT_FOUND, "404", "유효하지 않은 배달 타입입니다. (HOME, INSTITUTION)"),
 
     // (Optional) 추가 가능
     _METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "405", "허용되지 않은 메서드입니다."),

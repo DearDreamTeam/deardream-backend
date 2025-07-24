@@ -4,10 +4,12 @@ package com.deardream.deardream_be.domain.payment.service;
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
-import com.deardream.deardream_be.domain.payment.Payment;
+import com.deardream.deardream_be.domain.payment.SubscriptionRepository;
+import com.deardream.deardream_be.domain.payment.entity.Payment;
 import com.deardream.deardream_be.domain.payment.PaymentRepository;
 import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.dto.KakaoReadyResponse;
+import com.deardream.deardream_be.domain.payment.entity.Subscription;
 import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.user.entity.User;
@@ -17,7 +19,6 @@ import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.config.KakaoPayConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.LifecycleState;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +39,7 @@ public class KakaoPayService {
     private final FamilyRepository familyRepository;
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final SubscriptionRepository subscriptionRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
     private HttpHeaders getHeaders() {
@@ -52,7 +52,7 @@ public class KakaoPayService {
 
     // 결제 완료 요청
     @Transactional
-    public KakaoReadyResponse kakaoPayReady(Long userId) {
+    public KakaoReadyResponse kakaoPayReady(Long userId, DeliveryType deliveryType) {
         // 가정일 경우만 결제 진행
 
         User user = userRepository.findById(userId)
@@ -63,12 +63,26 @@ public class KakaoPayService {
 
         String partnerOrderId = "order_" + userId + "_" + System.currentTimeMillis();
 
+        // 결제 항목 구분
+        String itemName;
+        int totalAmount;
+
+        if(deliveryType == DeliveryType.HOME) {
+            itemName = "가정배송";
+            totalAmount = 6900; // 가정배송의 경우 월 8900원 구독료
+        } else if (deliveryType == DeliveryType.INSTITUTION) {
+            itemName = "기관방문";
+            totalAmount = 39000; // 기관방문의 경우 월 39000 구독료
+        } else {
+            throw new GeneralException(ErrorStatus._INVALID_DELIVERY_TYPE);
+        }
+
         parameters.put("cid", kakaoPayConfig.getCid()); // 가맹점 코드
         parameters.put("partner_order_id", partnerOrderId); // 실제 주문 번호로 교체
         parameters.put("partner_user_id", userId); // 실제 사용자 ID로 교체
-        parameters.put("item_name", "상품명"); // 실제 상품명으로 교체
+        parameters.put("item_name", itemName); // 실제 상품명으로 교체
         parameters.put("quantity", 1); // 실제 수량으로 교체
-        parameters.put("total_amount", 8900); // 가정의 경우 월 8900원 구독료
+        parameters.put("total_amount", totalAmount); // 가정의 경우 월 8900원 구독료
         parameters.put("tax_free_amount", 0); // 면세 금액, 필요시 설정
         parameters.put("approval_url", "http://localhost:3000/subscribe/pay/complete"); // 결제 성공 후 리다이렉트 URL
         parameters.put("cancel_url", "http://localhost:3000/api/v1/test/payment/cancel"); // 결제 취소 후 리다이렉트 URL
@@ -91,11 +105,8 @@ public class KakaoPayService {
         Payment payment = Payment.builder()
                 .partnerOrderId(partnerOrderId)
                 .tid(response.getTid())
-                .user(user) // userId를 String으로 변환
-                .itemName("가정배송")
-                .amountType(DeliveryType.HOME)
-                .isActive(false)
-                .isSubscription(false) // 아직 결제 전이므로 false
+                .user(user)
+                .deliveryType(deliveryType)
                 .build();
 
         paymentRepository.save(payment);
@@ -135,37 +146,47 @@ public class KakaoPayService {
 
         log.info("카카오페이 결제 승인 응답: {}", response);
 
-        payment.updateSuccess(response.getSid());
+        // 결제 성공 후 Subscription 갱신
+        handlePaymentSuccess(payment, response);
 
         return response;
     }
 
+
     @Transactional
-    public KakaoApproveResponse subscriptionPayment(Long userId) {
+    protected void createPaymentForSubscription(Subscription subscription) {
+        User user = subscription.getPayment().getUser();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+        DeliveryType deliveryType = subscription.getPayment().getDeliveryType();
 
-        Payment lastPayment = paymentRepository.findLastestByUser(user)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._PAYMENT_REQUEST_FAIL));
+        // 결제 항목 구분
+        String itemName;
+        int totalAmount;
 
-        if(lastPayment.getSid() == null) {
-            throw new GeneralException(ErrorStatus._PAYMENT_REQUEST_FAIL);
+        if (deliveryType == DeliveryType.HOME) {
+            itemName = "가정배송";
+            totalAmount = 6900; // 가정배송의 경우 월 6900원 구독료
+        } else if (deliveryType == DeliveryType.INSTITUTION) {
+            itemName = "기관방문";
+            totalAmount = 39000; // 기관방문의 경우 월 39000 구독료
+        } else {
+            throw new GeneralException(ErrorStatus._INVALID_DELIVERY_TYPE);
         }
 
-        String newPartnerOrderId = "order_" + userId + "_" + System.currentTimeMillis();
+        String newPartnerOrderId = "order_" + user.getId() + "_" + System.currentTimeMillis();
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("cid", kakaoPayConfig.getCid()); // 가맹점 코드
-        parameters.put("sid", lastPayment.getSid()); // 정기 결제 ID
-        parameters.put("partner_order_id", newPartnerOrderId); // 실제 주문 번호로 교체
-        parameters.put("partner_user_id", user.getId()); // 실제 사용자 ID로 교체
-        parameters.put("item_name", lastPayment.getItemName()); // 상품 이름
+        parameters.put("sid", subscription.getPayment().getSid()); // 정기 결제 ID
+        parameters.put("partner_order_id", newPartnerOrderId); // 새로운 주문 번호
+        parameters.put("partner_user_id", user.getId()); // 사용자 ID
+        parameters.put("item_name", itemName); // 상품 이름
         parameters.put("quantity", 1); // 수량
-        parameters.put("total_amount", 8900); // 결제 금액
-        parameters.put("tax_free_amount", 0); // 면세 금액, 필요시 설정
+        parameters.put("total_amount", totalAmount); // 결제 금액
+        parameters.put("tax_free_amount", 0); // 면세 금액 (필요시 설정)
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(parameters, this.getHeaders());
+        log.info("카카오페이 정기 결제 승인 요청: {}", parameters);
 
         KakaoApproveResponse response = restTemplate.postForObject(
                 "https://open-api.kakaopay.com/online/v1/payment/subscription",
@@ -175,58 +196,38 @@ public class KakaoPayService {
 
         log.info("카카오페이 정기 결제 승인 응답: {}", response);
 
-        // 신규 결제 저장
-        Payment newPayment = Payment.builder()
+        Payment payment = Payment.builder()
                 .partnerOrderId(newPartnerOrderId)
                 .tid(response.getTid())
-                .sid(response.getSid())
                 .user(user)
-                .itemName(lastPayment.getItemName())
-                .amountType(DeliveryType.HOME)
-                .approvedAt(LocalDate.parse(response.getApproved_at()))
-                .isActive(true)
-                .isSubscription(true)
+                .deliveryType(deliveryType)
                 .build();
 
-        paymentRepository.save(newPayment);
+        paymentRepository.save(payment);
 
-        log.info("새로운 정기 결제 저장: {}", newPayment);
-
-        return response;
+        subscription.extend(payment);
 
     }
 
-    @Transactional
-    public void cancelSubscription(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+    private void handlePaymentSuccess(Payment payment, KakaoApproveResponse response) {
+        if(payment.getSubscription() == null) {
+            Family family = Family.builder()
+                    .leader(payment.getUser())
+                    .build();
 
-        Payment payment = paymentRepository.findLastestByUser(user)
-                .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
+            familyRepository.save(family);
 
-        if(payment.getSid() == null) {
-            throw new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED);
+            Subscription subscription = new Subscription(payment, family);
+            subscriptionRepository.save(subscription);
+
+            payment.updateSubscription(subscription);
+        } else {
+            payment.getSubscription().extend(payment);
         }
 
-        // 카카오페이 정기 결제 취소 요청
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("cid", kakaoPayConfig.getCid());
-        parameters.put("sid", payment.getSid());
-
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(parameters, this.getHeaders());
-
-        restTemplate.postForObject(
-                "https://open-api.kakaopay.com/online/v1/payment/subscription/cancel",
-                request,
-                Void.class
-        );
-
-        // 결제 비활성화
-        payment.updateCancel();
+        payment.updateSuccess(response.getSid());
         paymentRepository.save(payment);
+
     }
-
-
-
 
 }

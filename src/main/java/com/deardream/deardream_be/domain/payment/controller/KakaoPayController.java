@@ -1,10 +1,12 @@
 package com.deardream.deardream_be.domain.payment.controller;
 
+import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.dto.KakaoReadyResponse;
 import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.payment.service.KakaoPayService;
+import com.deardream.deardream_be.domain.payment.service.SubscriptionService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +21,16 @@ import java.util.List;
 public class KakaoPayController {
 
     private final KakaoPayService kakaoPayService;
+    private final SubscriptionService subscriptionService;
 
     // 결제 요청
     @Operation(summary = "카카오페이 결제 요청을 준비합니다. response의 url로 연결해주세요.")
     @PostMapping("/ready")
     public ApiResponse<KakaoReadyResponse> readyToKakaoPay(
-            @RequestParam Long userId
-    ) {
-        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(userId));
+            @RequestParam Long userId,
+            @RequestParam DeliveryType deliveryType
+            ) {
+        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(userId, deliveryType));
     }
 
 
@@ -60,7 +64,7 @@ public class KakaoPayController {
     public ApiResponse<Void> cancelSubscription(
             @RequestParam Long userId
     ) {
-        kakaoPayService.cancelSubscription(userId);
+        subscriptionService.cancelSubscription(userId);
         return ApiResponse.onSuccess(null);
     }
 

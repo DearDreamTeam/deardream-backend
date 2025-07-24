@@ -49,4 +49,7 @@ public class Family extends BaseEntity {
     public void updateFamilyInviteLink(String inviteLinkToken) {
        this.familyLink = inviteLinkToken;
     }
+
+
+
 }

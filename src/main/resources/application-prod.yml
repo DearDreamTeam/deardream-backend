@@ -22,7 +22,8 @@ spring:
         registration:
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
-            redirect-uri: ${KAKAO_REDIRECT_URI}
+            # redirect-uri: ${KAKAO_REDIRECT_URI}
+            redirect-uri: "{baseUrl}/api/users/login/kakao"
             authorization-grant-type: authorization_code
             scope: name, account_email, profile_nickname
             client-name: Kakao

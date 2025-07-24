@@ -1,4 +1,4 @@
-package com.deardream.deardream_be.domain.post;
+package com.deardream.deardream_be.domain.post.entity;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.user.entity.User;
@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +24,10 @@ public class Post extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = true)
     private User author;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "family_id", nullable = false)
     private Family family;
 
@@ -43,6 +41,7 @@ public class Post extends BaseEntity {
     public void updateContent(String content) {
         this.content = content;
     }
+
 
 
 }

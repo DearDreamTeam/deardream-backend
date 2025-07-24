@@ -1,7 +1,6 @@
-package com.deardream.deardream_be.domain.post;
+package com.deardream.deardream_be.domain.post.entity;
 
-import com.deardream.deardream_be.domain.family.entity.Family;
-import com.deardream.deardream_be.domain.user.entity.User;
+import com.deardream.deardream_be.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,15 +17,9 @@ public class PostImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 원본 파일 이름과 서버 저장 파일 경로 분리
-    // 동일 이름 파일 업로드 시 오류 발생
-    @Column(unique = false, nullable = false)
-    private String fileName;
-
     // URL 경로 처럼 사용되는 버킷 경로
     private String s3Key;
 
-    private String s3Url;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)

@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.deardream.deardream_be.domain.post.exception.FileErrorCode;
+import com.deardream.deardream_be.domain.post.exception.FileException;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.common.UploadResult;
@@ -31,7 +33,6 @@ public class PostImageService {
 
     private final AmazonS3Client amazonS3Client;
     private final S3Config s3Config;
-    //private final PdfGeneratorUtil pdfGeneratorUtil;
 
     @Transactional
     public UploadResult uploadFile(String folder, String fileName, MultipartFile file) {
@@ -39,7 +40,7 @@ public class PostImageService {
         String extension = getFileExtension(fileName);
 
         if (extension == null) {
-            throw new GeneralException(ErrorStatus._FILE_EXTENSION_ERROR);
+            throw new FileException(FileErrorCode._FILE_EXTENSION_NOT_ALLOWED);
         }
 
         String uniqueFileName = UUID.randomUUID() + "-" + extension;
@@ -53,7 +54,7 @@ public class PostImageService {
             amazonS3Client.putObject(s3Config.getBucket(), key, inputStream, metadata);
 
         } catch (IOException e) {
-            throw new RuntimeException("File upload failed: " + e.getMessage(), e);
+            throw new FileException(FileErrorCode._FILE_UPLOAD_FAILED);
         }
 
         String url = amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
@@ -73,7 +74,7 @@ public class PostImageService {
         try (InputStream inputStream = new ByteArrayInputStream(pdfBytes)) {
             amazonS3Client.putObject(s3Config.getBucket(), key, inputStream, metadata);
         } catch (IOException e) {
-            throw new RuntimeException("PDF upload failed: " + e.getMessage(), e);
+            throw new FileException(FileErrorCode._FILE_UPLOAD_FAILED);
         }
 
         String url = amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
@@ -87,7 +88,7 @@ public class PostImageService {
             String key = fileUrl.substring(fileUrl.lastIndexOf(splitString) + splitString.length());
             amazonS3Client.deleteObject(new DeleteObjectRequest(s3Config.getBucket(), key));
         } catch (SdkClientException e) {
-            throw new GeneralException(ErrorStatus._S3_DELETE_ERROR);
+            throw new FileException(FileErrorCode._FILE_DELETE_FAILED);
         }
     }
 

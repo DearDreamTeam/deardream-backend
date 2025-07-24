@@ -1,7 +1,7 @@
 package com.deardream.deardream_be.domain.post.repository;
 
-import com.deardream.deardream_be.domain.post.Post;
-import com.deardream.deardream_be.domain.post.PostImage;
+import com.deardream.deardream_be.domain.post.entity.Post;
+import com.deardream.deardream_be.domain.post.entity.PostImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

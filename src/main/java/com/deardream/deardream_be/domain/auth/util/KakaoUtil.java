@@ -2,6 +2,7 @@ package com.deardream.deardream_be.domain.auth.util;
 
 import com.deardream.deardream_be.domain.auth.dto.KakaoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -25,17 +26,18 @@ public class KakaoUtil {
     @Value("${kakao.client-id}")
     private String client;
 
-    @Value("${kakao.redirect-uri}")
-    private String redirectUri;
-
-    @Value("${kakao.logout-redirect-uri}")
-    private String logoutRedirectUri;
+//    redirect uri를 value로 사용하지 않음
+//    @Value("${kakao.redirect-uri}")
+//    private String redirectUri;
+//
+//    @Value("${kakao.logout-redirect-uri}")
+//    private String logoutRedirectUri;
 
     public KakaoUtil(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public KakaoDto.OAuthToken getAccessToken(String accessCode) {
+    public KakaoDto.OAuthToken getAccessToken(String accessCode, String redirectUri) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -154,13 +156,18 @@ public class KakaoUtil {
 
 
     // 카카오계정과 함께 로그아웃 : 계정 세션까지 만료(리다이렉트 url 반환)
-    public String logoutWithKakaoAccount() {
+    public String logoutWithKakaoAccount(HttpServletRequest request) {
+
+        String baseUrl = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString())
+                .replacePath(null)
+                .build()
+                .toUriString();
 
         // 카카오 rest api 키로 링크 생성
         return UriComponentsBuilder
                 .fromHttpUrl("https://kauth.kakao.com/oauth/logout")
                 .queryParam("client_id", client)
-                .queryParam("logout_redirect_uri", logoutRedirectUri)
+                .queryParam("logout_redirect_uri", baseUrl)
                 .build().toUriString();
     }
 

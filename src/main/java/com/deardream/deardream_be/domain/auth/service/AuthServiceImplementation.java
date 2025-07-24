@@ -11,6 +11,7 @@ import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.util.RedisUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -40,10 +41,19 @@ public class AuthServiceImplementation implements AuthService {
 
     @Override
     @Transactional
-    public KakaoLoginResponseDto loginWithKakao(String code, Long familyId) {
+    public KakaoLoginResponseDto loginWithKakao(String code, Long familyId, HttpServletRequest request) {
+
+        // host 정보로 redirectUri 결정
+        String host = request.getHeader("host");
+        String redirectUri = switch (host) {
+            case "localhost:3000" -> "http://localhost:3000";
+            case "localhost:8080" -> "http://localhost:8080";
+            case "deardream.site", "www.deardream.site" -> "https://www.deardream.site";
+            default -> "https://www.deardream.site";
+        };
 
         // 1. 카카오에서 access token 요청
-        KakaoDto.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code);
+        KakaoDto.OAuthToken tokenResponse = kakaoUtil.getAccessToken(code, redirectUri);
 
         // 2. 카카오에서 사용자 정보 요청
         KakaoDto.KakaoProfile kakaoProfile = kakaoUtil.getUserInfo(tokenResponse.getAccess_token());
@@ -107,7 +117,7 @@ public class AuthServiceImplementation implements AuthService {
 
     // 카카오 계정과 함께 로그아웃 -> 카카오 로그아웃 이후 리다이렉트 uri
     // 클라이언트가 이 url로 리다이렉트하면 카카오 계정 세션까지 종료됨
-    public String logoutWithKakaoAccount(){
-        return kakaoUtil.logoutWithKakaoAccount();
+    public String logoutWithKakaoAccount(HttpServletRequest request) {
+        return kakaoUtil.logoutWithKakaoAccount(request);
     }
 }

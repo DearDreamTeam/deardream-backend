@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,9 +28,9 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/login/kakao")         // 여기로 들어오는 code가 카카오가 준 인가코드
-    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, @RequestParam(value = "state", required = false) Long familyId) {
+    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, @RequestParam(value = "state", required = false) Long familyId, HttpServletRequest request) {
 
-        KakaoLoginResponseDto loginResponseDto = authService.loginWithKakao(code, familyId);
+        KakaoLoginResponseDto loginResponseDto = authService.loginWithKakao(code, familyId, request);
         return ApiResponse.onSuccess(loginResponseDto);
 
     }
@@ -92,12 +93,12 @@ public class AuthController {
     }
 
     @GetMapping("/logout/kakao-account")
-    public ApiResponse<String> logoutKakaoAccount(@RequestHeader(value = "Authorization") String token) {
+    public ApiResponse<String> logoutKakaoAccount(@RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         if (token != null && !token.isBlank()) {
             String accessToken = token.replace("Bearer ", "");
             authService.logout(accessToken);
         }
-        String logoutRedirectUri = authService.logoutWithKakaoAccount();
+        String logoutRedirectUri = authService.logoutWithKakaoAccount(request);
         return ApiResponse.onSuccess(logoutRedirectUri);
     }
 

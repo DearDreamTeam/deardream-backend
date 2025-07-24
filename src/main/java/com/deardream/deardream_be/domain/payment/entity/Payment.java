@@ -39,7 +39,7 @@ public class Payment extends BaseEntity {
 
     // 가맹점 회원 ID, 결제 준비 API 응답과 일치
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     // 자택 배송과 기관 방문 중 선택

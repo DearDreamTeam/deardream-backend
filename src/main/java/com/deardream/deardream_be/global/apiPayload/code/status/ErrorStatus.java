@@ -47,6 +47,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _INSTITUTION_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "400", "이미 해당 기관이 존재합니다."),
     _FILE_EXTENSION_ERROR(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 파일 확장자입니다. (pdf, jpg, jpeg, png)"),
     _INSTITUTION_INFO_MISMATCH(HttpStatus.BAD_REQUEST, "400", "해당 기관이 존재하지 않습니다. 기관명과 기관 전화번호를 다시 확인해주세요."),
+    _INVALID_REDIRECT_URI(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 REDIRECT URI입니다."),
 
     // 401 Unauthorized
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),

@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/api/v1/institutions/**",
                                         "/api/v1/admin/**",
                                     "api/v1/family/invitation/**",
-                                "/api/v1/master/**"
+                                "/api/v1/master/**",
+                                "/profile/**"
                                         ).permitAll()
                         .anyRequest().authenticated()
                 )

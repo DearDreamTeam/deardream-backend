@@ -45,10 +45,12 @@ public class AuthServiceImplementation implements AuthService {
 
         // host 정보로 redirectUri 결정
         String host = request.getHeader("host");
+        log.info("카카오 로그인 요청 host 헤더: {}", host);
         String redirectUri = switch (host) {
             case "localhost:3000" -> "http://localhost:3000/profile";
             case "localhost:8080" -> "http://localhost:8080/profile";
             case "deardream.site", "www.deardream.site" -> "https://www.deardream.site/profile";
+            case "vote-dream.p-e.kr" -> "https://vote-dream.p-e.kr/profile";
             default -> "https://www.deardream.site/profile";
         };
 

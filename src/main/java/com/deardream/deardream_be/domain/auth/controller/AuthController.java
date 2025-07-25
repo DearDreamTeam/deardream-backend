@@ -2,10 +2,12 @@ package com.deardream.deardream_be.domain.auth.controller;
 
 import com.deardream.deardream_be.domain.auth.dto.KakaoLoginResponseDto;
 import com.deardream.deardream_be.domain.auth.service.AuthService;
+import com.deardream.deardream_be.domain.auth.util.WhiteRedirectUriList;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
+import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import com.deardream.deardream_be.global.apiPayload.exception.OnKakaoLoginValidation;
 import com.deardream.deardream_be.global.util.RedisUtil;
@@ -28,9 +30,18 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/login/kakao")         // 여기로 들어오는 code가 카카오가 준 인가코드
-    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, @RequestParam(value = "state", required = false) Long familyId, HttpServletRequest request) {
+    public ApiResponse<KakaoLoginResponseDto> kakaoLogin(@RequestParam("code") String code, @RequestParam(value = "redirectUri") String redirectUri, @RequestParam(value = "state", required = false) Long familyId) {
 
-        KakaoLoginResponseDto loginResponseDto = authService.loginWithKakao(code, familyId, request);
+        log.info("Received redirectUri={}", redirectUri);
+
+        if (!WhiteRedirectUriList.getAllowedRedirectUris().contains(redirectUri)) {
+            boolean allowed = WhiteRedirectUriList.getAllowedRedirectUris().contains(redirectUri);
+            log.info("Is redirectUri allowed? {}", allowed);
+
+            throw new GeneralException(ErrorStatus._INVALID_REDIRECT_URI);
+        }
+
+        KakaoLoginResponseDto loginResponseDto = authService.loginWithKakao(code, redirectUri, familyId);
         return ApiResponse.onSuccess(loginResponseDto);
 
     }

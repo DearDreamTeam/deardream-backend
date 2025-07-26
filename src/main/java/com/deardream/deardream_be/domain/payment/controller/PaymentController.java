@@ -31,4 +31,12 @@ public class PaymentController {
     ) {
         return ApiResponse.onSuccess(paymentService.deActive(userId));
     }
+
+    @Operation(summary = "현재 플랜 상태를 나타냅니다.")
+    @GetMapping("/status/{familyId}")
+    public ApiResponse<?> getPlanStatus(
+            @PathVariable Long familyId
+    ) {
+        return ApiResponse.onSuccess(paymentService.getPlanStatus(familyId));
+    }
 }

@@ -7,7 +7,9 @@ public class WhiteRedirectUriList {
             "https://www.deardream.site/profile",
             "https://www.deardream.site/admin/login",
             "http://localhost:3000/profile",
-            "http://localhost:3000/admin/login"
+            "http://localhost:3000/admin/login",
+            "https://deardream-frontend-xi.vercel.app/profile",
+            "http://localhost:8080/profile"
     );
 
     public static Set<String> getAllowedRedirectUris() {

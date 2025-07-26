@@ -2,27 +2,22 @@ package com.deardream.deardream_be.domain.family.service;
 
 import com.deardream.deardream_be.domain.family.dto.FamilyInvitationDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyMembersResponseDto;
-import com.deardream.deardream_be.domain.family.dto.FamilyRequestDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyResponseDto;
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.post.Post;
+import com.deardream.deardream_be.domain.post.repository.PostRepository;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
-import com.deardream.deardream_be.domain.user.Role;
-import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
-import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +32,7 @@ public class FamilyServiceImplementation implements FamilyService {
     private final FamilyRepository familyRepository;
     private final UserRepository userRepository;
     private final RecipientRepository recipientRepository;
+    private final PostRepository postRepository;
 
     @Override
     @Transactional
@@ -202,6 +198,32 @@ public class FamilyServiceImplementation implements FamilyService {
 
         // 5. 저장하면 user.familyId 칼럼에 자동으로 family.getId 반영
         userRepository.save(user);
+    }
+
+    // 테스트용 임시 로직
+    @Transactional
+    public void deleteFamily(Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        // 가족의 모든 멤버를 조회
+        List<User> familyMembers = userRepository.findAllByFamilyId(family.getId());
+
+        List<Post> posts = postRepository.findAllByFamily(family);
+
+        // 가족의 모든 게시글 삭제
+        for (Post post : posts) {
+            post.deleteFamily();
+        }
+
+        // 가족의 모든 멤버에서 가족 정보 제거
+        for (User member : familyMembers) {
+            member.deleteFamily();
+        }
+
+        // 가족 삭제
+        familyRepository.delete(family);
+
     }
 
 }

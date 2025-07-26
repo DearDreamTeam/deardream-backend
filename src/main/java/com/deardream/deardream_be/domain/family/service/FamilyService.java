@@ -24,4 +24,7 @@ public interface FamilyService {
     // 초대 링크를 통해 가족 가입 (user 권한 부여)
     void joinByInviteCode(String inviteCode, Long kakaoId);
 
+    // 데모용 테스트 api
+    void deleteFamily(Long familyId);
+
 }

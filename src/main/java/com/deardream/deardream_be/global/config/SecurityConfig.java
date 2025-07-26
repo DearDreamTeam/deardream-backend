@@ -53,7 +53,8 @@ public class SecurityConfig {
                                         "/api/v1/admin/**",
                                     "api/v1/family/invitation/**",
                                 "/api/v1/master/**",
-                                "/profile/**"
+                                "/profile/**",
+                                "/api/v1/family/test/**"
                                         ).permitAll()
                         .anyRequest().authenticated()
                 )

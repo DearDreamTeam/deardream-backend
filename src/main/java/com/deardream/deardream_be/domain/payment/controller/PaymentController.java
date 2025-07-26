@@ -5,10 +5,7 @@ import com.deardream.deardream_be.domain.payment.service.PaymentService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +22,21 @@ public class PaymentController {
             @RequestParam Long familyId
     ) {
         return ApiResponse.onSuccess(paymentService.getSubscriptions(familyId));
+    }
+
+    @Operation(summary = "플랜 서비스를 해제합니다. 결제한 사람의 아이디를 넣어주세요.")
+    @PatchMapping("/cancel")
+    public ApiResponse<Void> cancelPlan(
+            @RequestParam Long userId
+    ) {
+        return ApiResponse.onSuccess(paymentService.deActive(userId));
+    }
+
+    @Operation(summary = "현재 플랜 상태를 나타냅니다.")
+    @GetMapping("/status/{familyId}")
+    public ApiResponse<?> getPlanStatus(
+            @PathVariable Long familyId
+    ) {
+        return ApiResponse.onSuccess(paymentService.getPlanStatus(familyId));
     }
 }

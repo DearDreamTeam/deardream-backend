@@ -93,4 +93,13 @@ public class FamilyController {
         familyService.joinByInviteCode(inviteCode, kakaoId);
         return ApiResponse.onSuccess(null);
     }
+
+    @Operation(summary = "가족 삭제 임시 api (familyId를 넣으면 해당 가족을 삭제합니다. 테스트용)")
+    @DeleteMapping("/test/{familyId}")
+    public ApiResponse<?> deleteByFamilyId(
+            @PathVariable Long familyId
+    ) {
+        familyService.deleteFamily(familyId);
+        return ApiResponse.onSuccess(null);
+    }
 }

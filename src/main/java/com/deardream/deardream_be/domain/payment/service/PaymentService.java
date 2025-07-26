@@ -5,6 +5,8 @@ import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.payment.Payment;
 import com.deardream.deardream_be.domain.payment.PaymentRepository;
 import com.deardream.deardream_be.domain.payment.dto.SubscriptionDto;
+import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
+import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
@@ -18,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +30,7 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final FamilyRepository familyRepository;
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
@@ -59,6 +61,51 @@ public class PaymentService {
                 .paymentDate(payment.getApprovedAt())
                 .amount(8900)
                 .build()).collect(Collectors.toList());
+
+    }
+
+    // 플랜 해지
+    @Transactional
+    public Void deActive(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        Payment lastPayment = paymentRepository.findLastestByUser(user)
+                .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
+
+        lastPayment.updateCancel();
+
+        log.info("구독 해지: {} - {}", user.getId(), lastPayment.getTid());
+
+        return null;
+    }
+
+    public boolean getPlanStatus(Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        User Leader = family.getLeader();
+
+        if (Leader == null) {
+            throw new GeneralException(ErrorStatus._FAMILY_LEADER_NOT_FOUND);
+        }
+
+        Payment lastPayment = paymentRepository.findLastestByUser(Leader)
+                .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
+
+        if (lastPayment.getIsActive() && lastPayment.getApprovedAt() != null) {
+            LocalDate expiredDate = lastPayment.getApprovedAt().plusDays(30);
+            if (expiredDate.isAfter(LocalDate.now())) {
+                log.info("✅ 구독 활성 상태 - 만료일: {}", expiredDate);
+                return true;
+            } else {
+                log.info("⚠️ 구독 만료됨 - 만료일: {}", expiredDate);
+                throw new GeneralException(ErrorStatus._SUBSCRIPTION_EXPIRED);
+            }
+        } else {
+            log.info("❌ 구독 비활성 상태입니다.");
+            throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
+        }
 
     }
 }

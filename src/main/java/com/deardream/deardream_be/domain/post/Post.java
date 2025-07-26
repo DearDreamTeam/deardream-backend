@@ -26,11 +26,11 @@ public class Post extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = true)
     private User author;
 
     @ManyToOne
-    @JoinColumn(name = "family_id", nullable = false)
+    @JoinColumn(name = "family_id", nullable = true)
     private Family family;
 
     @Column(length = 1000)
@@ -44,5 +44,8 @@ public class Post extends BaseEntity {
         this.content = content;
     }
 
+    public void deleteFamily() {
+        this.family = null;
+    }
 
 }

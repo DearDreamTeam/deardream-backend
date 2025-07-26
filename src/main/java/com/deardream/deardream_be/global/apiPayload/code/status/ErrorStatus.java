@@ -73,6 +73,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "이미지를 찾을 수 없습니다."),
     _ARCHIVE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 아카이브를 찾을 수 없습니다."),
     _INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "코드에 해당하는 기관을 찾을 수 없습니다."),
+    _FAMILY_LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "가족의 리더를 찾을 수 없습니다."),
 
     // (Optional) 추가 가능
     _METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "405", "허용되지 않은 메서드입니다."),
@@ -81,6 +82,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "503", "서비스를 사용할 수 없습니다. 점검 중일 수 있습니다."),
     _INVALID_INSTITUTION_CODE(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 기관 코드입니다."),
     _INSTITUTION_CODE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 기관 코드입니다."),
+    _SUBSCRIPTION_EXPIRED(HttpStatus.BAD_REQUEST, "400", "구독이 만료되었습니다. 새로운 구독을 시작해주세요."),
+    _SUBSCRIPTION_IS_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "400", "구독이 활성화되지 않았습니다. 구독을 시작해주세요.")
+
     ;
 
     private final HttpStatus httpStatus;

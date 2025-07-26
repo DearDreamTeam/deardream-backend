@@ -92,11 +92,70 @@ public class AuthServiceImplementation implements AuthService {
                 .build();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public KakaoLoginResponseDto reissueToken(String refreshToken) {
+
+        // Bearer prefix 제거
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7).trim();
+        } else {
+            refreshToken = refreshToken.trim();
+        }
+
+        // 1. JWT 파싱 (유효성 검사)
+        try {
+            jwtUtil.parseClaims(refreshToken);
+        } catch (Exception e) {
+            log.error("[Reissue] 유효하지 않은 리프레시 토큰: {}", refreshToken, e);
+            throw new GeneralException(ErrorStatus._TOKEN_INVALID);
+        }
+
+        // 2. JWT type 클레임 체크 (access/refresh 구분)
+        String tokenType = jwtUtil.parseClaims(refreshToken).get("type", String.class);
+        if (!"refresh".equals(tokenType)) {
+            log.error("[Reissue] 잘못된 토큰 타입(type): {}", tokenType);
+            throw new GeneralException(ErrorStatus._TOKEN_INVALID);
+        }
+
+        // 3. kakaoId 추출 및 Redis key 설정
+        Long kakaoId = jwtUtil.getKakaoId(refreshToken);
+        String redisKey = "refresh:" + kakaoId;
+
+        // 4. redis에 저장된 리프레시 토큰과 비교
+        String storedRefreshToken = redisUtil.getData(redisKey);
+        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+            log.error("[Reissue] 저장된 토큰과 불일치 또는 만료 (탈취 위험). kakaoId: {}", kakaoId);
+            throw new GeneralException(ErrorStatus._TOKEN_INVALID);
+        }
+
+        // 5. 사용자 정보 조회
+        User user = userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 6. 새 토큰 생성
+        String newAccessToken = jwtUtil.createAccessToken(user.getKakaoId(), user.getRole(), user.getId());
+        String newRefreshToken = jwtUtil.createRefreshToken(user.getKakaoId(), user.getRole(), user.getId());
+
+        // 7. Redis 갱신 (기존 리프레시 토큰 삭제 후 새 토큰 저장)
+        redisUtil.deleteData(redisKey);
+        redisUtil.setDataExpire(redisKey, newRefreshToken, REFRESH_EXP_TIME);
+
+        // 8. DTO 반환
+        log.info("[Reissue] 새 토큰 발급 완료 for kakaoId={}", user.getKakaoId());
+        return KakaoLoginResponseDto.builder()
+                .name(user.getName())
+                .isRegistered(true)
+                .isFamilyRegistered(user.getFamily() != null)
+                .kakaoId(user.getKakaoId())
+                .newAccessToken(newAccessToken)
+                .newRefreshToken(newRefreshToken)
+                .build();
+    }
+
 
     // 기본 로그아웃 - 토큰만 만료
     public void logout(String accessToken) {
-
-        // kakaoUtil.logout(accessToken);
 
         // 1. jwt 유효성 검사 및 파싱
         Long kakaoId = jwtUtil.getKakaoId(accessToken);

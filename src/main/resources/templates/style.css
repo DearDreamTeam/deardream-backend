@@ -8,8 +8,8 @@ body {
 }
 
 .A4-wrapper {
-  width: 595px;
-  height: 842px;
+  width: 21cm; /* A4 가로 */
+  height: 29.7cm; /* A4 세로 */
   position: relative;
 
   page-break-inside: avoid; /* 요소 내부에서 잘리지 않게 함 */
@@ -17,79 +17,80 @@ body {
 }
 
 .container {
-  width: 554px;
-  height: 370px;
+  width: 19.54cm; /* 554px × 0.0353 */
+  height: 13.06cm; /* 370px × 0.0353 */
 
-  margin: 0 20px;
+  margin: 0 0.71cm; /* 20px × 0.0353 */
+  background-color: aliceblue;
 }
 
 .even-container {
-  padding-top: 40px;
+  padding-top: 1.41cm; /* 40px × 0.0353 */
 }
 
 .odd-container {
-  padding-top: 16px;
+  padding-top: 0.57cm; /* 16px × 0.0353 */
 }
 
 .page-number {
   color: #5e5e5e;
-  font-size: 16px;
+  font-size: 0.57cm; /* 16px × 0.0353 */
   font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: -0.4px;
-  bottom: 12px;
-  left: 294px;
+  line-height: 0.85cm; /* 24px × 0.0353 */
+  letter-spacing: -0.01cm; /* -0.4px × 0.0353 */
+  bottom: 0.42cm; /* 12px × 0.0353 */
+  left: 10.36cm; /* 294px × 0.0353 */
   position: absolute;
 }
 
 /* text 설정 */
 .text-name {
   color: #313131;
-  padding-right: 8px;
+  padding-right: 0.28cm; /* 8px × 0.0353 */
 
-  font-size: 20px;
+  font-size: 0.71cm; /* 20px × 0.0353 */
   font-weight: 600;
-  line-height: 30px; /* 150% */
-  letter-spacing: -0.3px;
+  line-height: 1.06cm; /* 30px × 0.0353 */
+  letter-spacing: -0.01cm; /* -0.3px × 0.0353 */
 }
 
 .text-relation {
   color: #018941;
-  padding-right: 4px;
+  padding-right: 0.14cm; /* 4px × 0.0353 */
 
-  font-size: 20px;
+  font-size: 0.71cm; /* 20px × 0.0353 */
   font-weight: 600;
-  line-height: 30px; /* 150% */
-  letter-spacing: -0.3px;
+  line-height: 1.06cm; /* 30px × 0.0353 */
+  letter-spacing: -0.01cm; /* -0.3px × 0.0353 */
 }
 
 .text-content {
   color: #5e5e5e;
 
-  font-size: 16px;
+  font-size: 0.57cm; /* 16px × 0.0353 */
   font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: -0.4px;
+  line-height: 0.85cm; /* 24px × 0.0353 */
+  letter-spacing: -0.01cm; /* -0.4px × 0.0353 */
 }
 
 .text-date {
   display: inline;
   color: #b6b6b6;
 
-  font-size: 12px;
+  font-size: 0.42cm; /* 12px × 0.0353 */
   font-weight: 400;
-  line-height: 24px; /* 200% */
-  letter-spacing: -0.3px;
+  line-height: 0.85cm; /* 24px × 0.0353 */
+  letter-spacing: -0.01cm; /* -0.3px × 0.0353 */
 }
 
 .text-date-34 {
   display: block;
   color: #b6b6b6;
 
-  font-size: 12px;
+  font-size: 0.42cm; /* 12px × 0.0353 */
   font-weight: 400;
-  line-height: 24px; /* 200% */
-  letter-spacing: -0.3px;
+  line-height: 0.85cm; /* 24px × 0.0353 */
+  letter-spacing: -0.01cm; /* -0.3px × 0.0353 */
 }
 
 img {
@@ -100,14 +101,14 @@ img {
 }
 
 .aspect-34-image {
-  width: 277.5px;
-  height: 370px;
+  width: 9.79cm; /* 277.5px × 0.0353 */
+  height: 13.06cm; /* 370px × 0.0353 */
   float: left;
 }
 
 .aspect-43-image {
-  width: 273px;
-  height: 204.75px;
+  width: 9.62cm; /* 273px × 0.0353 */
+  height: 7.22cm; /* 204.75px × 0.0353 */
 }
 
 .second-image {
@@ -115,48 +116,48 @@ img {
 }
 
 .profile-image {
-  width: 58px;
-  height: 58px;
+  width: 2.05cm; /* 58px × 0.0353 */
+  height: 2.05cm; /* 58px × 0.0353 */
 
   border-radius: 100px;
-  border: 7px solid #fefefe;
+  border: 0.25cm solid #fefefe; /* 7px × 0.0353 */
   position: absolute;
-  top: -8px;
-  left: -8px;
+  top: -0.28cm; /* -8px × 0.0353 */
+  left: -0.28cm; /* -8px × 0.0353 */
   background-color: #fefefe;
 }
 
 .aspect-2-image-profile {
-  top: -30px;
+  top: -1.06cm; /* -30px × 0.0353 */
 }
 
 .aspect-34-contents {
   position: relative;
-  width: 285px;
+  width: 10.06cm; /* 285px × 0.0353 */
 
   margin-left: auto;
   margin-right: 0;
 }
 
 .text-container-34 {
-  width: 219px;
+  width: 7.73cm; /* 219px × 0.0353 */
 
   margin-left: auto;
   margin-right: 0;
 }
 
 .aspect-43-contents {
-  bottom: -4px;
+  bottom: -0.14cm; /* -4px × 0.0353 */
   position: relative;
 }
 
 .text-container {
-  width: 488px;
+  width: 17.22cm; /* 488px × 0.0353 */
   margin-left: auto;
   margin-right: 0;
 }
 
 .aspect-43-image-container {
-  height: 204.75px;
-  padding-bottom: 10px;
+  height: 7.22cm; /* 204.75px × 0.0353 */
+  padding-bottom: 0.35cm; /* 10px × 0.0353 */
 }

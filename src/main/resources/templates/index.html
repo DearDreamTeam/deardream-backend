@@ -45,7 +45,7 @@
               <span class="text-name" th:text="${post.authorName}"></span>
               <span
                 th:classappend="${post.imageUrls.size() == 1 ? 'text-date-34' : 'text-date'}"
-                th:text="${post.createdAt}"></span>
+                th:text="''+ ${#temporals.format(post.createdAt, 'MM월 dd일 ')}+ (${post.createdAt.hour &lt; 12} ? '오전' : '오후')+ ' '+ ${#temporals.format(post.createdAt, 'h시 m분')}"></span>
             </div>
             <div class="text-content" th:text="${post.content}"></div>
           </div>

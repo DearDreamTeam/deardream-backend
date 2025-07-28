@@ -21,8 +21,7 @@ public class UserRequestDto {
     @NotNull
     private String name;
 
-//    @NotNull
-//    private String profileImage;
+    private String profileImage;
 
     @NotNull
     private LocalDate birth;

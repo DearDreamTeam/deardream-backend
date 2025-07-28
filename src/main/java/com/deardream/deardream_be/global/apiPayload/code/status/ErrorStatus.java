@@ -19,6 +19,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _PDF_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "PDF 업로드에 실패하였습니다."),
     _PDF_DOWNLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "PDF 다운로드에 실패하였습니다."),
     _PDF_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "PDF 삭제에 실패하였습니다."),
+    _FILE_DOWNLOAD_ERROR_FROM_URL(HttpStatus.INTERNAL_SERVER_ERROR, "500", "URL로부터 파일을 다운받는 것에 실패했습니다."),
 
     // 400 Bad Request
     _BAD_REQUEST(HttpStatus.BAD_REQUEST, "400", "잘못된 요청입니다."),

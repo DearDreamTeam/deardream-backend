@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -116,7 +117,46 @@ public class PostImageService {
 
     }
 
+    public UploadResult uploadImageFromUrl(String folder, String fileName, String imageUrl) {
+        HttpURLConnection connection = null;
+        InputStream inputStream = null;
+        try {
+            URL newUrl = new URL(imageUrl);
+            connection = (HttpURLConnection) newUrl.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+            int responseCode = connection.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new GeneralException(ErrorStatus._FILE_DOWNLOAD_ERROR_FROM_URL);
+            }
+            inputStream = connection.getInputStream();
 
+            // S3 업로드
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(connection.getContentType());
 
+            int contentLength = connection.getContentLength();
+            if (contentLength > 0) {
+                metadata.setContentLength(contentLength);
+            }
 
+            String key = folder + "/" + fileName;
+            amazonS3Client.putObject(s3Config.getBucket(), key, inputStream, metadata);
+
+            String url = amazonS3Client.getUrl(s3Config.getBucket(), key).toString();
+            return new UploadResult(key, url);
+
+        } catch (IOException e) {
+            throw new GeneralException(ErrorStatus._FILE_UPLOAD_ERROR);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ignored) {}
+            }
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
 }

@@ -18,7 +18,6 @@ public class PostResponseDto {
     private String authorName;
     private String content;
     // 이건 추훙에 들어가할 사항
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
 
 }

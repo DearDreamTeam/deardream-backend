@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 
 public interface ArchiveRepository extends JpaRepository<MonthlyArchive, Long> {
     List<MonthlyArchive> findAllByFamily(Family family);
 
     List<MonthlyArchive> findAllByArchiveYearAndArchiveMonth(int archiveYear, int archiveMonth);
+
+    Optional<MonthlyArchive> findByFamilyAndArchiveYearAndArchiveMonth(Family family, int archiveYear, int archiveMonth);
 
     @Query("""
     SELECT ma FROM MonthlyArchive ma

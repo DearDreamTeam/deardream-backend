@@ -45,4 +45,9 @@ public class MonthlyArchive extends BaseEntity {
     public void updateDeliverStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
+
+    public void updatePdfUrl(String pdfUrl, String s3Key) {
+        this.pdfUrl = pdfUrl;
+        this.s3Key = s3Key;
+    }
 }

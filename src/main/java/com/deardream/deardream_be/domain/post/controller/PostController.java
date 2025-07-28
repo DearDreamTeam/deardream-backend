@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.attribute.standard.Media;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -106,7 +107,8 @@ public class PostController {
     public ApiResponse<List<PostResponseDto>> getPosts(
             @PathVariable Long familyId
     ) {
-        List<PostResponseDto> response =  postService.getPosts(familyId);
+        LocalDate now = LocalDate.now();
+        List<PostResponseDto> response = postService.getPostsByYearMonth(familyId, now.getYear(), now.getMonthValue());
         return ApiResponse.onSuccess(response);
     }
 }

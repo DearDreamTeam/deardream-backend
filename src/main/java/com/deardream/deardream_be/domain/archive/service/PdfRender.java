@@ -28,6 +28,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 
 @Component
@@ -85,18 +86,29 @@ public class PdfRender {
 
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
-        MonthlyArchive archive = MonthlyArchive.builder()
-                .family(family)
-                .archiveYear(now.getYear())
-                .archiveMonth(now.getMonthValue())
-                .pdfUrl(result.getUrl())
-                .s3Key(result.getKey())
-                .deliveryStatus(DeliveryStatus.PENDING)
-                .recipient(recipient) // recipient는 나중에 설정할 예정
-                .build();
+        Optional<MonthlyArchive> existingArchive = archiveRepository.findByFamilyAndArchiveYearAndArchiveMonth(family, now.getYear(), now.getMonthValue());
+
+        MonthlyArchive archive;
+
+        if(existingArchive.isPresent()) {
+            // 기존 아카이브 덮어쓰기
+            archive = existingArchive.get();
+            archive.updatePdfUrl(result.getUrl(),result.getKey());
+
+        } else {
+            archive = MonthlyArchive.builder()
+                    .family(family)
+                    .archiveYear(now.getYear())
+                    .archiveMonth(now.getMonthValue())
+                    .pdfUrl(result.getUrl())
+                    .s3Key(result.getKey())
+                    .deliveryStatus(DeliveryStatus.PENDING)
+                    .recipient(recipient) // recipient는 나중에 설정할 예정
+                    .build();
+        }
+
 
         archiveRepository.save(archive);
-
 
         return postImageService.getFilesUrl(archive.getS3Key());
     }

@@ -9,6 +9,7 @@ import com.deardream.deardream_be.domain.post.Post;
 import com.deardream.deardream_be.domain.post.repository.PostRepository;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
+import com.deardream.deardream_be.domain.user.Relation;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
@@ -47,6 +48,9 @@ public class FamilyServiceImplementation implements FamilyService {
         if (user.getFamily() != null) {
             throw new GeneralException(ErrorStatus._FAMILY_ALREADY_REGISTERED);
         }
+
+        // 대표자 relation 기본 설정
+        user.initializeLeaderRelation();
 
         // 3. Family 엔티티 초기화
         Family family = new Family();

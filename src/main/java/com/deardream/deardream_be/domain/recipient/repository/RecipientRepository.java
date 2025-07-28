@@ -17,6 +17,6 @@ public interface RecipientRepository extends JpaRepository<Recipient, Long> {
     boolean existsByLeaderId(Long leaderId);
 
     void deleteAllByFamily(Family family);
-    @Query("SELECT r FROM Recipient r WHERE r.family.id =: familyId")
+    @Query("SELECT r FROM Recipient r WHERE r.family.id =:familyId")
     Optional<Recipient> findSingleByFamilyId(@Param("familyId") Long familyId);
 }

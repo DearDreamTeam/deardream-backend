@@ -1,5 +1,8 @@
 package com.deardream.deardream_be.domain.family.entity;
 
+import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
+import com.deardream.deardream_be.domain.post.Post;
+import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.Id;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,22 +38,21 @@ public class Family extends BaseEntity {
     @Column(name = "has_subscribed")
     private Boolean hasSubscribed;
 
+    @OneToMany(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Recipient> recipients;
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MonthlyArchive> monthlyArchives;
+
     // 가족 등록
     public void startFamilyRegistration(User leader, String familyLink) {
         this.leader = leader;
         this.familyLink = familyLink;
     }
 
-    // 사용하지 않는 코드, 삭제하기 전 주석처리 하여 기능에 영향이 없는지 한 번 더 확인 중
-//    // 리더와 초대링크를 받아 family 생성
-//    public static Family createWithLeader(User leader, String familyLink) {
-//        Family family = new Family();
-//        family.leader     = leader;
-//        family.familyLink = familyLink;
-//
-//        // User에도 연관관계 세팅
-//        leader.joinFamilyAsLeader(family);
-//        return family;
 
     // familyLink 업데이트
     public void updateFamilyInviteLink(String inviteLinkToken) {

@@ -3,6 +3,7 @@ package com.deardream.deardream_be.domain.post.repository;
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -28,5 +29,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     int countByFamilyAndCreatedAtBetween(Family family, LocalDateTime start, LocalDateTime end);
 
     void deleteAllByFamily(Family family);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Post p set p.author = null where p.author.id = :userId")
+    void updateAuthorIdToNull(@Param("userId") Long userId);
 
 }

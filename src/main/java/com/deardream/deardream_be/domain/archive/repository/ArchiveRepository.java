@@ -31,4 +31,5 @@ public interface ArchiveRepository extends JpaRepository<MonthlyArchive, Long> {
     @Query("SELECT a FROM MonthlyArchive a WHERE a.archiveYear = :year AND a.archiveMonth = :month AND a.recipient.deliveryType = 'HOME'")
     List<MonthlyArchive> findHomeArchives(int year, int month);
 
+    void deleteAllByFamily(Family family);
 }

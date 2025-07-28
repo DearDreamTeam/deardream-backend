@@ -120,12 +120,14 @@ img {
 
   border-radius: 100px;
   border: 7px solid #fefefe;
+  background-color: #fefefe;
   position: absolute;
+  top: -8px;
   left: -8px;
 }
 
 .aspect-2-image-profile {
-  top: -24px;
+  top: -30px;
 }
 
 .aspect-34-contents {

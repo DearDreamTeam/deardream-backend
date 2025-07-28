@@ -24,9 +24,11 @@ public class KakaoPayController {
     @Operation(summary = "카카오페이 결제 요청을 준비합니다. response의 url로 연결해주세요.")
     @PostMapping("/ready")
     public ApiResponse<KakaoReadyResponse> readyToKakaoPay(
-            @RequestParam Long userId
+            @RequestParam Long userId,
+            @RequestParam(value = "redirectUri") String redirectUri
+
     ) {
-        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(userId));
+        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(redirectUri, userId));
     }
 
 

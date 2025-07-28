@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.user.repository;
 
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByKakaoId(Long kakaoId);
     boolean existsByKakaoId(Long kakaoId);
     List<User> findAllByFamilyId(Long familyId);
+
+    List<User> findAllByFamily(Family family);
 }

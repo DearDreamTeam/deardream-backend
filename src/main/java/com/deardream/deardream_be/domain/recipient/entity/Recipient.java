@@ -1,6 +1,7 @@
 package com.deardream.deardream_be.domain.recipient.entity;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
+import com.deardream.deardream_be.domain.institution.CalendarType;
 import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.recipient.dto.RecipientAddressUpdateDto;
@@ -11,6 +12,8 @@ import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -35,8 +38,8 @@ public class Recipient extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private String birth;
+    @Column(name = "birth")
+    private LocalDate birth;
 
     @Column(name = "profile_image")
     private String profileImage;
@@ -45,7 +48,8 @@ public class Recipient extends BaseEntity {
     private String profileImageKey;
 
     @Column(name = "calendar_type")
-    private String calendarType;
+    @Enumerated(EnumType.STRING)
+    private CalendarType calendarType;
 
     @Column
     private String phone;

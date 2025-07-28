@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -42,7 +45,15 @@ public class MonthlyArchive extends BaseEntity {
     @JoinColumn(name = "recipient_id")
     private Recipient recipient;
 
+    @OneToMany(mappedBy = "archive", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ArchiveBookmark> bookmarks = new ArrayList<>();
+
     public void updateDeliverStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
+    }
+
+    public void updatePdfUrl(String pdfUrl, String s3Key) {
+        this.pdfUrl = pdfUrl;
+        this.s3Key = s3Key;
     }
 }

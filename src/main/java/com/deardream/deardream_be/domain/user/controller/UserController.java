@@ -1,11 +1,13 @@
 package com.deardream.deardream_be.domain.user.controller;
 
+import com.deardream.deardream_be.domain.auth.service.AuthService;
 import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.dto.RegisterResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
 import com.deardream.deardream_be.domain.user.service.UserService;
+import com.deardream.deardream_be.domain.user.service.UserServiceWithdraw;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
@@ -29,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+    private final UserServiceWithdraw userServiceWithdraw;
+    private final AuthService authService;
     private final JwtUtil jwtUtil;
 
 
@@ -94,17 +98,40 @@ public class UserController {
         return ApiResponse.onSuccess(userInfo);
     }
 
+//    /**
+//     * 내 계정 삭제 - 사용 안함
+//     */
+//    @DeleteMapping("/me")
+//    public ApiResponse<Void> deleteMyAccount(
+//            Authentication authentication
+//    ) {
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        Long kakaoId = userDetails.getKakaoId();
+//        userService.deleteMyAccount(kakaoId);
+//        return ApiResponse.of(SuccessStatus._OK, null);
+//
+//    }
+
     /**
-     * 내 계정 삭제
+     * 현재 로그인된 사용자의 회원 탈퇴 처리
      */
     @DeleteMapping("/me")
-    public ApiResponse<Void> deleteMyAccount(
-            Authentication authentication
-    ) {
+    public ApiResponse<Void> withdraw(
+            Authentication authentication,
+            @RequestHeader("Authorization") String token) {
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
-        userService.deleteMyAccount(kakaoId);
-        return ApiResponse.of(SuccessStatus._OK, null);
 
+        // Bearer 접두사 제거
+        String accessToken = token.replace("Bearer ", "");
+
+        // redis에서 리프레시 토큰 삭제 -> 접근 불가하게 만듦
+        authService.logout(accessToken);
+
+
+        userServiceWithdraw.withdraw(kakaoId);
+
+        return ApiResponse.of(SuccessStatus._OK, null);
     }
 }

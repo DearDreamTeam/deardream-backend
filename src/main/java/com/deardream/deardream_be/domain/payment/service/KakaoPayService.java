@@ -10,6 +10,7 @@ import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.dto.KakaoReadyResponse;
 import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
+import com.deardream.deardream_be.domain.payment.util.KakaoPayRedirectUriList;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
@@ -52,8 +53,15 @@ public class KakaoPayService {
 
     // 결제 완료 요청
     @Transactional
-    public KakaoReadyResponse kakaoPayReady(Long userId) {
+    public KakaoReadyResponse kakaoPayReady(String redirectUri, Long userId) {
         // 가정일 경우만 결제 진행
+
+        if(!KakaoPayRedirectUriList.getAllowedRedirectUris().contains(redirectUri)) {
+            boolean allowed = KakaoPayRedirectUriList.getAllowedRedirectUris().contains(redirectUri);
+            log.info("Is redirectUri allowed? {}", allowed);
+
+            throw new GeneralException(ErrorStatus._INVALID_REDIRECT_URI);
+        }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
@@ -70,9 +78,9 @@ public class KakaoPayService {
         parameters.put("quantity", 1); // 실제 수량으로 교체
         parameters.put("total_amount", 8900); // 가정의 경우 월 8900원 구독료
         parameters.put("tax_free_amount", 0); // 면세 금액, 필요시 설정
-        parameters.put("approval_url", "http://localhost:3000/subscribe/pay/complete"); // 결제 성공 후 리다이렉트 URL
-        parameters.put("cancel_url", "http://localhost:3000/api/v1/test/payment/cancel"); // 결제 취소 후 리다이렉트 URL
-        parameters.put("fail_url", "http://localhost:3000/api/v1/test/payment/fail"); // 결제 실패 후 리다이렉트 URL
+        parameters.put("approval_url", redirectUri + "/subscribe/pay/complete"); // 결제 성공 후 리다이렉트 URL
+        parameters.put("cancel_url", redirectUri + "/api/v1/test/payment/cancel"); // 결제 취소 후 리다이렉트 URL
+        parameters.put("fail_url", redirectUri + "/api/v1/test/payment/fail"); // 결제 실패 후 리다이렉트 URL
 
         log.info("카카오페이 결제 준비 요청: {}", parameters);
 

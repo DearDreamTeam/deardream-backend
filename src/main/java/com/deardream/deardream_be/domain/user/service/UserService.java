@@ -3,6 +3,7 @@ package com.deardream.deardream_be.domain.user.service;
 import com.deardream.deardream_be.domain.user.dto.RegisterResponseDto;
 import com.deardream.deardream_be.domain.user.dto.UserRequestDto;
 import com.deardream.deardream_be.domain.user.dto.UserResponseDto;
+import com.deardream.deardream_be.domain.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 // 서비스 인터페이스 정의

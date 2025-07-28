@@ -1,6 +1,7 @@
 package com.deardream.deardream_be.domain.post.dto;
 
 import com.deardream.deardream_be.domain.user.Relation;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalDateTime;

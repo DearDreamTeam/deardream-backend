@@ -2,15 +2,18 @@ server:
   port : 8080
 
 spring:
+  jackson:
+    time-zone: Asia/Seoul
+
   datasource:
-    url: ${DB_URL}
+    url: ${DB_URL}?serverTimezone=Asia/Seoul
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect

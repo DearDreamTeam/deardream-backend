@@ -7,6 +7,7 @@ import com.deardream.deardream_be.domain.post.PostImage;
 import com.deardream.deardream_be.domain.post.dto.*;
 import com.deardream.deardream_be.domain.post.repository.PostImageRepository;
 import com.deardream.deardream_be.domain.post.repository.PostRepository;
+import com.deardream.deardream_be.domain.user.Relation;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
@@ -339,7 +340,7 @@ public class PostService {
                     .postId(post.getId())
                     .authorId(post.getAuthor().getId())
                     .authorName(post.getAuthor().getName())
-                    .relations(post.getAuthor().getRelation().getDescription())
+                    .relations(post.getAuthor().getRelation()!= Relation.OTHER ? post.getAuthor().getRelation().getDescription() : post.getAuthor().getOtherRelation())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)

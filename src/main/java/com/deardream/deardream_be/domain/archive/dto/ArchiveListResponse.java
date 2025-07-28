@@ -9,6 +9,5 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ArchiveListResponse {
-    private int count;
     private List<ArchiveResponseDto> dtos;
 }

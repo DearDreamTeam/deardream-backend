@@ -106,6 +106,12 @@ public class User extends BaseEntity {
         this.role = Role.LEADER;
     }
 
+    // 대표자 탈퇴 시 남은 가족 구성원의 role을 DEFAULT로 만듦
+    public void withdrawMakeFamilyMembersDefault() {
+        this.family = null;
+        this.role = Role.DEFAULT;
+    }
+
     public void deleteFamily() {
         this.family = null;
     }

@@ -115,4 +115,10 @@ public class User extends BaseEntity {
     public void deleteFamily() {
         this.family = null;
     }
+
+    // 대표자의 기본 relation/otherRelation 설정
+    public void initializeLeaderRelation() {
+        this.relation = Relation.OTHER;
+        this.otherRelation = "대표자";
+    }
 }

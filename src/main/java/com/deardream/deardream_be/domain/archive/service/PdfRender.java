@@ -79,7 +79,7 @@ public class PdfRender {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
-        Recipient recipient = recipientRepository.findByFamilyId(familyId)
+        Recipient recipient = recipientRepository.findSingleByFamilyId(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
 
         UploadResult result =  postImageService.uploadPDF(s3Config.getPdfFolder(), fileName, baos.toByteArray());

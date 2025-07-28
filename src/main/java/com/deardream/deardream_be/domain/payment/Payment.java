@@ -72,4 +72,10 @@ public class Payment extends BaseEntity {
         this.isActive = false;
         this.isSubscription = false;
     }
+
+    public void cancelHomeDelivery() {
+        this.user = null;
+        this.isSubscription = false;
+        this.isActive = false;
+    }
 }

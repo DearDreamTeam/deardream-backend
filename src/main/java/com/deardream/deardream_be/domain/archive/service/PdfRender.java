@@ -72,7 +72,6 @@ public class PdfRender {
             Files.copy(fontStream, tempFontFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         builder.useFont(tempFontFile, "Pretendard");
-        builder.useDefaultPageSize(794, 1123, PdfRendererBuilder.PageSizeUnits.POINTS);
         builder.toStream(baos);
         builder.withHtmlContent(resultHtml, "/");
         builder.run();

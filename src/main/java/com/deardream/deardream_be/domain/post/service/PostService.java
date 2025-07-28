@@ -339,7 +339,7 @@ public class PostService {
                     .postId(post.getId())
                     .authorId(post.getAuthor().getId())
                     .authorName(post.getAuthor().getName())
-                    .relations(post.getAuthor().getRelation().getDescription())
+                    .relations(post.getAuthor().getRelation()!= null ? post.getAuthor().getRelation().getDescription() : post.getAuthor().getOtherRelation())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)

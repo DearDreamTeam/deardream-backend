@@ -63,6 +63,7 @@ public class ArchiveService {
                             .orElse(null);
 
                     return ArchiveResponseDto.builder()
+                            .archiveId(response.getId())
                             .yearMonthType(yearMonth)
                             .pdfUrl(fileUrl)
                             .deliveryStatus(response.getDeliveryStatus())
@@ -71,7 +72,6 @@ public class ArchiveService {
                 }).toList();
 
         return ArchiveListResponse.builder()
-                .count(archivesDto.size())
                 .dtos(archivesDto)
                 .build();
 

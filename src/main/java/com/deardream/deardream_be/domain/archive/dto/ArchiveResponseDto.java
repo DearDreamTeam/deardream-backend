@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ArchiveResponseDto {
+    private Long archiveId;
     private String yearMonthType;
     private String pdfUrl;
     private DeliveryStatus deliveryStatus;

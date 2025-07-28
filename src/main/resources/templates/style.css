@@ -8,88 +8,89 @@ body {
 }
 
 .A4-wrapper {
-  width: 595px;
-  height: 842px;
+  width: 794px;
+  height: 1123px;
+
   position: relative;
 
-  page-break-inside: avoid; /* 요소 내부에서 잘리지 않게 함 */
-  page-break-after: always; /* 다음 페이지로 넘어가게 함 */
+  page-break-inside: avoid;
+  page-break-after: always;
 }
 
 .container {
-  width: 554px;
-  height: 370px;
+  width: 739px;
+  height: 493.6px;
 
-  margin: 0 20px;
+  margin: 0 26.7px;
 }
 
 .even-container {
-  padding-top: 40px;
+  padding-top: 53.4px;
 }
 
 .odd-container {
-  padding-top: 16px;
+  padding-top: 21.3px;
 }
 
 .page-number {
   color: #5e5e5e;
-  font-size: 16px;
+  font-size: 21.3px;
   font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: -0.4px;
-  bottom: 12px;
-  left: 294px;
+  line-height: 32px;
+  letter-spacing: -0.5px;
+  bottom: 16px;
+  left: 392.3px;
   position: absolute;
 }
 
 /* text 설정 */
 .text-name {
   color: #313131;
-  padding-right: 8px;
+  padding-right: 10.7px;
 
-  font-size: 20px;
+  font-size: 26.7px;
   font-weight: 600;
-  line-height: 30px; /* 150% */
-  letter-spacing: -0.3px;
+  line-height: 40px;
+  letter-spacing: -0.4px;
 }
 
 .text-relation {
   color: #018941;
-  padding-right: 4px;
+  padding-right: 5.3px;
 
-  font-size: 20px;
+  font-size: 26.7px;
   font-weight: 600;
-  line-height: 30px; /* 150% */
-  letter-spacing: -0.3px;
+  line-height: 40px;
+  letter-spacing: -0.4px;
 }
 
 .text-content {
   color: #5e5e5e;
 
-  font-size: 16px;
+  font-size: 21.3px;
   font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: -0.4px;
+  line-height: 32px;
+  letter-spacing: -0.5px;
 }
 
 .text-date {
   display: inline;
   color: #b6b6b6;
 
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 24px; /* 200% */
-  letter-spacing: -0.3px;
+  line-height: 32px;
+  letter-spacing: -0.4px;
 }
 
 .text-date-34 {
   display: block;
   color: #b6b6b6;
 
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 24px; /* 200% */
-  letter-spacing: -0.3px;
+  line-height: 32px;
+  letter-spacing: -0.4px;
 }
 
 img {
@@ -100,14 +101,14 @@ img {
 }
 
 .aspect-34-image {
-  width: 277.5px;
-  height: 370px;
+  width: 370.3px;
+  height: 493.6px;
   float: left;
 }
 
 .aspect-43-image {
-  width: 273px;
-  height: 204.75px;
+  width: 364.3px;
+  height: 273.2px;
 }
 
 .second-image {
@@ -115,48 +116,48 @@ img {
 }
 
 .profile-image {
-  width: 58px;
-  height: 58px;
+  width: 77.4px;
+  height: 77.4px;
 
   border-radius: 100px;
-  border: 7px solid #fefefe;
+  border: 9.3px solid #fefefe;
   position: absolute;
-  top: -8px;
-  left: -8px;
+  top: -10.7px;
+  left: -10.7px;
   background-color: #fefefe;
 }
 
 .aspect-2-image-profile {
-  top: -30px;
+  top: -40px;
 }
 
 .aspect-34-contents {
   position: relative;
-  width: 285px;
+  width: 380.3px;
 
   margin-left: auto;
   margin-right: 0;
 }
 
 .text-container-34 {
-  width: 219px;
+  width: 292.2px;
 
   margin-left: auto;
   margin-right: 0;
 }
 
 .aspect-43-contents {
-  bottom: -4px;
+  bottom: -5.3px;
   position: relative;
 }
 
 .text-container {
-  width: 488px;
+  width: 651px;
   margin-left: auto;
   margin-right: 0;
 }
 
 .aspect-43-image-container {
-  height: 204.75px;
-  padding-bottom: 10px;
+  height: 273.2px;
+  padding-bottom: 13.3px;
 }

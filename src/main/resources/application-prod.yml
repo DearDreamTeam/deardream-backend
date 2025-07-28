@@ -2,6 +2,9 @@ server:
   port : 8080
 
 spring:
+  jackson:
+    time-zone: Asia/Seoul
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

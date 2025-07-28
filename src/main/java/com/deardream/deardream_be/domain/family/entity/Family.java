@@ -27,6 +27,12 @@ public class Family extends BaseEntity {
 
     private String familyLink;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @Column(name = "has_subscribed")
+    private Boolean hasSubscribed;
+
     // 가족 등록
     public void startFamilyRegistration(User leader, String familyLink) {
         this.leader = leader;

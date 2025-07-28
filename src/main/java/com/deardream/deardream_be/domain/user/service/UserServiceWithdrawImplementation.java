@@ -3,11 +3,13 @@ package com.deardream.deardream_be.domain.user.service;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.payment.Payment;
 import com.deardream.deardream_be.domain.post.repository.PostRepository;
 import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
 import com.deardream.deardream_be.domain.user.Role;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
+import com.deardream.deardream_be.domain.payment.PaymentRepository;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
 import com.deardream.deardream_be.domain.archive.repository.BookmarkRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
@@ -27,6 +29,7 @@ public class UserServiceWithdrawImplementation implements UserServiceWithdraw {
     private final UserRepository userRepository;
     private final FamilyRepository familyRepository;
     private final PostRepository postRepository;
+    private final PaymentRepository paymentRepository;
     private final RecipientRepository recipientRepository;
     private final ArchiveRepository archiveRepository;
 
@@ -77,14 +80,21 @@ public class UserServiceWithdrawImplementation implements UserServiceWithdraw {
         }
         userRepository.saveAll(users);
 
-        // 2. leader의 familyId null 처리
+        // 2. leader와 연관된 payment userId null 처리
+        List<Payment> payments = paymentRepository.findAllByUser(leader);
+        for (Payment payment : payments) {
+            payment.cancelHomeDelivery();
+        }
+        paymentRepository.saveAll(payments);
+
+        // 3. leader의 familyId null 처리
         leader.deleteFamily();
         userRepository.save(leader);
 
-        // 3. family 삭제
+        // 4. family 삭제
         familyRepository.delete(family);
 
-        // 4. 본인 LEADER USER 삭제
+        // 5. 본인 LEADER USER 삭제
         userRepository.delete(leader);
 
     }

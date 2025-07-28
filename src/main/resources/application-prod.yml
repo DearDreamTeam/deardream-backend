@@ -6,7 +6,7 @@ spring:
     time-zone: Asia/Seoul
 
   datasource:
-    url: ${DB_URL}?serverTimezone=Asia/Seoul
+    url: ${DB_URL}?serverTimezone=Asia/Seoul&cacheDefaultTimezone=false
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

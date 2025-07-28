@@ -98,24 +98,24 @@ public class UserController {
         return ApiResponse.onSuccess(userInfo);
     }
 
-    /**
-     * 내 계정 삭제 - 사용 안함
-     */
-    @DeleteMapping("/me")
-    public ApiResponse<Void> deleteMyAccount(
-            Authentication authentication
-    ) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long kakaoId = userDetails.getKakaoId();
-        userService.deleteMyAccount(kakaoId);
-        return ApiResponse.of(SuccessStatus._OK, null);
-
-    }
+//    /**
+//     * 내 계정 삭제 - 사용 안함
+//     */
+//    @DeleteMapping("/me")
+//    public ApiResponse<Void> deleteMyAccount(
+//            Authentication authentication
+//    ) {
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        Long kakaoId = userDetails.getKakaoId();
+//        userService.deleteMyAccount(kakaoId);
+//        return ApiResponse.of(SuccessStatus._OK, null);
+//
+//    }
 
     /**
      * 현재 로그인된 사용자의 회원 탈퇴 처리
      */
-    @DeleteMapping("/me/withdraw")
+    @DeleteMapping("/me")
     public ApiResponse<Void> withdraw(
             Authentication authentication,
             @RequestHeader("Authorization") String token) {

@@ -67,11 +67,20 @@ public class UserServiceImplementation implements UserService {
         String profileImageUrl = null;
         String profileImageKey = null;
 
+        // 3-1. file이 존재할 때(파일 업로드 우선)
         if(profileImage != null && !profileImage.isEmpty()) {
             validateProfileImage(profileImage);
 
             String fileName = "profile_" + kakaoId + "_" + System.currentTimeMillis() + "_" + profileImage.getOriginalFilename();
             UploadResult uploadResult = postImageService.uploadFile(s3Config.getProfileFolder(), fileName, profileImage);
+
+            profileImageKey = uploadResult.getKey();
+            profileImageUrl = postImageService.getFilesUrl(profileImageKey);
+        }
+        // 3-2. file이 존재하지 않고, userRequestDto에 카카오프로필 이미지 url이 있을 때
+        else if (userRequestDto.getProfileImage() != null && !userRequestDto.getProfileImage().isEmpty()) {
+            String fileName = "profile_" + kakaoId + "_" + System.currentTimeMillis() + ".jpg";
+            UploadResult uploadResult = postImageService.uploadImageFromUrl(s3Config.getProfileFolder(), fileName, userRequestDto.getProfileImage());
 
             profileImageKey = uploadResult.getKey();
             profileImageUrl = postImageService.getFilesUrl(profileImageKey);

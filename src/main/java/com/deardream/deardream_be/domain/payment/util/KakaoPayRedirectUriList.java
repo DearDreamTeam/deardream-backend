@@ -8,7 +8,8 @@ public class KakaoPayRedirectUriList {
             "http://localhost:3000",
             "https://www.deardream.site",
             "https://deardream-frontend-xi.vercel.app",
-            "http://localhost:8080"
+            "http://localhost:8080",
+            "https://vote-dream.p-e.kr"
 
     );
 

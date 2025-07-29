@@ -6,6 +6,10 @@
   </head>
 
   <body>
+    <div class="cover">
+      <img src="./images/logo.svg" class="cover-logo" />
+      <img src="./images/ribbon.svg" class="cover-ribbon" />
+    </div>
     <div class="A4-wrapper">
       <div
         th:each="post, iterStat : ${posts}"
@@ -34,7 +38,7 @@
         <div
           th:classappend="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
           <img
-            th:src="${post.authorProfileImg}"
+            th:src="${#strings.isEmpty(post.authorProfileImg) ? './images/default-profile.svg' : post.authorProfileImg}"
             class="profile-image"
             th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''" />
 
@@ -45,16 +49,16 @@
               <span class="text-name" th:text="${post.authorName}"></span>
               <span
                 th:classappend="${post.imageUrls.size() == 1 ? 'text-date-34' : 'text-date'}"
-                th:text="''+ ${#temporals.format(post.createdAt, 'MM월 dd일 ')}+ (${post.createdAt.hour &lt; 12} ? '오전' : '오후')+ ' '+ ${#temporals.format(post.createdAt, 'h시 m분')}"></span>
+                th:text="''+ ${#temporals.format(post.createdAt, 'YYYY년 MM월 dd일 ')}+ (${post.createdAt.hour &lt; 12} ? '오전' : '오후')+ ' '+ ${#temporals.format(post.createdAt, 'h시 m분')}"></span>
             </div>
             <div class="text-content" th:text="${post.content}"></div>
           </div>
         </div>
-        <div
-          th:if="${iterStat.odd}"
-          class="page-number"
-          th:text="${iterStat.count / 2}"></div>
       </div>
+      <div
+        th:if="${iterStat.odd}"
+        class="page-number"
+        th:text="${iterStat.count / 2}"></div>
     </div>
   </body>
 </html>

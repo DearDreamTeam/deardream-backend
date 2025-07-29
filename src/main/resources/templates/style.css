@@ -26,16 +26,17 @@ body {
 
 .cover-logo {
   position: absolute;
-  width: 150px;
-  height: 58.82px;
+  width: 143.92px;
+  height: 57px;
   top: 37px;
   right: 47px;
 }
 
 .cover-ribbon {
-  width: 740px;
+  width: 839px;
+  height: 757px;
   position: absolute;
-  right: -200px;
+  right: -350px;
 }
 
 .A4-wrapper {

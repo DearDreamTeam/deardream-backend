@@ -7,8 +7,8 @@
 
   <body>
     <div class="cover">
-      <img th:src="'/images/logo.svg'" class="cover-logo" />
-      <img th:src="'/images/ribbon.svg'" class="cover-ribbon" />
+      <img th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/logo.png}" class="cover-logo" />
+      <img th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/ribbon.png}" class="cover-ribbon" />
     </div>
     <div class="A4-wrapper">
       <div
@@ -39,7 +39,7 @@
           th:classappend="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
           <img
             th:src="${#strings.isEmpty(post.authorProfileImg) 
-                ? '/images/default-profile.svg' 
+                ? 'https://d3beofgpsk367b.cloudfront.net/pdf-icon/default-profile.png'
                 : post.authorProfileImg}"
             class="profile-image"
             th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''" />

@@ -54,11 +54,11 @@
             <div class="text-content" th:text="${post.content}"></div>
           </div>
         </div>
+        <div
+          th:if="${iterStat.odd}"
+          class="page-number"
+          th:text="${iterStat.count / 2}"></div>
       </div>
-      <div
-        th:if="${iterStat.odd}"
-        class="page-number"
-        th:text="${iterStat.count / 2}"></div>
     </div>
   </body>
 </html>

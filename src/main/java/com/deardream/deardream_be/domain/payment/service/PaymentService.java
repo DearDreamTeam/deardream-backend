@@ -110,4 +110,16 @@ public class PaymentService {
         }
 
     }
+
+    @Transactional
+    public void rejoinByInstitution(Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        if (family.getIsActive()) {
+            throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_ALREADY_ACTIVE);
+        }
+
+        family.setFamilyActive();
+    }
 }

@@ -84,7 +84,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _INVALID_INSTITUTION_CODE(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 기관 코드입니다."),
     _INSTITUTION_CODE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 기관 코드입니다."),
     _SUBSCRIPTION_EXPIRED(HttpStatus.BAD_REQUEST, "400", "구독이 만료되었습니다. 새로운 구독을 시작해주세요."),
-    _SUBSCRIPTION_IS_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "400", "구독이 활성화되지 않았습니다. 구독을 시작해주세요.")
+    _SUBSCRIPTION_IS_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "400", "구독이 활성화되지 않았습니다. 구독을 시작해주세요."),
+    _SUBSCRIPTION_IS_ALREADY_ACTIVE(HttpStatus.BAD_REQUEST, "400", "구독이 이미 활성화되어 있습니다. 구독 상태를 확인해주세요."),
 
     ;
 

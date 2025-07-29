@@ -35,12 +35,21 @@ public class PaymentController {
 
     @Operation(summary = "현재 플랜 상태를 나타냅니다.")
     @GetMapping("/status/{familyId}")
-    public ApiResponse getPlanStatus(
+    public ApiResponse<?> getPlanStatus(
             @PathVariable Long familyId
     ) {
         boolean isActive =  paymentService.getPlanStatus(familyId);
         return ApiResponse.onSuccess(
                 isActive ? "현재 플랜이 활성화되어 있습니다." : "현재 플랜이 비활성화되어 있습니다."
         );
+    }
+
+    @Operation(summary = "기관 플랜 해지 후 재가입")
+    @PostMapping("/rejoin")
+    public ApiResponse<?> rejoinPlan(
+            @RequestParam Long familyId
+    ) {
+        paymentService.rejoinByInstitution(familyId);
+        return ApiResponse.onSuccess("플랜이 재가입되었습니다.");
     }
 }

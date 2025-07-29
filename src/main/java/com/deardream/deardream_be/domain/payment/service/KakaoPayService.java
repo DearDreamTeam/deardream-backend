@@ -117,6 +117,10 @@ public class KakaoPayService {
 
         Payment payment = paymentRepository.findByTid(tid);
 
+        if (payment.getSid() != null || payment.getApprovedAt() != null || payment.getIsActive()) {
+            throw new PaymentException(PaymentErrorCode._PAYMENT_ALREADY_APPROVED);
+        }
+
         if (payment == null) {
             throw new GeneralException(ErrorStatus._PAYMENT_REQUEST_FAIL);
         }
@@ -144,12 +148,6 @@ public class KakaoPayService {
         log.info("카카오페이 결제 승인 응답: {}", response);
 
         payment.updateSuccess(response.getSid());
-
-        Family family = familyRepository.findByLeaderId(payment.getUser().getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
-
-        // 가정일 경우 결제 후 Family 활성화
-        family.setFamilyActive();
 
         return response;
     }

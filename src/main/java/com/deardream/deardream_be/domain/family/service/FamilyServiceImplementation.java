@@ -71,11 +71,9 @@ public class FamilyServiceImplementation implements FamilyService {
             recipientRepository.save(recipient);
         }
 
-        // 6-1. (한혜수) 받는 분의 플랜이 기관이라면 바로 Active
-        if(recipient.getDeliveryType() == DeliveryType.INSTITUTION) {
-            tempFamilySaved.setFamilyActive();
-            familyRepository.save(tempFamilySaved);
-        }
+        // 6-1. (한혜수) 받는 분의 플랜이 기관/가정(가정은 결제가 우선이므로)이라면 바로 Active
+        tempFamilySaved.setFamilyActive();
+        familyRepository.save(tempFamilySaved);
 
         return FamilyResponseDto.of(tempFamilySaved);
     }

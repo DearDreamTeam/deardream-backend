@@ -9,6 +9,7 @@ import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
+import com.deardream.deardream_be.global.apiPayload.code.BaseCode;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -66,14 +67,19 @@ public class PaymentService {
 
     // 플랜 해지
     @Transactional
-    public Void deActive(Long userId) {
+    public BaseCode deActive(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        Family family = familyRepository.findByLeaderId(user.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
         Payment lastPayment = paymentRepository.findLastestByUser(user)
                 .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
 
         lastPayment.updateCancel();
+
+        family.setFamilyDeActive();
 
         log.info("구독 해지: {} - {}", user.getId(), lastPayment.getTid());
 
@@ -84,27 +90,23 @@ public class PaymentService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
+        if(!family.getIsActive()) {
+            throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
+        }
+
         User Leader = family.getLeader();
 
         if (Leader == null) {
             throw new GeneralException(ErrorStatus._FAMILY_LEADER_NOT_FOUND);
-        }
+        }else {
+            Payment payment = paymentRepository.findLastestByUser(Leader)
+                    .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
 
-        Payment lastPayment = paymentRepository.findLastestByUser(Leader)
-                .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
-
-        if (lastPayment.getIsActive() && lastPayment.getApprovedAt() != null) {
-            LocalDate expiredDate = lastPayment.getApprovedAt().plusDays(30);
-            if (expiredDate.isAfter(LocalDate.now())) {
-                log.info("✅ 구독 활성 상태 - 만료일: {}", expiredDate);
+            if(payment.getIsActive() || family.getIsActive()) {
                 return true;
             } else {
-                log.info("⚠️ 구독 만료됨 - 만료일: {}", expiredDate);
-                throw new GeneralException(ErrorStatus._SUBSCRIPTION_EXPIRED);
+                throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
             }
-        } else {
-            log.info("❌ 구독 비활성 상태입니다.");
-            throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
         }
 
     }

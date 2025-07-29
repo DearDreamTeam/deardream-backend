@@ -58,4 +58,14 @@ public class Family extends BaseEntity {
     public void updateFamilyInviteLink(String inviteLinkToken) {
         this.familyLink = inviteLinkToken;
     }
+
+    // family 활성화 상태 업데이트
+    public void setFamilyActive() {
+        this.isActive = true;
+        this.hasSubscribed = true;
+    }
+
+    public void setFamilyDeActive() {
+        this.isActive = false;
+    }
 }

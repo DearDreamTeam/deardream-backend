@@ -26,17 +26,21 @@ public class PaymentController {
 
     @Operation(summary = "플랜 서비스를 해제합니다. 결제한 사람의 아이디를 넣어주세요.")
     @PatchMapping("/cancel")
-    public ApiResponse<Void> cancelPlan(
+    public ApiResponse<?> cancelPlan(
             @RequestParam Long userId
     ) {
-        return ApiResponse.onSuccess(paymentService.deActive(userId));
+        paymentService.deActive(userId);
+        return ApiResponse.onSuccess("플랜 서비스가 해제되었습니다.");
     }
 
     @Operation(summary = "현재 플랜 상태를 나타냅니다.")
     @GetMapping("/status/{familyId}")
-    public ApiResponse<?> getPlanStatus(
+    public ApiResponse getPlanStatus(
             @PathVariable Long familyId
     ) {
-        return ApiResponse.onSuccess(paymentService.getPlanStatus(familyId));
+        boolean isActive =  paymentService.getPlanStatus(familyId);
+        return ApiResponse.onSuccess(
+                isActive ? "현재 플랜이 활성화되어 있습니다." : "현재 플랜이 비활성화되어 있습니다."
+        );
     }
 }

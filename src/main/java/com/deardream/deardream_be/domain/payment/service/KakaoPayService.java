@@ -145,6 +145,12 @@ public class KakaoPayService {
 
         payment.updateSuccess(response.getSid());
 
+        Family family = familyRepository.findByLeaderId(payment.getUser().getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        // 가정일 경우 결제 후 Family 활성화
+        family.setFamilyActive();
+
         return response;
     }
 

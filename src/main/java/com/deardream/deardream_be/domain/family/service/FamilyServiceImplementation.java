@@ -5,6 +5,7 @@ import com.deardream.deardream_be.domain.family.dto.FamilyMembersResponseDto;
 import com.deardream.deardream_be.domain.family.dto.FamilyResponseDto;
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.post.Post;
 import com.deardream.deardream_be.domain.post.repository.PostRepository;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
@@ -68,6 +69,12 @@ public class FamilyServiceImplementation implements FamilyService {
         if (recipient != null) {
             recipient.assignFamily(tempFamilySaved);
             recipientRepository.save(recipient);
+        }
+
+        // 6-1. (한혜수) 받는 분의 플랜이 기관이라면 바로 Active
+        if(recipient.getDeliveryType() == DeliveryType.INSTITUTION) {
+            tempFamilySaved.setFamilyActive();
+            familyRepository.save(tempFamilySaved);
         }
 
         return FamilyResponseDto.of(tempFamilySaved);

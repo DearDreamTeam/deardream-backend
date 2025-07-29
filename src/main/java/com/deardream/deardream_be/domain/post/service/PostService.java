@@ -344,6 +344,7 @@ public class PostService {
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)
+                    .authorProfileImg(post.getAuthor().getProfileImage())
                     .build();
         }).collect(Collectors.toList());
     }

@@ -119,4 +119,15 @@ public class PaymentService {
 
         family.setFamilyActive();
     }
+
+    @Transactional
+    public void deActiveInstitution(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        Family family = familyRepository.findByLeaderId(user.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        family.setFamilyDeActive();
+    }
 }

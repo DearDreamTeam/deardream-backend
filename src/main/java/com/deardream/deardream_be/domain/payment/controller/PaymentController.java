@@ -34,6 +34,15 @@ public class PaymentController {
         return ApiResponse.onSuccess("플랜 서비스가 해제되었습니다.");
     }
 
+    @Operation(summary = "기관 플랜 서비스를 해제합니다. 리더 아이디를 넣어주세요.")
+    @PatchMapping("/cancel/institution")
+    public ApiResponse<?> cancelInsitution(
+            @RequestParam Long userId
+    ) {
+        paymentService.deActiveInstitution(userId);
+        return ApiResponse.onSuccess("기관 플랜 서비스가 해제되었습니다.");
+    }
+
     @Operation(summary = "현재 플랜 상태를 나타냅니다.")
     @GetMapping("/status/{familyId}")
     public ApiResponse<?> getPlanStatus(

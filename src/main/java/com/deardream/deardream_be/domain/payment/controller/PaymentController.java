@@ -40,7 +40,7 @@ public class PaymentController {
     ) {
         boolean isActive =  paymentService.getPlanStatus(familyId);
         return ApiResponse.onSuccess(
-                isActive ? "현재 플랜이 활성화되어 있습니다." : "현재 플랜이 비활성화되어 있습니다."
+                isActive
         );
     }
 

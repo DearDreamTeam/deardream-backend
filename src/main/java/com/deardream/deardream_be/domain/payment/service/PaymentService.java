@@ -2,11 +2,14 @@ package com.deardream.deardream_be.domain.payment.service;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.payment.Payment;
 import com.deardream.deardream_be.domain.payment.PaymentRepository;
+import com.deardream.deardream_be.domain.payment.dto.PlanResponseDto;
 import com.deardream.deardream_be.domain.payment.dto.SubscriptionDto;
 import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
+import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.BaseCode;
@@ -86,11 +89,22 @@ public class PaymentService {
         return null;
     }
 
-    public boolean getPlanStatus(Long familyId) {
+    public PlanResponseDto getPlanStatus(Long familyId) {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
-        return family.getIsActive();
+        List<Recipient> recipients = family.getRecipients();
+
+        if(recipients.isEmpty()) {
+           throw new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND);
+        }
+
+        DeliveryType status = recipients.get(0).getDeliveryType();
+        return PlanResponseDto.builder()
+                .isActive(family.getIsActive())
+                .type(status)
+                .build();
+
 
     }
 

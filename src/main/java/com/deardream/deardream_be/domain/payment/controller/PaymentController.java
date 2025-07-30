@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.payment.controller;
 
+import com.deardream.deardream_be.domain.payment.dto.PlanResponseDto;
 import com.deardream.deardream_be.domain.payment.dto.SubscriptionDto;
 import com.deardream.deardream_be.domain.payment.service.PaymentService;
 import com.deardream.deardream_be.global.apiPayload.ApiResponse;
@@ -38,7 +39,7 @@ public class PaymentController {
     public ApiResponse<?> getPlanStatus(
             @PathVariable Long familyId
     ) {
-        boolean isActive =  paymentService.getPlanStatus(familyId);
+        PlanResponseDto isActive =  paymentService.getPlanStatus(familyId);
         return ApiResponse.onSuccess(
                 isActive
         );

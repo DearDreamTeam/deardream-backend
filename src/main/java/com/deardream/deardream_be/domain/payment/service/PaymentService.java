@@ -90,24 +90,7 @@ public class PaymentService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
-        if(!family.getIsActive()) {
-            throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
-        }
-
-        User Leader = family.getLeader();
-
-        if (Leader == null) {
-            throw new GeneralException(ErrorStatus._FAMILY_LEADER_NOT_FOUND);
-        }else {
-            Payment payment = paymentRepository.findLastestByUser(Leader)
-                    .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
-
-            if(payment.getIsActive() || family.getIsActive()) {
-                return true;
-            } else {
-                throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
-            }
-        }
+        return family.getIsActive();
 
     }
 

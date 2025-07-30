@@ -118,6 +118,9 @@ public class KakaoPayService {
         Payment payment = paymentRepository.findByTid(tid);
 
         if (payment.getSid() != null || payment.getApprovedAt() != null || payment.getIsActive()) {
+            // 중복 결제
+            paymentRepository.delete(payment);
+            log.info("중복 결제 승인으로 삭제된 payment: tid={}", tid);
             throw new PaymentException(PaymentErrorCode._PAYMENT_ALREADY_APPROVED);
         }
 

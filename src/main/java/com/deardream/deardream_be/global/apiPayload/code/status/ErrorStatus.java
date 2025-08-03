@@ -66,6 +66,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_FAMILY_MEMBER(HttpStatus.FORBIDDEN, "403", "해당 가족의 구성원이 아닙니다."),
     _RECIPIENT_ALREADY_REGISTERED(HttpStatus.FORBIDDEN, "403", "이미 수신자가 등록되어 있습니다. 수신자 수정을 이용해 주세요."),
     _INVITE_LINK_ALREADY_EXISTS(HttpStatus.FORBIDDEN, "403", "가족 초대 링크가 이미 생성되어 있습니다. 가족 초대 링크 조회를 이용해주세요."),
+    _FAMILY_NOT_ACTIVE(HttpStatus.FORBIDDEN, "403", "해당 가족은 구독이 해지되어 있습니다. 따라서 관련 작업이 불가합니다."),
+    _ALREADY_IN_ACTIVE_FAMILY(HttpStatus.FORBIDDEN, "403", "이미 활성화된 가족에 속해있습니다. 가족을 옮길 수 없습니다."),
+
 
     // 404 Not Found
     _TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 토큰을 찾을 수 없습니다."),

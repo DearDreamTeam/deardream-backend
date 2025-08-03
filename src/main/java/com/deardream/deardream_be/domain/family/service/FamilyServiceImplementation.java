@@ -64,16 +64,25 @@ public class FamilyServiceImplementation implements FamilyService {
         user.joinFamilyAsLeader(tempFamilySaved);
         userRepository.save(user);
 
-        // 6. 대표자의 recipient가 있다면 familyId 연동
+        // 6. family 관련 작업
         Recipient recipient = recipientRepository.findByLeaderId(user.getId()).orElse(null);
         if (recipient != null) {
+            // 6-1. 대표자의 recipient가 있다면 familyId 연동
             recipient.assignFamily(tempFamilySaved);
             recipientRepository.save(recipient);
+
+            // 6-2. 해당 userId를 leaderId로 가진 recipient의 DeliveryType 조회
+            DeliveryType recipientDeliveryType = recipient.getDeliveryType();
+            // 기관 플랜일 시 : isActive, hasSubscribed true 세팅 (기본값은 false)
+            if(recipientDeliveryType == DeliveryType.INSTITUTION) {
+                tempFamilySaved.setFamilyActive();
+            }
+            familyRepository.save(tempFamilySaved);
         }
 
-        // 6-1. (한혜수) 받는 분의 플랜이 기관/가정(가정은 결제가 우선이므로)이라면 바로 Active
-        tempFamilySaved.setFamilyActive();
-        familyRepository.save(tempFamilySaved);
+//        // 6-1. (한혜수) 받는 분의 플랜이 기관/가정(가정은 결제가 우선이므로)이라면 바로 Active
+//        tempFamilySaved.setFamilyActive();
+//        familyRepository.save(tempFamilySaved);
 
         return FamilyResponseDto.of(tempFamilySaved);
     }
@@ -157,9 +166,14 @@ public class FamilyServiceImplementation implements FamilyService {
 
         String inviteLinkToken = family.getFamilyLink();
 
-        // 2. 이미 familyLink가 있다면 예외 발생
+        // 2-1. 예외처리 : 이미 familyLink가 있다면 예외 발생
         if(inviteLinkToken != null) {
             throw new GeneralException(ErrorStatus._INVITE_LINK_ALREADY_EXISTS);
+        }
+
+        // 2-2. 예외처리 : 활성화가 안 된 가족일 시 예외 발생
+        if(family.getIsActive() == false){
+            throw new GeneralException(ErrorStatus._FAMILY_NOT_ACTIVE);
         }
 
         // 3. familyLink가 없을 때만 새로 생성
@@ -181,6 +195,10 @@ public class FamilyServiceImplementation implements FamilyService {
             throw new GeneralException(ErrorStatus._FAMILY_NOT_FOUND);
         }
 
+        if(family.getIsActive() == false){
+            throw new GeneralException(ErrorStatus._FAMILY_NOT_ACTIVE);
+        }
+
         return family.getFamilyLink();
     }
 
@@ -197,16 +215,47 @@ public class FamilyServiceImplementation implements FamilyService {
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        // 3. 이미 가족에 속해 있는지 확인
-        if (user.getFamily() != null) {
-            throw new GeneralException(ErrorStatus._ALREADY_IN_FAMILY);
+        // 3. 이미 가족에 속해 있는 경우 케이스 분기
+        Family myFamily = user.getFamily();
+        if(myFamily != null) {
+            if(myFamily.getIsActive() == true && myFamily.getHasSubscribed() == true){
+                throw new GeneralException(ErrorStatus._ALREADY_IN_ACTIVE_FAMILY);
+            }
+            else if(!myFamily.getIsActive() && myFamily.getHasSubscribed() == true){
+                throw new GeneralException(ErrorStatus._FAMILY_NOT_ACTIVE);
+            }
+            else if(!myFamily.getIsActive() && !myFamily.getHasSubscribed()){
+                deleteTemporaryFamily(user);
+            }
         }
+
+//        if (user.getFamily() != null) {
+//            throw new GeneralException(ErrorStatus._ALREADY_IN_FAMILY);
+//        }
 
         // 4. User 쪽에 familyId 설정
         user.joinFamilyAsUser(family);
 
         // 5. 저장하면 user.familyId 칼럼에 자동으로 family.getId 반영
         userRepository.save(user);
+    }
+
+
+    // 결제하지 않은 leader가 생성한 임시 가족을 삭제하는 로직 - 가족에 leader만 들어가 있고 다른 user는 없는 상태
+    // leader만 familyId null처리 하고 family를 삭제하면 됨
+    // 가족과 수신자만 생성되어있음 (결제하지 않았을 시 post 작성 불가여서, 가족에 딸린 정보는 수신자밖에 없음)
+    // 가족과 수신자는 cascade 되어 있음, 가족만 삭제하면 수신자 삭제 됨
+    @Transactional
+    public void deleteTemporaryFamily(User leader) {
+        Family family = leader.getFamily();
+
+        // 1. leader의 familyId null 처리
+        leader.deleteFamily();
+        userRepository.save(leader);
+
+        // 2. family 삭제
+        familyRepository.delete(family);
+
     }
 
     // 테스트용 임시 로직

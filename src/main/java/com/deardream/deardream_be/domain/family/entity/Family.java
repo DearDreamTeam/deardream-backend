@@ -33,16 +33,16 @@ public class Family extends BaseEntity {
     private String familyLink;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = false;
 
     @Column(name = "has_subscribed")
-    private Boolean hasSubscribed;
+    private Boolean hasSubscribed = false;
 
     @OneToMany(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Recipient> recipients;
+    @OneToOne(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Recipient recipient;
 
     @OneToMany(mappedBy = "family", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<MonthlyArchive> monthlyArchives;

@@ -93,13 +93,13 @@ public class PaymentService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
-        List<Recipient> recipients = family.getRecipients();
+        Recipient recipient = family.getRecipient();
 
-        if(recipients.isEmpty()) {
+        if(recipient == null) {
            throw new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND);
         }
 
-        DeliveryType status = recipients.get(0).getDeliveryType();
+        DeliveryType status = recipient.getDeliveryType();
         return PlanResponseDto.builder()
                 .isActive(family.getIsActive())
                 .type(status)

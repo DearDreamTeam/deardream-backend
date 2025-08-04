@@ -119,8 +119,6 @@ public class RecipientServiceImplementation implements RecipientService {
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
 
-        if(!recipient.getFamily().getIsActive())
-            throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
 
 //        Family family = dto.getFamilyId() != null ? familyRepository.findById(dto.getFamilyId()).orElse(null) : null;
         User leader = dto.getLeaderId() != null ? userRepository.findById(dto.getLeaderId()).orElse(null) : null;

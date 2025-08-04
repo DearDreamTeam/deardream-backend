@@ -2,6 +2,9 @@ package com.deardream.deardream_be.domain.payment.controller;
 
 import com.deardream.deardream_be.domain.payment.dto.KakaoApproveResponse;
 import com.deardream.deardream_be.domain.payment.dto.KakaoReadyResponse;
+import com.deardream.deardream_be.domain.payment.dto.request.KakaoCancelRequest;
+import com.deardream.deardream_be.domain.payment.dto.request.KakaoCancelSubscription;
+import com.deardream.deardream_be.domain.payment.dto.request.KakaoReadyRequestDto;
 import com.deardream.deardream_be.domain.payment.exception.PaymentErrorCode;
 import com.deardream.deardream_be.domain.payment.exception.PaymentException;
 import com.deardream.deardream_be.domain.payment.service.KakaoPayService;
@@ -24,11 +27,8 @@ public class KakaoPayController {
     @Operation(summary = "카카오페이 결제 요청을 준비합니다. response의 url로 연결해주세요.")
     @PostMapping("/ready")
     public ApiResponse<KakaoReadyResponse> readyToKakaoPay(
-            @RequestParam Long userId,
-            @RequestParam(value = "redirectUri") String redirectUri
-
-    ) {
-        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(redirectUri, userId));
+            @RequestBody KakaoReadyRequestDto request) {
+        return ApiResponse.onSuccess(kakaoPayService.kakaoPayReady(request));
     }
 
 
@@ -57,14 +57,22 @@ public class KakaoPayController {
         throw new PaymentException(PaymentErrorCode._PAYMENT_APPROVE_FAILED);
     }
 
-    @Operation(summary = "카카오페이 정기 결제에 대한 구독 취소 기능입니다.")
-    @PatchMapping("/unsubscribe")
-    public ApiResponse<Void> cancelSubscription(
-            @RequestParam Long userId
-    ) {
-        kakaoPayService.cancelSubscription(userId);
+    @Operation(summary = "[테스트 기능]카카오페이 결제에 대한 취소 기능입니다. 결제 후 3일 이내 취소 가능합니다.")
+    @PatchMapping("/refund")
+    public ApiResponse<Void> refundPayment(
+            @RequestBody KakaoCancelRequest request
+            ) {
+        kakaoPayService.refundPayment(request);
         return ApiResponse.onSuccess(null);
     }
 
+    @Operation(summary = "카카오페이 정기 결제 비활성화 기능입니다.")
+    @PostMapping("/subscription/inactive")
+    public ApiResponse<Void> cancelSubscription(
+            @RequestBody KakaoCancelSubscription request
+    ) {
+        kakaoPayService.inactiveSubscription(request);
+        return ApiResponse.onSuccess(null);
+    }
 
 }

@@ -31,6 +31,7 @@ public class AdminInstitutionService {
     private final PostRepository postRepository;
     private final PaymentRepository paymentRepository;
 
+    /*
     @Transactional
     public void deleteUserFromInstitution(DeleteUsersRequestDto request) {
 
@@ -54,6 +55,8 @@ public class AdminInstitutionService {
 
 
     }
+
+     */
 
     public List<InstitutionUserResponse> getUsersByInstitution(String code) {
 

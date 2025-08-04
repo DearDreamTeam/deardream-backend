@@ -7,6 +7,7 @@ import com.deardream.deardream_be.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
@@ -37,10 +38,8 @@ public class Payment extends BaseEntity {
     @Setter
     private String sid;
 
-    // 가맹점 회원 ID, 결제 준비 API 응답과 일치
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true)
-    private User user;
+    @JoinColumn(name = "family_id", nullable = false)
+    private Long familyId;
 
     @NotNull
     private String itemName;
@@ -49,33 +48,32 @@ public class Payment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DeliveryType amountType;
 
-    @Setter
-    private LocalDate approvedAt;
+    private LocalDateTime approvedAt;
 
-    // 구독 활성화 여부
-    private Boolean isActive;
+    private LocalDateTime expiredAt;
 
-    private Boolean isSubscription;
-
-    public void deActive() {
-        this.isActive = false;
-    }
+    // 결제 상태 (준비, 완료, 취소 등)
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 
     public void updateSuccess(String sid) {
         this.sid = sid;
-        this.approvedAt = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        this.isActive = true;
-        this.isSubscription = true;
+        this.approvedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.expiredAt = approvedAt.plusMonths(1);
+        this.status = PaymentStatus.ACTIVE;
     }
 
-    public void updateCancel() {
-        this.isActive = false;
-        this.isSubscription = false;
+    public void cancelPayment() {
+        this.status = PaymentStatus.CANCELLED;
+        this.expiredAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
-    public void cancelHomeDelivery() {
-        this.user = null;
-        this.isSubscription = false;
-        this.isActive = false;
+    public void inactivePayment() {
+        this.status = PaymentStatus.INACTIVE;
+        this.expiredAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
+
+    public void expiredPayment() {
+        this.status = PaymentStatus.EXPIRED;
     }
 }

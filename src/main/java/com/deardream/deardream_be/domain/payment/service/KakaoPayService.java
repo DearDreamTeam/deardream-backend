@@ -25,8 +25,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -292,11 +294,22 @@ public class KakaoPayService {
         parameters.put("sid", payment.getSid());
 
         HttpEntity<Map<String, Object>> inactiveResponse = new HttpEntity<>(parameters, this.getHeaders());
-        KakaoSubscriptionInactiveResponse response = restTemplate.postForObject(
-                "https://open-api.kakaopay.com/online/v1/payment/manage/subscription/inactive",
-                inactiveResponse,
-                KakaoSubscriptionInactiveResponse.class
-        );
+        try {
+            KakaoSubscriptionInactiveResponse response = restTemplate.postForObject(
+                    "https://open-api.kakaopay.com/online/v1/payment/manage/subscription/inactive",
+                    inactiveResponse,
+                    KakaoSubscriptionInactiveResponse.class
+            );
+        } catch (HttpClientErrorException e) {
+            if(e.getStatusCode() == HttpStatus.BAD_REQUEST && e.getResponseBodyAsString().contains("sid is inactive")) {
+                log.warn("정기 결제 비활성화 요청이 실패했습니다. 이미 비활성화 상태일 수 있습니다.");
+                throw new PaymentException(PaymentErrorCode._PAYMENT_ALREADY_CANCELLED);
+            } else {
+                log.error("카카오 api 호출 실패");
+                throw new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED);
+            }
+
+        }
 
         // 정기 구독이 해지 됩니다.
         payment.inactivePayment();

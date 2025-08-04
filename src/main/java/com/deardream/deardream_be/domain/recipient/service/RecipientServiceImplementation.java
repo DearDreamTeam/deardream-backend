@@ -119,6 +119,7 @@ public class RecipientServiceImplementation implements RecipientService {
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
 
+
 //        Family family = dto.getFamilyId() != null ? familyRepository.findById(dto.getFamilyId()).orElse(null) : null;
         User leader = dto.getLeaderId() != null ? userRepository.findById(dto.getLeaderId()).orElse(null) : null;
 
@@ -131,7 +132,7 @@ public class RecipientServiceImplementation implements RecipientService {
 
             // INSTITUTION -> HOME 플랜 변경일 경우 결제가 우선
             if(dto.getAddress().getDeliveryType() == DeliveryType.HOME) {
-                throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE)
+                throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE);
             }
 
         }

@@ -44,7 +44,10 @@ public class PaymentService {
 
         List<Payment> payments = paymentRepository.findAllByFamilyId(family.getId());
 
-        return payments.stream().map(payment -> SubscriptionDto.builder()
+        // 결제는 승인 된 것만 필터링하여 SubscriptionDto로 변환
+        return payments.stream()
+                .filter(payment -> payment.getApprovedAt() != null)
+                .map(payment -> SubscriptionDto.builder()
                 .paymentDate(payment.getApprovedAt())
                 .amount(8900)
                 .build()).collect(Collectors.toList());

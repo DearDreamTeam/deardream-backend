@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.institution.service;
 
+import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.institution.InstitutionRepository;
@@ -31,32 +32,21 @@ public class AdminInstitutionService {
     private final PostRepository postRepository;
     private final PaymentRepository paymentRepository;
 
-    /*
+
     @Transactional
     public void deleteUserFromInstitution(DeleteUsersRequestDto request) {
 
         Institution institution = institutionRepository.findByCode(request.getCode())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INVALID_INSTITUTION_CODE));
 
-        Recipient recipient = recipientRepository.findById(request.getUserId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
+        Family family = familyRepository.findById(request.getFamilyId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
 
-        List<User> familyUsers = userRepository.findAllByFamilyId(recipient.getFamily().getId());
-
-        // 추방 시, 수신자의 정보와 함께 가족 테이블도 삭제됨
-        for (User user : familyUsers) {
-            user.deleteFamily();
-        }
-        // 여기 때문에 db 수정이 필요합니다.
-        paymentRepository.deleteAllByUser(recipient.getLeader());
-        postRepository.deleteAllByFamily(recipient.getFamily());
-        recipientRepository.deleteById(request.getUserId());
-        familyRepository.deleteById(recipient.getFamily().getId());
+        family.setFamilyDeActive();
 
 
     }
 
-     */
 
     public List<InstitutionUserResponse> getUsersByInstitution(String code) {
 
@@ -65,7 +55,9 @@ public class AdminInstitutionService {
 
         List<Recipient> recipients = recipientRepository.findAllByInstitution(institution);
 
-        return recipients.stream().map(recipient -> InstitutionUserResponse.builder()
+        return recipients.stream()
+                .filter(recipient -> recipient.getFamily().getIsActive())
+                .map(recipient -> InstitutionUserResponse.builder()
                 .familyId(recipient.getFamily().getId())
                 .recipientName(recipient.getName())
                 .userId(recipient.getId())

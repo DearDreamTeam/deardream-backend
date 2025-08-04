@@ -11,5 +11,5 @@ public class DeleteUsersRequestDto {
     private String code;
 
     @NotNull
-    private Long userId;
+    private Long familyId;
 }

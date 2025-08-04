@@ -89,13 +89,17 @@ public class UserServiceWithdrawImplementation implements UserServiceWithdraw {
 
         // 3. leader의 familyId null 처리
         leader.deleteFamily();
-        userRepository.save(leader);
+
+        // 영속성 문제 발생
+        userRepository.saveAndFlush(leader);
 
         // 4. family 삭제
         familyRepository.delete(family);
 
-        // 5. 본인 LEADER USER 삭제
-        userRepository.delete(leader);
+        // 5. 본인 LEADER USER 삭제 - 영속성 문제 발생
+        User refreshedLeader = userRepository.findById(leader.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+        userRepository.delete(refreshedLeader);
 
     }
 

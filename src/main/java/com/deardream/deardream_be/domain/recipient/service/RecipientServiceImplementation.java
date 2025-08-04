@@ -2,6 +2,7 @@ package com.deardream.deardream_be.domain.recipient.service;
 
 import com.deardream.deardream_be.domain.family.entity.Family;
 import com.deardream.deardream_be.domain.family.repository.FamilyRepository;
+import com.deardream.deardream_be.domain.institution.DeliveryType;
 import com.deardream.deardream_be.domain.institution.Institution;
 import com.deardream.deardream_be.domain.institution.InstitutionRepository;
 import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
@@ -120,6 +121,20 @@ public class RecipientServiceImplementation implements RecipientService {
 
 //        Family family = dto.getFamilyId() != null ? familyRepository.findById(dto.getFamilyId()).orElse(null) : null;
         User leader = dto.getLeaderId() != null ? userRepository.findById(dto.getLeaderId()).orElse(null) : null;
+
+        // 현재 변경하고자 하는 플랜 상태가 다를 경우
+        if(recipient.getDeliveryType() != dto.getAddress().getDeliveryType()) {
+            // HOME -> INSTITUTION 플랜 변경일 경우 구독 해지가 우선
+            if(dto.getAddress().getDeliveryType() == DeliveryType.INSTITUTION) {
+                throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_ALREADY_ACTIVE);
+            }
+
+            // INSTITUTION -> HOME 플랜 변경일 경우 결제가 우선
+            if(dto.getAddress().getDeliveryType() == DeliveryType.HOME) {
+                throw new GeneralException(ErrorStatus._SUBSCRIPTION_IS_NOT_ACTIVE)
+            }
+
+        }
 
         // 기존 프로필 이미지 삭제
         if(recipient.getProfileImageKey() != null) {

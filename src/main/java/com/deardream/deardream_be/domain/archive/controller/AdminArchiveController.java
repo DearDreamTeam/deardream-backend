@@ -37,13 +37,13 @@ public class AdminArchiveController {
     }
 
     @Operation(summary = "[마스터 어드민 기능] 기관 플랜에 대한 회원 정보와 pdf를 조회합니다.")
-    @GetMapping("/institution/{institutionId}/archives")
+    @GetMapping("/institution/{code}/archives")
     public ApiResponse<AdminInstitutionArchiveResponse> getAllArchivesByInstitution(
-        @PathVariable Long institutionId,
+        @PathVariable String code,
         @RequestParam int year,
         @RequestParam int month
     ) {
-        return ApiResponse.onSuccess(archiveService.getInstitutionArchives(institutionId, year, month));
+        return ApiResponse.onSuccess(archiveService.getInstitutionArchives(code, year, month));
     }
 
     @Operation(summary = "[마스터 어드민 기능] 기관 전체 조회를 합니다.")
@@ -70,12 +70,12 @@ public class AdminArchiveController {
 
     // INSTITUTION delivery status 변경
     @Operation(summary = "[마스터 어드민 기능] 기관 배송에 대환 일괄 배송 상태를 변경합니다.")
-    @PostMapping("/{institutionId}/institution")
+    @PostMapping("/{code}/institution")
     public ApiResponse<?> updateInstitutionDeliveryStatus(
-            @PathVariable Long institutionId,
+            @PathVariable String code,
             @RequestBody AdminRequestDto request
             ) {
-        archiveService.updateInstitutionDeliveryStatus(institutionId, request);
+        archiveService.updateInstitutionDeliveryStatus(code, request);
         return ApiResponse.onSuccess(SuccessStatus._OK);
 
     }

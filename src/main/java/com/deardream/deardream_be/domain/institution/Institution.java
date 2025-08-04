@@ -17,7 +17,7 @@ public class Institution {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @NotNull
     @Column(name = "code", unique = true)

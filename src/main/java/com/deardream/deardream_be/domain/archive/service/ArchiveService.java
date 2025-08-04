@@ -175,8 +175,8 @@ public class ArchiveService {
 
 
     // 어드민 기능 - 기관 플랜 정보 조회
-    public AdminInstitutionArchiveResponse getInstitutionArchives(Long institutionId, int year, int month) {
-        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionIdAndYearMonth(institutionId, year, month);
+    public AdminInstitutionArchiveResponse getInstitutionArchives(String institutionCode, int year, int month) {
+        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionCodeAndYearMonth(institutionCode, year, month);
 
         List<AdminInstitutionArchiveResponse.InstitutionArchiveDto> institution = archives.stream()
                 .map(converter::toInstitutionArchiveResponse)
@@ -205,10 +205,10 @@ public class ArchiveService {
     }
 
     @Transactional
-    public void updateInstitutionDeliveryStatus(Long institutionId, AdminRequestDto request) {
+    public void updateInstitutionDeliveryStatus(String institutionCode, AdminRequestDto request) {
 
         // 요청한 달에 존재하는 기관의 모든 아카이브를 가져옵니다.
-        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionIdAndYearMonth(institutionId, request.getYear(), request.getMonth());
+        List<MonthlyArchive> archives = archiveRepository.findArchivesByInstitutionCodeAndYearMonth(institutionCode, request.getYear(), request.getMonth());
 
         if(archives.isEmpty()) {
             throw new GeneralException(ErrorStatus._ARCHIVE_NOT_FOUND);

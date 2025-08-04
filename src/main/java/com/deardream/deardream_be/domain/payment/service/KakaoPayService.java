@@ -169,6 +169,9 @@ public class KakaoPayService {
         //결제 완료 후 가족 활성화
         family.setFamilyActive();
 
+        // 영속성 때문에 flush 필요
+        familyRepository.save(family);
+
         return response;
     }
 

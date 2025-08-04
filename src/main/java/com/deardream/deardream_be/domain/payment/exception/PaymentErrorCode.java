@@ -13,6 +13,7 @@ public enum PaymentErrorCode implements BaseErrorCode {
     _PAYMENT_CANCELLED(HttpStatus.BAD_REQUEST, "P004", "결제가 취소되었습니다."),
     _PAYMENT_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "P005", "결제 요청에 실패하였습니다."),
     _PAYMENT_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "P006", "이미 승인된 결제입니다."),
+    _PAYMENT_PERIOD_EXPIRED(HttpStatus.BAD_REQUEST, "P007", "결제 기간이 만료되었습니다."),
     ;
 
     private final HttpStatus httpStatus;

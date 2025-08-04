@@ -25,14 +25,6 @@ public class PaymentController {
         return ApiResponse.onSuccess(paymentService.getSubscriptions(familyId));
     }
 
-    @Operation(summary = "플랜 서비스를 해제합니다. 결제한 사람의 아이디를 넣어주세요.")
-    @PatchMapping("/cancel")
-    public ApiResponse<?> cancelPlan(
-            @RequestParam Long userId
-    ) {
-        paymentService.deActive(userId);
-        return ApiResponse.onSuccess("플랜 서비스가 해제되었습니다.");
-    }
 
     @Operation(summary = "기관 플랜 서비스를 해제합니다. 리더 아이디를 넣어주세요.")
     @PatchMapping("/cancel/institution")

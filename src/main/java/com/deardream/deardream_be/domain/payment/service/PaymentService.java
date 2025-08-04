@@ -37,29 +37,11 @@ public class PaymentService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
-    public void deActivePayment() {
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-
-        List<Payment> payments = paymentRepository.findAllByIsActiveTrue();
-
-        for(Payment payment : payments) {
-            if(payment.getApprovedAt() != null &&
-            payment.getApprovedAt().plusDays(30).isBefore(today)) {
-                payment.deActive();
-                log.info("구독 해제: {} - {}", payment.getUser().getId(), payment.getTid());
-            }
-        }
-
-        paymentRepository.saveAll(payments);
-    }
-
-    @Transactional
     public List<SubscriptionDto> getSubscriptions(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        List<Payment> payments = paymentRepository.findAllByUser(user);
+        List<Payment> payments = paymentRepository.findAllByFamilyId(user.getFamily().getId());
 
         return payments.stream().map(payment -> SubscriptionDto.builder()
                 .paymentDate(payment.getApprovedAt())
@@ -68,26 +50,6 @@ public class PaymentService {
 
     }
 
-    // 플랜 해지
-    @Transactional
-    public BaseCode deActive(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
-
-        Family family = familyRepository.findByLeaderId(user.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
-
-        Payment lastPayment = paymentRepository.findLastestByUser(user)
-                .orElseThrow(() -> new PaymentException(PaymentErrorCode._PAYMENT_REQUEST_FAILED));
-
-        lastPayment.updateCancel();
-
-        family.setFamilyDeActive();
-
-        log.info("구독 해지: {} - {}", user.getId(), lastPayment.getTid());
-
-        return null;
-    }
 
     public PlanResponseDto getPlanStatus(Long familyId) {
         Family family = familyRepository.findById(familyId)

@@ -81,11 +81,11 @@ public class UserServiceWithdrawImplementation implements UserServiceWithdraw {
         userRepository.saveAll(users);
 
         // 2. leader와 연관된 payment userId null 처리
-        List<Payment> payments = paymentRepository.findAllByUser(leader);
-        for (Payment payment : payments) {
-            payment.cancelHomeDelivery();
-        }
-        paymentRepository.saveAll(payments);
+        //List<Payment> payments = paymentRepository.findAllByUser(leader);
+        //for (Payment payment : payments) {
+        //    payment.cancelHomeDelivery();
+        //}
+        //paymentRepository.saveAll(payments);
 
         // 3. leader의 familyId null 처리
         leader.deleteFamily();

@@ -17,6 +17,7 @@ public class AdminInstitutionController {
 
     private final AdminInstitutionService institutionService;
 
+    /*
     @Operation(summary = "[기관 어드민 기능] 사용자 추방이 가능합니다.")
     @DeleteMapping("/institution")
     public ApiResponse<?> deleteUserFromInstitution(
@@ -25,6 +26,8 @@ public class AdminInstitutionController {
         institutionService.deleteUserFromInstitution(request);
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
+
+     */
 
     @Operation(summary = "[기관 어드민 기능] 사용자에 대한 정보를 조회합니다.")
     @GetMapping("/institution/users")

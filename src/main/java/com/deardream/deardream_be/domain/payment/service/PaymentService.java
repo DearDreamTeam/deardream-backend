@@ -37,11 +37,12 @@ public class PaymentService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    public List<SubscriptionDto> getSubscriptions(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+    public List<SubscriptionDto> getSubscriptions(Long familyId) {
 
-        List<Payment> payments = paymentRepository.findAllByFamilyId(user.getFamily().getId());
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FAMILY_NOT_FOUND));
+
+        List<Payment> payments = paymentRepository.findAllByFamilyId(family.getId());
 
         return payments.stream().map(payment -> SubscriptionDto.builder()
                 .paymentDate(payment.getApprovedAt())

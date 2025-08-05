@@ -7,8 +7,12 @@
 
   <body>
     <div class="cover">
-      <img th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/logo.png}" class="cover-logo" />
-      <img th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/ribbon.png}" class="cover-ribbon" />
+      <img
+        th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/logo.png}"
+        class="cover-logo" />
+      <img
+        th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/ribbon.png}"
+        class="cover-ribbon" />
     </div>
     <div class="A4-wrapper">
       <div
@@ -51,7 +55,7 @@
               <span class="text-name" th:text="${post.authorName}"></span>
               <span
                 th:classappend="${post.imageUrls.size() == 1 ? 'text-date-34' : 'text-date'}"
-                th:text="''+ ${#temporals.format(post.createdAt, 'YYYY년 MM월 dd일 ')}+ (${post.createdAt.hour &lt; 12} ? '오전' : '오후')+ ' '+ ${#temporals.format(post.createdAt, 'h시 m분')}"></span>
+                th:text="''+ ${#temporals.format(post.createdAt, 'YYYY년 MM월 dd일 ')}+ (${post.createdAt.hour &lt; 12} ? '오전' : '오후')+ ' '+ ${#temporals.format(post.createdAt, 'h시 mm분')}"></span>
             </div>
             <div class="text-content" th:text="${post.content}"></div>
           </div>

@@ -109,11 +109,11 @@ public class Recipient extends BaseEntity {
     // 주소 update 전용
     // RecipientRequestAddressDto의 필드를 Recipient 엔티티에 적용하여 정보 업데이트
     public void updateWithRecipientAddressRequestDto(RecipientAddressUpdateDto dto, Institution institution) {
-        if (dto.getDeliveryType() != null) this.deliveryType = dto.getDeliveryType();
-        if (dto.getAddress() != null) this.address = dto.getAddress();
-        if (dto.getAddressDetail() != null) this.addressDetail = dto.getAddressDetail();
-        if (dto.getPostalCode() != null) this.postalCode = dto.getPostalCode();
-        if (institution != null) this.institution = institution;
+        this.deliveryType = dto.getDeliveryType();
+        this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
+        this.postalCode = dto.getPostalCode();
+        this.institution = institution;
     }
 
 

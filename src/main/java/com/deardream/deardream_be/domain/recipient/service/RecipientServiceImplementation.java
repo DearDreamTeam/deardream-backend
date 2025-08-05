@@ -194,12 +194,34 @@ public class RecipientServiceImplementation implements RecipientService {
     }
 
 
+//    private void validateProfileImage(MultipartFile profileImage) {
+//        // 파일 크기 제한 (1MB)
+//        long maxSizeBytes = 1024 * 1024;
+//        if (profileImage.getSize() > maxSizeBytes) {
+//            throw new GeneralException(ErrorStatus._IMAGE_SIZE_EXCEEDED);
+//        }
+//
+//    }
+
     private void validateProfileImage(MultipartFile profileImage) {
-        // 파일 크기 제한 (1MB)
         long maxSizeBytes = 1024 * 1024;
         if (profileImage.getSize() > maxSizeBytes) {
             throw new GeneralException(ErrorStatus._IMAGE_SIZE_EXCEEDED);
         }
-
+        String contentType = profileImage.getContentType();
+        if (contentType == null ||
+                (!contentType.equals("image/jpeg") &&
+                        !contentType.equals("image/png") &&
+                        !contentType.equals("image/gif"))
+        ) {
+            throw new GeneralException(ErrorStatus._UNSUPPORTED_MEDIA_TYPE);
+        }
+        String filename = profileImage.getOriginalFilename();
+        if (filename == null ||
+                !(filename.toLowerCase().endsWith(".jpg") || filename.toLowerCase().endsWith(".jpeg") ||
+                        filename.toLowerCase().endsWith(".png") || filename.toLowerCase().endsWith(".gif"))
+        ) {
+            throw new GeneralException(ErrorStatus._UNSUPPORTED_MEDIA_TYPE);
+        }
     }
 }

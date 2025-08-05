@@ -46,7 +46,6 @@ public enum ErrorStatus implements BaseErrorCode {
     _ALREADY_IN_FAMILY(HttpStatus.BAD_REQUEST, "400", "이미 가족에 속해 있습니다."),
     _ARCHIVE_DELIVERY_STATUS_ALREADY_SAME(HttpStatus.BAD_REQUEST, "400", "이미 해당 월의 아카이브 배달 상태와 동일합니다."),
     _INSTITUTION_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "400", "이미 해당 기관이 존재합니다."),
-    _FILE_EXTENSION_ERROR(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 파일 확장자입니다. (pdf, jpg, jpeg, png)"),
     _INSTITUTION_INFO_MISMATCH(HttpStatus.BAD_REQUEST, "400", "해당 기관이 존재하지 않습니다. 기관명과 기관 전화번호를 다시 확인해주세요."),
     _INVALID_REDIRECT_URI(HttpStatus.BAD_REQUEST, "400", "유효하지 않은 REDIRECT URI입니다."),
 
@@ -61,7 +60,6 @@ public enum ErrorStatus implements BaseErrorCode {
     // 403 Forbidden
     _FORBIDDEN_PASSWORD(HttpStatus.FORBIDDEN, "403", "불가능한 패스워드입니다. 패스워드는 영어, 숫자 8~13글자만 가능합니다."),
     _ARCHIVE_ALREADY_EXISTS(HttpStatus.FORBIDDEN, "403", "이미 해당 월의 아카이브가 존재합니다."),
-    _IMAGE_SIZE_EXCEEDED(HttpStatus.FORBIDDEN, "403", "이미지 크기가 너무 큽니다. 최대 5MB까지 가능합니다."),
     _NOT_AUTHOR_OF_POST(HttpStatus.FORBIDDEN, "403", "해당 게시글의 작성자가 아닙니다."),
     _NOT_FAMILY_MEMBER(HttpStatus.FORBIDDEN, "403", "해당 가족의 구성원이 아닙니다."),
     _RECIPIENT_ALREADY_REGISTERED(HttpStatus.FORBIDDEN, "403", "이미 수신자가 등록되어 있습니다. 수신자 수정을 이용해 주세요."),
@@ -89,6 +87,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _SUBSCRIPTION_EXPIRED(HttpStatus.BAD_REQUEST, "400", "구독이 만료되었습니다. 새로운 구독을 시작해주세요."),
     _SUBSCRIPTION_IS_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "400", "구독이 활성화되지 않았습니다. 구독을 시작해주세요."),
     _SUBSCRIPTION_IS_ALREADY_ACTIVE(HttpStatus.BAD_REQUEST, "400", "구독이 이미 활성화되어 있습니다. 구독 상태를 확인해주세요."),
+    _IMAGE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "413", "이미지 크기가 너무 큽니다. 최대 1MB까지 가능합니다."),
+    _FILE_EXTENSION_ERROR(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "415", "지원하지 않는 파일 확장자입니다. (pdf, jpg, jpeg, png)"),
 
     ;
 

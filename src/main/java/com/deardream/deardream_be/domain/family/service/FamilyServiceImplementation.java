@@ -171,10 +171,11 @@ public class FamilyServiceImplementation implements FamilyService {
             throw new GeneralException(ErrorStatus._INVITE_LINK_ALREADY_EXISTS);
         }
 
-        // 2-2. 예외처리 : 활성화가 안 된 가족일 시 예외 발생
-        if(family.getIsActive() == false){
-            throw new GeneralException(ErrorStatus._FAMILY_NOT_ACTIVE);
-        }
+        // 2-2. 예외처리 : 활성화가 안 된 가족일 시 예외 발생 - 근데 프론트에서 가족 링크 생성은 되게 해달라고 해서
+        // 예외처리는 품
+//        if(family.getIsActive() == false){
+//            throw new GeneralException(ErrorStatus._FAMILY_NOT_ACTIVE);
+//        }
 
         // 3. familyLink가 없을 때만 새로 생성
         inviteLinkToken = UUID.randomUUID().toString();

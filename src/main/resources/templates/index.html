@@ -66,9 +66,7 @@
           th:text="${iterStat.count / 2}"></div>
       </div>
       <div th:if="${posts.size() % 2 == 1}" class="container">
-        <div
-          class="page-number"
-          th:text="${T(java.lang.Math).ceil(posts.size() / 2.0)}"></div>
+        <div class="page-number" th:text="${(posts.size() / 2) + 1}"></div>
       </div>
     </div>
   </body>

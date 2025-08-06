@@ -18,7 +18,7 @@
       <div
         th:each="post, iterStat : ${posts}"
         class="container"
-        th:classappend="${iterStat.even ? 'even-container' : 'odd-container'}">
+        th:classappend="${iterStat.odd ? 'odd-container' : ''}">
         <img
           th:if="${post.imageUrls.size() == 1}"
           class="aspect-34-image"
@@ -64,6 +64,11 @@
           th:if="${iterStat.even}"
           class="page-number"
           th:text="${iterStat.count / 2}"></div>
+      </div>
+      <div th:if="${posts.size() % 2 == 1}" class="container">
+        <div
+          class="page-number"
+          th:text="${T(java.lang.Math).ceil(posts.size() / 2.0)}"></div>
       </div>
     </div>
   </body>

@@ -77,6 +77,9 @@ public class UserServiceWithdrawImplementation implements UserServiceWithdraw {
         users.remove(leader);
         for (User user : users) {
             user.withdrawMakeFamilyMembersDefault();
+
+            // relation, otherRelation 필드 null 처리 추가
+            user.initializeUserRelation();
         }
         userRepository.saveAll(users);
 

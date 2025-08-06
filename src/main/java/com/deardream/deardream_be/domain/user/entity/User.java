@@ -121,4 +121,10 @@ public class User extends BaseEntity {
         this.relation = Relation.OTHER;
         this.otherRelation = "대표자";
     }
+
+    // 가족에 속해있지 않은 user의 relation/otherRelation null 처리
+    public void initializeUserRelation(){
+        this.relation = null;
+        this.otherRelation = null;
+    }
 }

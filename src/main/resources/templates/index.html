@@ -13,6 +13,19 @@
       <img
         th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/ribbon.png}"
         class="cover-ribbon" />
+
+      <div class="cover-title">
+        <div
+          th:text="${familyInfos.year + '년 ' + familyInfos.month + '월'}"></div>
+        <div th:text="${familyInfos.recipientName + ' 어르신'}"></div>
+      </div>
+
+      <div class="cover-family">
+        <div th:each="author : ${familyInfos.authors}">
+          <span th:text="${author.authorName}"></span>
+          <span th:text="${author.relation}"></span>
+        </div>
+      </div>
     </div>
     <div class="A4-wrapper">
       <div

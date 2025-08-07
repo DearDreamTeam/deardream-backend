@@ -137,7 +137,7 @@ body {
 
 .profile-cover {
   background-size: cover;
-  background-position: -8px -8px;
+  background-position: 8px 8px;
   background-repeat: no-repeat;
 }
 

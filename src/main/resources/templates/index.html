@@ -39,12 +39,15 @@
         <div
           th:classappend="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
           <img
-            th:src="${#strings.isEmpty(post.authorProfileImg) 
-                ? 'https://d3beofgpsk367b.cloudfront.net/pdf-icon/default-profile.png'
-                : post.authorProfileImg}"
+            th:if="${#strings.isEmpty(post.authorProfileImg)}"
+            th:src="@{https://d3beofgpsk367b.cloudfront.net/pdf-icon/default-profile.png}"
             class="profile-image"
             th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''" />
-
+          <div
+            th:if="${#strings.isEmpty(post.authorProfileImg) == false}"
+            th:style="'background-image: url(' + ${post.authorProfileImg} + ');'"
+            class="profile-image bg-cover"
+            th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''"></div>
           <div
             th:classappend="${post.imageUrls.size() == 1 ? 'text-container-34' : 'text-container'}">
             <div>

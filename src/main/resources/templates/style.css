@@ -132,7 +132,7 @@ body {
 img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: inline-block;
 }
 
@@ -180,6 +180,8 @@ img {
 
   margin-left: auto;
   margin-right: 0;
+
+  text-align: justify;
 }
 
 .aspect-43-contents {
@@ -191,6 +193,8 @@ img {
   width: 488px;
   margin-left: auto;
   margin-right: 0;
+
+  text-align: justify;
 }
 
 .aspect-43-image-container {

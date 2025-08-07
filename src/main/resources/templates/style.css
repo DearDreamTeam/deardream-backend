@@ -150,6 +150,8 @@ body {
 .aspect-43-image {
   width: 273px;
   height: 204.75px;
+  display: inline-block;
+  font-size: 0;
 }
 
 .second-image {

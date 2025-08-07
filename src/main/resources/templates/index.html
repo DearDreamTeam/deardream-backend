@@ -19,24 +19,21 @@
         th:each="post, iterStat : ${posts}"
         class="container"
         th:classappend="${iterStat.odd ? 'odd-container' : 'even-container'}">
-        <img
+        <div
           th:if="${post.imageUrls.size() == 1}"
-          class="aspect-34-image"
-          th:src="${post.imageUrls[0]}"
-          alt="img 1" />
+          class="aspect-34-image bg-cover"
+          th:style="'background-image: url(' + ${post.imageUrls[0]} + ');'"></div>
 
         <div
           class="aspect-43-image-container"
           th:if="${post.imageUrls.size() == 2}">
-          <img
-            th:src="${post.imageUrls[0]}"
-            class="aspect-43-image"
-            alt="first img" />
+          <div
+            class="aspect-43-image bg-cover"
+            th:style="'background-image: url(' + ${post.imageUrls[0]} + ');'"></div>
 
-          <img
-            th:src="${post.imageUrls[1]}"
-            class="aspect-43-image second-image"
-            alt="second img" />
+          <div
+            class="aspect-43-image second-image bg-cover"
+            th:style="'background-image: url(' + ${post.imageUrls[1]} + ');'"></div>
         </div>
 
         <div

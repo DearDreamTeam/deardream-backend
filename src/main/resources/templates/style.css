@@ -129,8 +129,10 @@ body {
   letter-spacing: -0.3px;
 }
 
-img {
-  object-fit: cover;
+.bg-cover {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .aspect-34-image {

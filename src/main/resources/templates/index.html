@@ -19,32 +19,34 @@
         th:each="post, iterStat : ${posts}"
         class="container"
         th:classappend="${iterStat.odd ? 'odd-container' : 'even-container'}">
-        <div
+        <img
           th:if="${post.imageUrls.size() == 1}"
-          class="aspect-34-image bg-cover"
-          th:style="'background-image: url(' + ${post.imageUrls[0]} + ');'"></div>
+          class="aspect-34-image"
+          th:src="${post.imageUrls[0]}"
+          alt="img 1" />
 
         <div
           class="aspect-43-image-container"
           th:if="${post.imageUrls.size() == 2}">
-          <div
-            class="aspect-43-image bg-cover"
-            th:style="'background-image: url(' + ${post.imageUrls[0]} + ');'"></div>
+          <img
+            th:src="${post.imageUrls[0]}"
+            class="aspect-43-image"
+            alt="first img" />
 
-          <div
+          <img
             th:src="${post.imageUrls[1]}"
-            class="aspect-43-image second-image bg-cover"
-            th:style="'background-image: url(' + ${post.imageUrls[1]} + ');'"></div>
+            class="aspect-43-image second-image"
+            alt="second img" />
         </div>
 
         <div
           th:classappend="${post.imageUrls.size() == 1 ? 'aspect-34-contents' : 'aspect-43-contents'}">
-          <div
-            class="profile-image bg-cover"
-            th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''"
-            th:style="'background-image: url(' + (#strings.isEmpty(post.authorProfileImg) 
-              ? 'https://d3beofgpsk367b.cloudfront.net/pdf-icon/default-profile.png' 
-              : post.authorProfileImg) + ');'"></div>
+          <img
+            th:src="${#strings.isEmpty(post.authorProfileImg) 
+                ? 'https://d3beofgpsk367b.cloudfront.net/pdf-icon/default-profile.png'
+                : post.authorProfileImg}"
+            class="profile-image"
+            th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''" />
 
           <div
             th:classappend="${post.imageUrls.size() == 1 ? 'text-container-34' : 'text-container'}">

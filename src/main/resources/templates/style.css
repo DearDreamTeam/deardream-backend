@@ -135,12 +135,6 @@ body {
   background-repeat: no-repeat;
 }
 
-.profile-cover {
-  background-size: cover;
-  background-position: -8px -8px;
-  background-repeat: no-repeat;
-}
-
 .aspect-34-image {
   width: 277.5px;
   height: 370px;

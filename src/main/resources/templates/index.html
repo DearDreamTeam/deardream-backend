@@ -45,7 +45,7 @@
           <div
             th:if="${#strings.isEmpty(post.authorProfileImg) == false}"
             th:style="'background-image: url(' + ${post.authorProfileImg} + ');'"
-            class="profile-image profile-cover"
+            class="profile-image bg-cover"
             th:classappend="${post.imageUrls.size() == 2} ? 'aspect-2-image-profile' : ''"></div>
           <div
             th:classappend="${post.imageUrls.size() == 1 ? 'text-container-34' : 'text-container'}">

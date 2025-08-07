@@ -263,6 +263,9 @@ public class ArchiveService {
 
     public ArchiveInfoDto getArchiveFamilyInfo(int Year, int month, Long familyId) {
 
+        Recipient recipient = recipientRepository.findByFamilyId(familyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECIPIENT_NOT_FOUND));
+
         // User들 중 familyId로 찾기
         List<User> users = userRepository.findAllByFamilyId(familyId);
 
@@ -278,6 +281,7 @@ public class ArchiveService {
         return ArchiveInfoDto.builder()
                 .year(Year)
                 .month(month)
+                .recipientName(recipient.getName())
                 .authors(authorInfoDtos)
                 .build();
 

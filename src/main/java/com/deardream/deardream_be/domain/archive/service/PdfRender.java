@@ -1,4 +1,5 @@
 package com.deardream.deardream_be.domain.archive.service;
+import com.deardream.deardream_be.domain.archive.dto.ArchiveInfoDto;
 import com.deardream.deardream_be.domain.archive.entity.DeliveryStatus;
 import com.deardream.deardream_be.domain.archive.entity.MonthlyArchive;
 import com.deardream.deardream_be.domain.archive.repository.ArchiveRepository;
@@ -46,12 +47,13 @@ public class PdfRender {
     /*
     * PDF 를 메모리에 생성해서 S3에 업로드 하는 방식으로 사용 예정
      */
-    public String generatePdfFromHtml(String fileName, List<PostResponseDto> posts, Long familyId) throws Exception {
+    public String generatePdfFromHtml(String fileName, List<PostResponseDto> posts, ArchiveInfoDto archiveInfo, Long familyId) throws Exception {
 
 
         // posts -> post.imageUrls []리스트 형식, post.authorProfileImg, post.relations, post.authorName, post.content
         Context context = new Context();
         context.setVariable("posts", posts);
+        context.setVariable("familyInfos", archiveInfo);
 
         ClassPathResource cssFile = new ClassPathResource("templates/style.css");
         String cssContent = new String(cssFile.getInputStream().readAllBytes());

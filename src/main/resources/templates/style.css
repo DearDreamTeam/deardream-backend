@@ -202,3 +202,35 @@ body {
   height: 204.75px;
   padding-bottom: 10px;
 }
+
+.cover-title {
+  color: #018941;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 44px; /* 137.5% */
+  letter-spacing: -0.48px;
+
+  position: absolute;
+  top: 40px;
+  left: 50px;
+}
+
+.cover-family {
+  color: #018941;
+  font-size: 25.133px;
+  line-height: 35.904px; /* 142.857% */
+  letter-spacing: -0.377px;
+
+  position: absolute;
+  bottom: 66px;
+  left: 50px;
+}
+
+.cover-author-name {
+  font-weight: 600;
+  margin-right: 12.2px;
+}
+
+.cover-author-relation {
+  font-weight: 500;
+}

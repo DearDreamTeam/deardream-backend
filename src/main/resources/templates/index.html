@@ -22,8 +22,10 @@
 
       <div class="cover-family">
         <div th:each="author : ${familyInfos.authors}">
-          <span th:text="${author.authorName}"></span>
-          <span th:text="${author.relation}"></span>
+          <span th:text="${author.authorName}" class="cover-author-name"></span>
+          <span
+            th:text="${author.relation}"
+            class="cover-author-relation"></span>
         </div>
       </div>
     </div>

@@ -18,6 +18,7 @@ import com.deardream.deardream_be.domain.post.service.PostImageService;
 import com.deardream.deardream_be.domain.post.service.PostService;
 import com.deardream.deardream_be.domain.recipient.entity.Recipient;
 import com.deardream.deardream_be.domain.recipient.repository.RecipientRepository;
+import com.deardream.deardream_be.domain.user.Relation;
 import com.deardream.deardream_be.domain.user.entity.User;
 import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
@@ -256,6 +257,28 @@ public class ArchiveService {
 
         return InstitutionResponseDto.builder()
                 .institutionInfoList(infos)
+                .build();
+
+    }
+
+    public ArchiveInfoDto getArchiveFamilyInfo(int Year, int month, Long familyId) {
+
+        // User들 중 familyId로 찾기
+        List<User> users = userRepository.findAllByFamilyId(familyId);
+
+        // ArchiveInfoDto 생성
+        List<ArchiveInfoDto.AuthorInfoDto> authorInfoDtos = users.stream()
+                .map(user -> ArchiveInfoDto.AuthorInfoDto.builder()
+                        .authorName(user.getName())
+                        .relation(user.getRelation()!= Relation.OTHER ? user.getRelation().getDescription() : user.getOtherRelation())
+                        .build())
+                .toList();
+
+        // ArchiveInfoDto 반환
+        return ArchiveInfoDto.builder()
+                .year(Year)
+                .month(month)
+                .authors(authorInfoDtos)
                 .build();
 
     }

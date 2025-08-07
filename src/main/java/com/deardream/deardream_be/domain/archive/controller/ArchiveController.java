@@ -1,5 +1,6 @@
 package com.deardream.deardream_be.domain.archive.controller;
 
+import com.deardream.deardream_be.domain.archive.dto.ArchiveInfoDto;
 import com.deardream.deardream_be.domain.archive.dto.ArchiveListResponse;
 import com.deardream.deardream_be.domain.archive.dto.PdfRequestDto;
 import com.deardream.deardream_be.domain.archive.entity.BookmarkStatus;
@@ -36,9 +37,12 @@ public class ArchiveController {
 
         List<PostResponseDto> postRequests = postService.getPostsByYearMonth(request.getFamilyId(), request.getYear(), request.getMonth());
 
+        ArchiveInfoDto archiveInfoDtos = archiveService.getArchiveFamilyInfo(request.getYear(), request.getMonth(), request.getFamilyId());
+
         String pdfUrl = pdfRender.generatePdfFromHtml(
                 fileName,
                 postRequests,
+                archiveInfoDtos,
                 request.getFamilyId()
         );
 

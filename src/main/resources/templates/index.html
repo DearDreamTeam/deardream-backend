@@ -18,7 +18,7 @@
       <div
         th:each="post, iterStat : ${posts}"
         class="container"
-        th:classappend="${iterStat.odd ? 'odd-container' : ''}">
+        th:classappend="${iterStat.odd ? 'odd-container' : 'even-container'}">
         <img
           th:if="${post.imageUrls.size() == 1}"
           class="aspect-34-image"

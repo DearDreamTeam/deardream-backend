@@ -332,19 +332,26 @@ public class PostService {
         List<Post> posts = postRepository.findByFamilyIdAndYearAndMonth(familyId, year, month);
 
         return posts.stream().map(post -> {
+            User author = post.getAuthor();
+            boolean isAuthorDeleted = (author == null);
+
             List<String> imageUrls = postImageRepository.findByPost(post).stream()
                     .map(image -> postImageService.getFilesUrl(image.getS3Key()))
                     .toList();
 
             return PostResponseDto.builder()
                     .postId(post.getId())
-                    .authorId(post.getAuthor().getId())
-                    .authorName(post.getAuthor().getName())
-                    .relations(post.getAuthor().getRelation()!= Relation.OTHER ? post.getAuthor().getRelation().getDescription() : post.getAuthor().getOtherRelation())
+                    .authorId(isAuthorDeleted ? null : author.getId())
+                    .authorName(isAuthorDeleted ? "탈퇴한 유저" : post.getAuthor().getName())
+                    .relations(isAuthorDeleted
+                            ? null
+                            : (author.getRelation() != Relation.OTHER
+                            ? author.getRelation().getDescription()
+                            : author.getOtherRelation()))
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)
-                    .authorProfileImg(post.getAuthor().getProfileImage())
+                    .authorProfileImg(isAuthorDeleted ? null: author.getProfileImage())
                     .build();
         }).collect(Collectors.toList());
     }

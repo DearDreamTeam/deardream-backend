@@ -351,7 +351,7 @@ public class PostService {
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .imageUrls(imageUrls)
-                    .authorProfileImg(isAuthorDeleted ? null : author.getProfileImage())
+                    .authorProfileImg(isAuthorDeleted ? null: author.getProfileImage())
                     .build();
         }).collect(Collectors.toList());
     }

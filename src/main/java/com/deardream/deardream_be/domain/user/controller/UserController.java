@@ -1,6 +1,8 @@
 package com.deardream.deardream_be.domain.user.controller;
 
 import com.deardream.deardream_be.domain.auth.service.AuthService;
+import com.deardream.deardream_be.domain.cookie.CookieService;
+import com.deardream.deardream_be.domain.cookie.CookieUtil;
 import com.deardream.deardream_be.domain.jwt.CustomUserDetails;
 import com.deardream.deardream_be.domain.jwt.JwtUtil;
 import com.deardream.deardream_be.domain.user.dto.RegisterResponseDto;
@@ -12,6 +14,7 @@ import com.deardream.deardream_be.global.apiPayload.ApiResponse;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.code.status.SuccessStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -34,6 +37,7 @@ public class UserController {
     private final UserServiceWithdraw userServiceWithdraw;
     private final AuthService authService;
     private final JwtUtil jwtUtil;
+    private final CookieService cookieService;
 
 
     /**
@@ -46,7 +50,8 @@ public class UserController {
             @RequestParam(value = "code", required = false) String inviteCode,
             @RequestHeader("Authorization") String authorization,
             @RequestPart("userRequestDto") @Valid UserRequestDto userRequestDto,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            HttpServletResponse response
 
     ) {
 
@@ -61,6 +66,9 @@ public class UserController {
 
         // 3. 프로필 등록
         RegisterResponseDto registerResponseDto = userService.register(kakaoId, userRequestDto, profileImage, inviteCode);
+
+        // 4. 쿠키 등록
+        cookieService.setTokenCookies(response, registerResponseDto.getAccessToken(), registerResponseDto.getRefreshToken());
 
         return ApiResponse.onSuccess(registerResponseDto);
     }
@@ -118,7 +126,9 @@ public class UserController {
     @DeleteMapping("/me")
     public ApiResponse<Void> withdraw(
             Authentication authentication,
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token,
+            HttpServletResponse response
+    ) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long kakaoId = userDetails.getKakaoId();
@@ -129,8 +139,10 @@ public class UserController {
         // redis에서 리프레시 토큰 삭제 -> 접근 불가하게 만듦
         authService.logout(accessToken);
 
-
         userServiceWithdraw.withdraw(kakaoId);
+
+        cookieService.deleteTokenCookies(response);
+        cookieService.deleteTempTokenCookie(response);
 
         return ApiResponse.of(SuccessStatus._OK, null);
     }

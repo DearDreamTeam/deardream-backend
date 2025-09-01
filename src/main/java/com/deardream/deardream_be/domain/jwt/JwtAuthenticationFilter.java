@@ -5,6 +5,8 @@ import com.deardream.deardream_be.domain.user.repository.UserRepository;
 import com.deardream.deardream_be.global.apiPayload.code.status.ErrorStatus;
 import com.deardream.deardream_be.global.apiPayload.exception.GeneralException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -95,8 +97,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 log.info("Authenticated kakaoId={}, role={}", kakaoId, user.getRole());
 
+            } catch (ExpiredJwtException e) {
+                log.error("JwtAuthenticationFilter] JWT 만료: " + e.getMessage(), e);
+                log.error("JWT 만료: " + e.getMessage(), e);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"토큰이 만료되었습니다.\"}");
+                return;
+
+            } catch (JwtException | IllegalArgumentException e) {
+                log.error("JWT 위조/파싱오류: " + e.getMessage(), e);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"토큰이 유효하지 않습니다.\"}");
+                return;
+
+            } catch (GeneralException e) {
+                throw e;
+
             } catch (Exception e) {
-                log.error("JwtAuthenticationFilter] JWT 인증 실패: " + e.getMessage(), e);
+                log.error("JwtAuthenticationFilter] 기타 JWT 인증 실패: " + e.getMessage(), e);
             }
 
         } else{
